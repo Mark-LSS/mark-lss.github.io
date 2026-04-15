@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Sea | OTU ↔ ESOT Converter</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .page { width: 100%; max-width: 560px; }
+
+        /* ── HEADER ── */
+        header {
+            background: #014782;
+            border-radius: 6px 6px 0 0;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nsea-logo { flex-shrink: 0; }
+        .header-text { color: #FFFFFF; }
+
+        .header-text h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+            color: #FFEE02;
+        }
+
+        .header-text p {
+            font-size: 11.5px;
+            color: rgba(255,255,255,0.80);
+            margin-top: 2px;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── NOTICE BAND ── */
+        .notice {
+            background: #014782;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 3px solid #FFEE02;
+            padding: 9px 24px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 0.015em;
+        }
+
+        .notice strong { color: #FFEE02; font-weight: 700; }
+        .notice p + p  { margin-top: 6px; }
+
+        /* ── CARD ── */
+        .card {
+            background: #FFFFFF;
+            border-left: 1px solid #d8dde4;
+            border-right: 1px solid #d8dde4;
+            padding: 24px;
+        }
+
+        .card + .card {
+            border-top: 2px solid #FFEE02;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #014782;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #FFEE02;
+            display: inline-block;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+        /* ── FIELD ── */
+        .field { display: flex; flex-direction: column; gap: 5px; }
+
+        .field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+            letter-spacing: 0.01em;
+        }
+
+        .field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
+
+        .field input {
+            padding: 9px 11px;
+            border: 1.5px solid #c8cdd5;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            background: #f8f9fb;
+            transition: border-color 0.15s, background 0.15s;
+            width: 100%;
+        }
+
+        .field input:focus { outline: none; border-color: #014782; background: #fff; }
+        .field input.err   { border-color: #cc2200; background: #fff5f3; }
+
+        /* ── RESULT INLINE ── */
+        .result-inline {
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: #014782;
+            border-radius: 4px;
+            display: none;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .result-inline.visible { display: flex; }
+
+        .result-inline .res-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.80);
+            font-weight: 500;
+        }
+
+        .result-inline .res-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFEE02;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-row { display: flex; gap: 10px; margin-top: 16px; }
+
+        .btn-calc {
+            flex: 1;
+            padding: 11px 20px;
+            background: #014782;
+            color: #FFEE02;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-calc:hover { background: #013560; }
+
+        .btn-reset {
+            padding: 11px 20px;
+            background: #e8ebef;
+            color: #4a5568;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-reset:hover { background: #d8dde4; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #e8ebef;
+            border: 1px solid #d8dde4;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 10px 24px;
+        }
+
+        footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <header>
+        <div class="nsea-logo">
+            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
+                <rect width="50" height="58" rx="3" fill="#014782"/>
+                <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
+                      fill="none" stroke="#FFEE02" stroke-width="8.5"
+                      stroke-linecap="butt" stroke-linejoin="miter"/>
+            </svg>
+        </div>
+        <div class="header-text">
+            <h1>OTU / UPTD ↔ ESOT<br>CONVERTER</h1>
+            <p>Convert between Oxygen Toxicity Units and Equivalent Surface Oxygen Time</p>
+        </div>
+    </header>
+
+
+
+    <!-- PANEL A: OTU / UPTD → ESOT -->
+    <div class="card">
+        <span class="section-label">OTU / UPTD → ESOT</span>
+        <div class="grid-2">
+            <div class="field">
+                <label>OTU / UPTD value</label>
+                <input type="number" id="a_uptd" value="80" min="0" step="1">
+            </div>
+            <div class="field">
+                <label>pO₂ at exposure <span class="unit">(ATA)</span></label>
+                <input type="number" id="a_po2" value="1.4" min="0.51" max="3.0" step="0.01">
+            </div>
+        </div>
+
+        <div class="result-inline" id="a_result">
+            <span class="res-label">ESOT</span>
+            <span class="res-value" id="a_esot">—</span>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-calc" onclick="conv.runA()">CONVERT</button>
+            <button class="btn-reset" onclick="conv.resetA()">RESET</button>
+        </div>
+    </div>
+
+    <!-- PANEL B: ESOT → OTU / UPTD -->
+    <div class="card">
+        <span class="section-label">ESOT → OTU / UPTD</span>
+        <div class="grid-2">
+            <div class="field">
+                <label>ESOT value</label>
+                <input type="number" id="b_esot" value="200" min="0" step="1">
+            </div>
+            <div class="field">
+                <label>pO₂ at exposure <span class="unit">(ATA)</span></label>
+                <input type="number" id="b_po2" value="1.4" min="0.51" max="3.0" step="0.01">
+            </div>
+        </div>
+
+        <div class="result-inline" id="b_result">
+            <span class="res-label">OTU / UPTD</span>
+            <span class="res-value" id="b_uptd">—</span>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-calc" onclick="conv.runB()">CONVERT</button>
+            <button class="btn-reset" onclick="conv.resetB()">RESET</button>
+        </div>
+    </div>
+
+    <footer>
+        <span>N-Sea Group | Calculator Reference Rev. 1</span>
+    </footer>
+
+</div>
+
+<script>
+    const conv = {
+
+        // Conversion factor = pO₂^2.285 ÷ (2×pO₂−1)^0.833
+        factor(po2) {
+            return Math.pow(po2, 2.285) / Math.pow((2 * po2 - 1), 0.833);
+        },
+
+        // ── PANEL A: OTU/UPTD → ESOT ──
+        runA() {
+            const uptd = parseFloat(document.getElementById('a_uptd').value);
+            const po2  = parseFloat(document.getElementById('a_po2').value);
+
+            const errUptd = isNaN(uptd) || uptd < 0;
+            const errPo2  = isNaN(po2)  || po2 <= 0.5;
+
+            document.getElementById('a_uptd').classList.toggle('err', errUptd);
+            document.getElementById('a_po2').classList.toggle('err', errPo2);
+
+            if (errUptd || errPo2) {
+                alert('Input error — pO₂ must be greater than 0.5 ATA.');
+                return;
+            }
+
+            // ESOT = UPTD × factor
+            const esot = uptd * this.factor(po2);
+            document.getElementById('a_esot').textContent = esot.toFixed(2);
+            document.getElementById('a_result').classList.add('visible');
+        },
+
+        resetA() {
+            document.getElementById('a_uptd').value = '80';
+            document.getElementById('a_po2').value  = '1.4';
+            ['a_uptd','a_po2'].forEach(f => document.getElementById(f).classList.remove('err'));
+            document.getElementById('a_result').classList.remove('visible');
+        },
+
+        // ── PANEL B: ESOT → OTU/UPTD ──
+        runB() {
+            const esot = parseFloat(document.getElementById('b_esot').value);
+            const po2  = parseFloat(document.getElementById('b_po2').value);
+
+            const errEsot = isNaN(esot) || esot < 0;
+            const errPo2  = isNaN(po2)  || po2 <= 0.5;
+
+            document.getElementById('b_esot').classList.toggle('err', errEsot);
+            document.getElementById('b_po2').classList.toggle('err', errPo2);
+
+            if (errEsot || errPo2) {
+                alert('Input error — pO₂ must be greater than 0.5 ATA.');
+                return;
+            }
+
+            // UPTD = ESOT ÷ factor
+            const uptd = esot / this.factor(po2);
+            document.getElementById('b_uptd').textContent = uptd.toFixed(2);
+            document.getElementById('b_result').classList.add('visible');
+        },
+
+        resetB() {
+            document.getElementById('b_esot').value = '200';
+            document.getElementById('b_po2').value  = '1.4';
+            ['b_esot','b_po2'].forEach(f => document.getElementById(f).classList.remove('err'));
+            document.getElementById('b_result').classList.remove('visible');
+        }
+    };
+</script>
+</body>
+</html>

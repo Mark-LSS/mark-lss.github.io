@@ -4,125 +4,135 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Diving Toolkit</title>
+
   <style>
-    body{
+    body {
       font-family: Arial, sans-serif;
-      margin:0;
-      background:#f4f7fb;
-      color:#1f2a37;
+      margin: 0;
+      background: #f4f7fb;
+      color: #1f2a37;
     }
-    header{
-      background:#0e2a47;
-      color:white;
-      padding:24px 20px;
+
+    header {
+      background: #0e2a47;
+      color: white;
+      padding: 24px;
     }
-    header h1{
-      margin:0 0 8px 0;
-      font-size:32px;
+
+    header h1 {
+      margin: 0;
+      font-size: 32px;
     }
-    header p{
-      margin:0;
-      font-size:16px;
-      opacity:.95;
+
+    main {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
-    main{
-      max-width:1100px;
-      margin:24px auto;
-      padding:0 16px 40px;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
     }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:16px;
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-    .card{
-      background:white;
-      border-radius:12px;
-      padding:18px;
-      box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+    h2 {
+      margin-top: 0;
+      color: #0e2a47;
     }
-    .card h2{
-      margin-top:0;
-      font-size:20px;
-      color:#0e2a47;
+
+    ul {
+      padding-left: 18px;
     }
-    .card ul{
-      padding-left:18px;
-      margin-bottom:0;
+
+    li {
+      margin: 8px 0;
     }
-    .card li{
-      margin:8px 0;
+
+    a {
+      color: #0b57b7;
+      text-decoration: none;
     }
-    a{
-      color:#0b57b7;
-      text-decoration:none;
+
+    a:hover {
+      text-decoration: underline;
     }
-    a:hover{
-      text-decoration:underline;
-    }
-    footer{
-      text-align:center;
-      padding:20px;
-      color:#5b6573;
-      font-size:14px;
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>Diving Toolkit</h1>
-    <p>Diving related tools, familiarisations, emergency calculators and reference documents.</p>
-  </header>
 
-  <main>
-    <div class="grid">
-      <section class="card">
-        <h2>Calculators</h2>
-        <ul>
-          <li><a href="calculators/bailout-endurance.html">Bailout Endurance</a></li>
-          <li><a href="calculators/daltonslaw-calculations.html">Dalton's Law</a></li>
-          <li><a href="calculators/ead-and-table-depth-selection.html">EAD and Table Depth</a></li>
-          <li><a href="calculators/esot-recovery-calculator.html">ESOT Recovery</a></li>
-          <li><a href="calculators/calculate-otu-and-esot.html">Calculate OTU and ESOT</a></li>
-          <li><a href="calculators/multi-segment-otu-andesot-calculator.html">Multi Segment OTU and ESOT</a></li>
-          <li><a href="calculators/otu-esot-converter.html">OTU ESOT Converter</a></li>
-          <li><a href="calculators/vital-capacity-reduction-calculator.html">Vital Capacity Reduction</a></li>
-        </ul>
-      </section>
+<header>
+  <h1>Diving Toolkit</h1>
+</header>
 
-      <section class="card">
-        <h2>Emergency Tools</h2>
-        <ul>
-          <li><a href="emergency/bailout-opened-while-on-nitrox.html">Bailout Opened While on Nitrox</a></li>
-          <li><a href="emergency/nitrox-failure-switch-to-air.html">Nitrox Failure Switch to Air</a></li>
-        </ul>
-      </section>
+<main>
 
-      <section class="card">
-        <h2>Familiarisations</h2>
-        <ul>
-          <li>Coming next</li>
-        </ul>
-      </section>
+<div class="grid">
 
-      <section class="card">
-        <h2>Systems and Tools</h2>
-        <ul>
-          <li>Coming next</li>
-        </ul>
-      </section>
+  <div class="card">
+    <h2>Calculators</h2>
+    <ul>
+      <li><a href="calculators/bailout-endurance.html">Bailout Endurance</a></li>
+      <li><a href="calculators/daltons-law-calculations.html">Dalton's Law</a></li>
+      <li><a href="calculators/ead-and-table-depth-selection.html">EAD</a></li>
+      <li><a href="calculators/esot-recovery-calculator.html">ESOT Recovery</a></li>
+      <li><a href="calculators/calculate-otu-and-esot.html">OTU / ESOT</a></li>
+      <li><a href="calculators/multi-segment-otu-esot.html">Multi Segment OTU</a></li>
+      <li><a href="calculators/otu-esot-converter.html">OTU Converter</a></li>
+      <li><a href="calculators/vital-capacity-reduction-calculator.html">Vital Capacity</a></li>
+    </ul>
+  </div>
 
-      <section class="card">
-        <h2>Documents</h2>
-        <ul>
-          <li>Coming next</li>
-        </ul>
-      </section>
-    </div>
-  </main>
+  <div class="card">
+    <h2>Emergency</h2>
+    <ul>
+      <li><a href="emergency/bailout-opened-while-on-nitrox.html">Bailout on Nitrox</a></li>
+      <li><a href="emergency/nitrox-failure-switch-to-air.html">Switch to Air</a></li>
+    </ul>
+  </div>
 
-  <footer>
-    Diving Toolkit
-  </footer>
+  <div class="card">
+    <h2>Familiarisations</h2>
+    <ul>
+      <li>Coming next</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Systems & Tools</h2>
+    <ul>
+      <li>Coming next</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Documents</h2>
+    <ul>
+      <li>Coming next</li>
+    </ul>
+  </div>
+
+</div>
+
+</main>
+
+<footer>
+  Diving Toolkit
+</footer>
+
 </body>
 </html>

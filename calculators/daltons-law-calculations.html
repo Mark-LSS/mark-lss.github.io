@@ -1,256 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diving Toolkit | Dalton's Law</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Sea | Dalton's Law Calculator</title>
 
-<link rel="stylesheet" href="../assets/css/site.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
-/* KEEP YOUR EXISTING STYLE EXACTLY */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 30px 16px;
+        }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-    background: #f0f2f5;
-    color: #1a1a1a;
-}
+        .page { width: 100%; max-width: 560px; }
 
-.page { width: 100%; max-width: 560px; margin: auto; }
+        /* ── HEADER ── */
+        header {
+            background: #014782;
+            border-radius: 6px 6px 0 0;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
 
-/* --- ORIGINAL STYLES CONTINUE --- */
+        .nsea-logo { flex-shrink: 0; }
+        .header-text { color: #FFFFFF; }
 
-header.local-header {
-    background: #014782;
-    border-radius: 6px 6px 0 0;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
+        .header-text h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+            color: #FFEE02;
+        }
 
-/* rename header to avoid clash */
-.nsea-logo { flex-shrink: 0; }
-.header-text { color: #FFFFFF; }
+        .header-text p {
+            font-size: 11.5px;
+            color: rgba(255,255,255,0.80);
+            margin-top: 2px;
+            letter-spacing: 0.01em;
+        }
 
-.header-text h1 {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1.3;
-    color: #FFEE02;
-}
+        /* ── NOTICE BAND ── */
+        .notice {
+            background: #014782;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 3px solid #FFEE02;
+            padding: 9px 24px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 0.015em;
+        }
 
-.header-text p {
-    font-size: 11.5px;
-    color: rgba(255,255,255,0.80);
-    margin-top: 2px;
-}
+        .notice strong { color: #FFEE02; font-weight: 700; }
 
-/* rest unchanged */
-.notice {
-    background: #014782;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    border-bottom: 3px solid #FFEE02;
-    padding: 9px 24px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.75);
-}
+        /* ── CARD ── */
+        .card {
+            background: #FFFFFF;
+            border-left: 1px solid #d8dde4;
+            border-right: 1px solid #d8dde4;
+            border-bottom: 1px solid #d8dde4;
+            padding: 28px 24px 24px;
+        }
 
-.notice strong { color: #FFEE02; }
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #014782;
+            margin-bottom: 18px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #FFEE02;
+            display: inline-block;
+        }
 
-.card {
-    background: #FFFFFF;
-    border-left: 1px solid #d8dde4;
-    border-right: 1px solid #d8dde4;
-    border-bottom: 1px solid #d8dde4;
-    padding: 28px 24px 24px;
-}
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 
-.section-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: #014782;
-    margin-bottom: 18px;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #FFEE02;
-    display: inline-block;
-}
+        /* ── FIELD ── */
+        .field { display: flex; flex-direction: column; gap: 6px; }
 
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+            letter-spacing: 0.01em;
+        }
 
-.field { display: flex; flex-direction: column; gap: 6px; }
+        .field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
 
-.field label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #4a5568;
-}
+        .field input {
+            padding: 11px 12px;
+            border: 1.5px solid #c8cdd5;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a1a;
+            background: #f8f9fb;
+            transition: border-color 0.15s, background 0.15s;
+            width: 100%;
+        }
 
-.field input {
-    padding: 11px 12px;
-    border: 1.5px solid #c8cdd5;
-    border-radius: 4px;
-    font-size: 15px;
-    background: #f8f9fb;
-}
+        .field input:focus  { outline: none; border-color: #014782; background: #fff; }
 
-.field input:focus  { outline: none; border-color: #014782; background: #fff; }
+        /* Solved field */
+        .field input.solved {
+            border-color: #FFEE02;
+            border-width: 2px;
+            background: #fffce6;
+            color: #014782;
+            font-weight: 700;
+        }
 
-.field input.solved {
-    border-color: #FFEE02;
-    border-width: 2px;
-    background: #fffce6;
-    color: #014782;
-    font-weight: 700;
-}
+        /* ── RESET ── */
+        .btn-row { margin-top: 22px; }
 
-.btn-row { margin-top: 22px; }
+        .btn-reset {
+            width: 100%;
+            padding: 11px 20px;
+            background: #e8ebef;
+            color: #4a5568;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
 
-.btn-reset {
-    width: 100%;
-    padding: 11px 20px;
-    background: #e8ebef;
-    border: none;
-    cursor: pointer;
-}
+        .btn-reset:hover { background: #d8dde4; }
 
-.status-band {
-    padding: 10px 24px;
-    font-size: 11.5px;
-    display: none;
-}
+        /* ── STATUS BAND ── */
+        .status-band {
+            padding: 10px 24px;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            display: none;
+            border-left: 1px solid #013560;
+            border-right: 1px solid #013560;
+        }
 
-.status-band.visible { display: block; }
+        .status-band.visible { display: block; }
+        .status-ok   { background: #1a6e3a; color: #FFFFFF; }
+        .status-warn { background: #a05000; color: #FFEE02; }
+        .status-crit { background: #8b0000; color: #FFFFFF; }
 
-.status-ok   { background: #1a6e3a; color: white; }
-.status-warn { background: #a05000; color: #FFEE02; }
-.status-crit { background: #8b0000; color: white; }
+        /* ── FOOTER ── */
+        footer {
+            background: #e8ebef;
+            border: 1px solid #d8dde4;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 10px 24px;
+        }
 
-footer.local-footer {
-    background: #e8ebef;
-    border: 1px solid #d8dde4;
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    padding: 10px 24px;
-}
-
-footer span { font-size: 10px; color: #8a9299; }
-
-@media (max-width: 700px) {
-    .grid-3 { grid-template-columns: 1fr; }
-}
-</style>
+        footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
+    </style>
 </head>
-
 <body>
-
-<!-- GLOBAL HEADER -->
-<header class="site-header">
-  <div class="container header-inner">
-    <div class="brand">
-      <div class="brand-mark">∩</div>
-      <div>
-        <h1>Diving Toolkit</h1>
-        <p class="tagline">Operational calculators and support tools</p>
-      </div>
-    </div>
-
-    <nav class="top-nav">
-      <a href="../index.html">Home</a>
-      <a href="../index.html#calculators" class="active">Calculators</a>
-      <a href="../index.html#emergency">Emergency</a>
-      <a href="../documents/index.html">Documents</a>
-    </nav>
-  </div>
-</header>
-
-<main class="tool-page">
-<div class="container tool-shell">
-
-<div class="tool-topbar">
-  <div class="tool-breadcrumbs">
-    <a href="../index.html">Home</a>
-    <span>/</span>
-    <a href="../index.html#calculators">Calculators</a>
-    <span>/</span>
-    <span>Dalton's Law</span>
-  </div>
-  <a class="back-home" href="../index.html">← Back to Home</a>
-</div>
-
 <div class="page">
 
-<header class="local-header">
-<!-- ORIGINAL HEADER KEPT -->
-<div class="nsea-logo">
-<svg width="50" height="58" viewBox="0 0 50 58">
-<rect width="50" height="58" rx="3" fill="#014782"/>
-<path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
-fill="none" stroke="#FFEE02" stroke-width="8.5"/>
-</svg>
-</div>
-<div class="header-text">
-<h1>DALTON'S LAW<br>THREE-VALUE SOLVER</h1>
-<p>Fill any two fields — the third calculates automatically</p>
-</div>
-</header>
+    <header>
+        <div class="nsea-logo">
+            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
+                <rect width="50" height="58" rx="3" fill="#014782"/>
+                <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
+                      fill="none" stroke="#FFEE02" stroke-width="8.5"
+                      stroke-linecap="butt" stroke-linejoin="miter"/>
+            </svg>
+        </div>
+        <div class="header-text">
+            <h1>DALTON'S LAW<br>THREE-VALUE SOLVER</h1>
+            <p>Fill any two fields — the third calculates automatically</p>
+        </div>
+    </header>
 
-<div class="notice">
-<strong>FORMULA:</strong> PPO₂ = Bar_abs × O₂% ÷ 100 | Bar_abs = Depth ÷ 10 + 1
-</div>
+    <div class="notice">
+        <strong>FORMULA:</strong>&nbsp;
+        PPO₂ = Bar_abs × O₂% ÷ 100 &nbsp;|&nbsp; Bar_abs = Depth ÷ 10 + 1
+    </div>
 
-<div class="card">
-<span class="section-label">Enter Any Two Values</span>
+    <div class="card">
+        <span class="section-label">Enter Any Two Values</span>
+        <div class="grid-3">
+            <div class="field">
+                <label>Depth <span class="unit">(msw)</span></label>
+                <input type="number" id="inp_depth"  placeholder="—" min="0"   step="1"   oninput="calc.solve('depth')">
+            </div>
+            <div class="field">
+                <label>Partial Pressure O₂ <span class="unit">PPO₂ (bar)</span></label>
+                <input type="number" id="inp_ppo2"   placeholder="—" min="0"   step="0.01" oninput="calc.solve('ppo2')">
+            </div>
+            <div class="field">
+                <label>O₂ Percentage in the Mix <span class="unit">(%)</span></label>
+                <input type="number" id="inp_o2pct"  placeholder="—" min="0"   max="100" step="0.1" oninput="calc.solve('o2pct')">
+            </div>
+        </div>
+        <div class="btn-row">
+            <button class="btn-reset" onclick="calc.reset()">RESET</button>
+        </div>
+    </div>
 
-<div class="grid-3">
-<div class="field">
-<label>Depth (msw)</label>
-<input id="inp_depth" oninput="calc.solve('depth')">
-</div>
+    <div class="status-band" id="statusBand">
+        <span id="statusText"></span>
+    </div>
 
-<div class="field">
-<label>PPO₂ (bar)</label>
-<input id="inp_ppo2" oninput="calc.solve('ppo2')">
-</div>
-
-<div class="field">
-<label>O₂ (%)</label>
-<input id="inp_o2pct" oninput="calc.solve('o2pct')">
-</div>
-</div>
-
-<div class="btn-row">
-<button class="btn-reset" onclick="calc.reset()">RESET</button>
-</div>
-
-</div>
-
-<div class="status-band" id="statusBand">
-<span id="statusText"></span>
-</div>
-
-<footer class="local-footer">
-<span>N-Sea Group | Calculator Reference Rev. 1</span>
-</footer>
+    <footer>
+        <span>N-Sea Group | Calculator Reference Rev. 1</span>
+    </footer>
 
 </div>
-</div>
-</main>
-
-<footer class="site-footer">
-<div class="container footer-inner">
-<span>Diving Toolkit</span>
-<span>Operational calculator</span>
-</div>
-</footer>
-
 <script>
-// KEEP YOUR ORIGINAL SCRIPT EXACTLY
-</script>
+    const calc = {
 
+        val(id) {
+            const v = document.getElementById('inp_' + id).value.trim();
+            return v === '' ? null : parseFloat(v);
+        },
+
+        write(id, num, dec) {
+            const el = document.getElementById('inp_' + id);
+            el.value = num.toFixed(dec);
+            el.classList.add('solved');
+        },
+
+        solve(edited) {
+            // Remove solved class from the field being typed into
+            document.getElementById('inp_' + edited).classList.remove('solved');
+
+            const depth = this.val('depth');
+            const ppo2  = this.val('ppo2');
+            const o2pct = this.val('o2pct');
+
+            const blanks = ['depth','ppo2','o2pct'].filter(f => this.val(f) === null);
+
+            if (blanks.length !== 1) { this.hideStatus(); return; }
+
+            const blank = blanks[0];
+            let resolvedPPO2;
+
+            if (blank === 'o2pct') {
+                // Mode A: solve O₂% from Depth + PPO₂
+                if (depth === null || depth < 0 || ppo2 === null || ppo2 <= 0) return;
+                const barabs = depth / 10 + 1;
+                const result = (ppo2 / barabs) * 100;
+                if (result <= 0 || result > 100) return;
+                this.write('o2pct', result, 2);
+                resolvedPPO2 = ppo2;
+
+            } else if (blank === 'ppo2') {
+                // Mode B: solve PPO₂ from Depth + O₂%
+                if (depth === null || depth < 0 || o2pct === null || o2pct <= 0 || o2pct > 100) return;
+                const barabs = depth / 10 + 1;
+                const result = barabs * o2pct / 100;
+                this.write('ppo2', result, 3);
+                resolvedPPO2 = result;
+
+            } else {
+                // Mode C: solve Depth from PPO₂ + O₂%
+                if (ppo2 === null || ppo2 <= 0 || o2pct === null || o2pct <= 0 || o2pct > 100) return;
+                const barabs = ppo2 / (o2pct / 100);
+                const result = (barabs - 1) * 10;
+                if (result < 0) return;
+                this.write('depth', result, 2);
+                resolvedPPO2 = ppo2;
+            }
+
+            this.showStatus(resolvedPPO2);
+        },
+
+        showStatus(ppo2) {
+            const band = document.getElementById('statusBand');
+            const txt  = document.getElementById('statusText');
+            band.className = 'status-band visible';
+            if (ppo2 > 1.50) {
+                band.classList.add('status-crit');
+                txt.textContent = '⛔  PPO₂ ' + ppo2.toFixed(3) + ' bar — Exceeds 1.50 bar. Outside normal-use band.';
+            } else if (ppo2 > 1.40) {
+                band.classList.add('status-warn');
+                txt.textContent = '⚠  PPO₂ ' + ppo2.toFixed(3) + ' bar — 1.41–1.50 bar amber band. Elevated exposure.';
+            } else {
+                band.classList.add('status-ok');
+                txt.textContent = '✔  PPO₂ ' + ppo2.toFixed(3) + ' bar — Within normal-use band (≤ 1.40 bar).';
+            }
+        },
+
+        hideStatus() {
+            document.getElementById('statusBand').className = 'status-band';
+        },
+
+        reset() {
+            ['depth','ppo2','o2pct'].forEach(f => {
+                const el = document.getElementById('inp_' + f);
+                el.value = '';
+                el.classList.remove('solved');
+            });
+            this.hideStatus();
+        }
+    };
+</script>
 </body>
 </html>

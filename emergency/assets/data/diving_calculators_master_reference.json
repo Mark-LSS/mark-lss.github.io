@@ -1,0 +1,2608 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Master structured reference for 10 diving calculators extracted from the user's current HTML tools. Intended as the future source of truth for refactoring, shared JS helpers, validation, and UI generation.",
+  "master_notes": [
+    "Formulas, defaults, validation rules, warnings, and outputs were extracted from the current HTML calculators.",
+    "The Nitrox EAD calculator includes the full exact-match reference table used by the calculator.",
+    "Where a calculator displays a status band, the threshold logic is included under status_rules."
+  ],
+  "shared_patterns": {
+    "depth_to_bar_abs_formula": "depth_msw / 10 + 1",
+    "air_o2_percent_used_in_blended_emergency_calculators": 20.9,
+    "air_n2_fraction_for_ead_formula": 0.79,
+    "otu_validity_note": "OTU formula is only valid for pO2 > 0.5 ATA.",
+    "dadcodat_rounding_rule_for_actual_o2": "If decimal remainder > 0, use floor(raw) + 0.1; otherwise use raw integer value.",
+    "ead_table_lookup_rule": "Exact match on depth_msw and o2_percent only. No interpolation. No nearest-match logic."
+  },
+  "calculators": [
+    {
+      "id": "bailout_endurance",
+      "name": "Bailout Endurance Calculator",
+      "group": "Gas / Nitrox",
+      "source_file": "Bailout Endurance Calculator.html",
+      "description": "Calculates bailout endurance at depth and maximum umbilical deployment.",
+      "inputs": [
+        {
+          "id": "depth",
+          "label": "Working Depth",
+          "unit": "msw",
+          "type": "number",
+          "default": 50,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "vol",
+          "label": "Floodable Volume",
+          "unit": "L",
+          "type": "number",
+          "default": 8,
+          "validation": "must be > 0"
+        },
+        {
+          "id": "bottle",
+          "label": "Cylinder Pressure",
+          "unit": "bar",
+          "type": "number",
+          "default": 200,
+          "validation": "must be > 0"
+        },
+        {
+          "id": "reg",
+          "label": "Regulator Pressure",
+          "unit": "bar",
+          "type": "number",
+          "default": 10,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "rate",
+          "label": "Breathing Rate",
+          "unit": "L/min",
+          "type": "number",
+          "default": 40,
+          "validation": "must be > 0"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "full_mins",
+          "label": "Bailout Endurance",
+          "unit": "min",
+          "display": "integer minutes"
+        },
+        {
+          "id": "umbilical",
+          "label": "Max Umbilical Deployment",
+          "unit": "m",
+          "display": "integer metres"
+        }
+      ],
+      "warnings": [
+        "1 minute of bailout gas for every 10 m of umbilical deployed.",
+        "Endurance is always rounded down to full minutes, never up.",
+        "Defaults shown in calculator: Regulator pressure = 10 bar, emergency breathing rate = 40 L/min."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "ambient",
+          "label": "Ambient Pressure",
+          "formula": "depth / 10 + 1"
+        },
+        {
+          "step": 2,
+          "id": "unusable",
+          "label": "Unusable Pressure",
+          "formula": "ambient + reg"
+        },
+        {
+          "step": 3,
+          "id": "available",
+          "label": "Available Pressure",
+          "formula": "bottle - unusable"
+        },
+        {
+          "step": 4,
+          "id": "free_gas",
+          "label": "Free Gas Volume",
+          "formula": "vol * available"
+        },
+        {
+          "step": 5,
+          "id": "consumption",
+          "label": "Gas Consumption Rate",
+          "formula": "ambient * rate"
+        },
+        {
+          "step": 6,
+          "id": "total_time",
+          "label": "Total Time",
+          "formula": "free_gas / consumption"
+        },
+        {
+          "step": 7,
+          "id": "full_mins",
+          "label": "Full Minutes",
+          "formula": "floor(total_time)",
+          "notes": "Never round up."
+        },
+        {
+          "step": 8,
+          "id": "umbilical",
+          "label": "Umbilical Allowed",
+          "formula": "full_mins * 10"
+        }
+      ]
+    },
+    {
+      "id": "otu_esot",
+      "name": "OTU & ESOT Calculator",
+      "group": "Oxygen Exposure",
+      "source_file": "calculate-otu-and-esot(1).html",
+      "description": "Calculates OTU and ESOT from exposure time and oxygen partial pressure.",
+      "inputs": [
+        {
+          "id": "time",
+          "label": "Exposure Time",
+          "unit": "min",
+          "type": "number",
+          "default": 60,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "po2",
+          "label": "Partial Pressure O2",
+          "unit": "ATA",
+          "type": "number",
+          "default": 1.4,
+          "validation": "must be > 0.5 and <= 3.0"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "otu",
+          "label": "OTU",
+          "unit": "OTU",
+          "display": "decimal"
+        },
+        {
+          "id": "esot",
+          "label": "ESOT",
+          "unit": "ESOT",
+          "display": "decimal"
+        }
+      ],
+      "warnings": [
+        "OTU formula valid only for pO2 > 0.5 ATA."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "otu",
+          "label": "OTU",
+          "formula": "time * (2 * po2 - 1)^0.833"
+        },
+        {
+          "step": 2,
+          "id": "esot",
+          "label": "ESOT",
+          "formula": "time * po2^2.285"
+        }
+      ]
+    },
+    {
+      "id": "daltons_law_solver",
+      "name": "Dalton's Law Calculator",
+      "group": "Gas / Nitrox",
+      "source_file": "daltonslaw-calculations.html",
+      "description": "Three-value solver for Depth, PPO2, and O2 percentage in the mix. User enters any two values and the calculator solves the third.",
+      "inputs": [
+        {
+          "id": "depth",
+          "label": "Depth",
+          "unit": "msw",
+          "type": "number",
+          "default": null,
+          "validation": "must be >= 0 if provided"
+        },
+        {
+          "id": "ppo2",
+          "label": "Partial Pressure O2",
+          "unit": "bar",
+          "type": "number",
+          "default": null,
+          "validation": "must be > 0 if provided"
+        },
+        {
+          "id": "o2pct",
+          "label": "O2 Percentage in the Mix",
+          "unit": "%",
+          "type": "number",
+          "default": null,
+          "validation": "must be > 0 and <= 100 if provided"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "solved_field",
+          "label": "Missing Third Value",
+          "unit": "varies",
+          "display": "depth to 2 decimals, ppo2 to 3 decimals, o2 percentage to 2 decimals"
+        }
+      ],
+      "warnings": [
+        "Exactly one of the three fields must be blank for the solver to run."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "barabs",
+          "label": "Absolute Pressure",
+          "formula": "depth / 10 + 1",
+          "used_when": "depth is known"
+        },
+        {
+          "step": 2,
+          "id": "solve_o2pct",
+          "label": "Solve O2 Percentage",
+          "formula": "(ppo2 / barabs) * 100",
+          "used_when": "depth and ppo2 are known"
+        },
+        {
+          "step": 3,
+          "id": "solve_ppo2",
+          "label": "Solve PPO2",
+          "formula": "barabs * o2pct / 100",
+          "used_when": "depth and o2 percentage are known"
+        },
+        {
+          "step": 4,
+          "id": "solve_depth",
+          "label": "Solve Depth",
+          "formula": "((ppo2 / (o2pct / 100)) - 1) * 10",
+          "used_when": "ppo2 and o2 percentage are known"
+        }
+      ],
+      "status_rules": [
+        {
+          "condition": "ppo2 > 1.50",
+          "band": "critical",
+          "message": "pO2 exceeds 1.50 bar."
+        },
+        {
+          "condition": "ppo2 > 1.40 and <= 1.50",
+          "band": "warning",
+          "message": "pO2 in 1.40–1.50 bar caution band."
+        },
+        {
+          "condition": "ppo2 <= 1.40",
+          "band": "ok",
+          "message": "pO2 within normal-use band."
+        }
+      ]
+    },
+    {
+      "id": "esot_recovery",
+      "name": "Recovery ESOT",
+      "group": "Oxygen Exposure",
+      "source_file": "esot-recovery-calculator(1).html",
+      "description": "Calculates residual ESOT carried into the next exposure after a recovery interval.",
+      "inputs": [
+        {
+          "id": "esot_i",
+          "label": "Initial ESOT",
+          "unit": "ESOT",
+          "type": "number",
+          "default": 129.42,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "t_exp",
+          "label": "Exposure Duration",
+          "unit": "hrs",
+          "type": "number",
+          "default": 1.0,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "t_rec",
+          "label": "Recovery Interval",
+          "unit": "hrs",
+          "type": "number",
+          "default": 2.0,
+          "validation": "must be >= 0"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "esot_rec",
+          "label": "Residual ESOT",
+          "unit": "ESOT",
+          "display": "2 decimals"
+        }
+      ],
+      "constants": {
+        "R": 0.439,
+        "S": 0.906
+      },
+      "warnings": [
+        "A minimum of 12 hours recovery is required before residual ESOT from previous exposures can be disregarded."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "s_texp",
+          "label": "S to the power of exposure time",
+          "formula": "S^t_exp"
+        },
+        {
+          "step": 2,
+          "id": "exponent",
+          "label": "Exponent",
+          "formula": "-R * s_texp * t_rec"
+        },
+        {
+          "step": 3,
+          "id": "decay",
+          "label": "Decay Factor",
+          "formula": "e^exponent"
+        },
+        {
+          "step": 4,
+          "id": "esot_rec",
+          "label": "Residual ESOT",
+          "formula": "esot_i * decay"
+        },
+        {
+          "step": 5,
+          "id": "residual_percent",
+          "label": "Residual Percentage Remaining",
+          "formula": "decay * 100"
+        }
+      ]
+    },
+    {
+      "id": "multi_segment_otu_esot",
+      "name": "Accumulated ESOT / OTU Multi-Segment Tracker",
+      "group": "Oxygen Exposure",
+      "source_file": "multi-segment-otu-andesot-calculator.html",
+      "description": "Accumulates ESOT and OTU across multiple depth/time segments.",
+      "inputs": [
+        {
+          "id": "segments",
+          "label": "Segments",
+          "unit": "rows",
+          "type": "array",
+          "validation": "each row must have time > 0 and po2 > 0.5",
+          "item_schema": {
+            "time": {
+              "label": "Segment Time",
+              "unit": "min",
+              "type": "number"
+            },
+            "po2": {
+              "label": "Segment pO2",
+              "unit": "ATA",
+              "type": "number"
+            }
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "id": "esot_acc",
+          "label": "Accumulated ESOT",
+          "unit": "ESOT",
+          "display": "decimal"
+        },
+        {
+          "id": "otu_acc",
+          "label": "Accumulated OTU",
+          "unit": "OTU",
+          "display": "decimal"
+        },
+        {
+          "id": "time_total",
+          "label": "Total Exposure Time",
+          "unit": "min",
+          "display": "decimal"
+        }
+      ],
+      "warnings": [
+        "Calculate each segment using the actual breathing gas for that segment."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "segment_esot",
+          "label": "Segment ESOT",
+          "formula": "time * po2^2.285",
+          "applies_to": "each segment"
+        },
+        {
+          "step": 2,
+          "id": "segment_otu",
+          "label": "Segment OTU",
+          "formula": "time * (2 * po2 - 1)^0.833",
+          "applies_to": "each segment"
+        },
+        {
+          "step": 3,
+          "id": "esot_acc",
+          "label": "Accumulated ESOT",
+          "formula": "sum(segment_esot)"
+        },
+        {
+          "step": 4,
+          "id": "otu_acc",
+          "label": "Accumulated OTU",
+          "formula": "sum(segment_otu)"
+        },
+        {
+          "step": 5,
+          "id": "time_total",
+          "label": "Total Exposure Time",
+          "formula": "sum(segment_time)"
+        }
+      ]
+    },
+    {
+      "id": "otu_esot_converter",
+      "name": "OTU ↔ ESOT Converter",
+      "group": "Oxygen Exposure",
+      "source_file": "otu-esot-converter(1).html",
+      "description": "Converts OTU/UPTD to ESOT and ESOT to OTU/UPTD using the same pO2-based conversion factor.",
+      "inputs": [
+        {
+          "id": "a_uptd",
+          "label": "OTU / UPTD value",
+          "unit": "OTU",
+          "type": "number",
+          "default": 80,
+          "validation": "must be >= 0",
+          "panel": "A"
+        },
+        {
+          "id": "a_po2",
+          "label": "Panel A pO2",
+          "unit": "ATA",
+          "type": "number",
+          "default": 1.4,
+          "validation": "must be > 0.5",
+          "panel": "A"
+        },
+        {
+          "id": "b_esot",
+          "label": "ESOT value",
+          "unit": "ESOT",
+          "type": "number",
+          "default": 200,
+          "validation": "must be >= 0",
+          "panel": "B"
+        },
+        {
+          "id": "b_po2",
+          "label": "Panel B pO2",
+          "unit": "ATA",
+          "type": "number",
+          "default": 1.4,
+          "validation": "must be > 0.5",
+          "panel": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "a_esot",
+          "label": "Converted ESOT",
+          "unit": "ESOT",
+          "display": "2 decimals",
+          "panel": "A"
+        },
+        {
+          "id": "b_uptd",
+          "label": "Converted OTU / UPTD",
+          "unit": "OTU",
+          "display": "2 decimals",
+          "panel": "B"
+        }
+      ],
+      "warnings": [
+        "pO2 must be greater than 0.5 ATA."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "factor",
+          "label": "Conversion Factor",
+          "formula": "po2^2.285 / (2 * po2 - 1)^0.833"
+        },
+        {
+          "step": 2,
+          "id": "otu_to_esot",
+          "label": "OTU / UPTD to ESOT",
+          "formula": "uptd * factor",
+          "panel": "A"
+        },
+        {
+          "step": 3,
+          "id": "esot_to_otu",
+          "label": "ESOT to OTU / UPTD",
+          "formula": "esot / factor",
+          "panel": "B"
+        }
+      ]
+    },
+    {
+      "id": "vital_capacity_reduction",
+      "name": "Vital Capacity Reduction Calculator",
+      "group": "Oxygen Exposure",
+      "source_file": "vital-capacity-reduction-calculator(1).html",
+      "description": "Estimates ΔVC percentage reduction from accumulated ESOT using DMAC 35 Equation 6.",
+      "inputs": [
+        {
+          "id": "esot",
+          "label": "Accumulated ESOT",
+          "unit": "ESOT",
+          "type": "number",
+          "default": 450,
+          "validation": "must be >= 0"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "dvc",
+          "label": "ΔVC Reduction",
+          "unit": "%",
+          "display": "2 decimals"
+        },
+        {
+          "id": "bar_marker_position",
+          "label": "Scale Marker Position",
+          "unit": "% of bar width",
+          "display": "0-98% capped"
+        }
+      ],
+      "warnings": [
+        "At around 2% reduction, VC decrement becomes noticeable.",
+        "At 5% or above, reduction is of clinical concern."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "dvc",
+          "label": "ΔVC Percentage",
+          "formula": "0.0082 * (esot / 60)^2"
+        },
+        {
+          "step": 2,
+          "id": "marker_pct",
+          "label": "Scale Position",
+          "formula": "min(max((dvc / 7) * 100, 0), 98)"
+        }
+      ],
+      "status_rules": [
+        {
+          "condition": "dvc >= 5.0",
+          "band": "critical",
+          "message": "Clinical concern. 5% or above."
+        },
+        {
+          "condition": "dvc >= 2.0 and < 5.0",
+          "band": "warning",
+          "message": "Noticeable reduction. Around 2% threshold reached."
+        },
+        {
+          "condition": "dvc < 2.0",
+          "band": "none",
+          "message": "No status band shown."
+        }
+      ]
+    },
+    {
+      "id": "bailout_opened_while_on_nitrox",
+      "name": "Nitrox Emergency — Bail-Out Breathing",
+      "group": "Nitrox Emergency",
+      "source_file": "bailout-opened-while-on-nitrox(1).html",
+      "description": "Emergency scenario where diver opens air bailout while on Nitrox supply. Calculates blended actual oxygen percentage and resulting EAD for air table selection.",
+      "inputs": [
+        {
+          "id": "depth",
+          "label": "Dive Depth",
+          "unit": "metres",
+          "type": "number",
+          "default": 30,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "divetime",
+          "label": "Dive Time",
+          "unit": "min",
+          "type": "number",
+          "default": 35,
+          "validation": "must be > 0"
+        },
+        {
+          "id": "nitrox",
+          "label": "Nitrox O2",
+          "unit": "%",
+          "type": "number",
+          "default": 30,
+          "validation": "must be between 21 and 60"
+        },
+        {
+          "id": "bpstart",
+          "label": "Pressure Start",
+          "unit": "bar",
+          "type": "number",
+          "default": 200,
+          "validation": "must be > 0"
+        },
+        {
+          "id": "bpend",
+          "label": "Pressure End",
+          "unit": "bar",
+          "type": "number",
+          "default": 140,
+          "validation": "must be >= 0 and less than bpstart"
+        },
+        {
+          "id": "bpvol",
+          "label": "Volume",
+          "unit": "litres",
+          "type": "number",
+          "default": 12,
+          "validation": "must be > 0"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "actox",
+          "label": "Actual O2",
+          "unit": "%",
+          "display": "1 decimal"
+        },
+        {
+          "id": "ead",
+          "label": "Equivalent Air Depth",
+          "unit": "msw",
+          "display": "1 decimal"
+        }
+      ],
+      "warnings": [
+        "Emergency scenario: diver is on Nitrox umbilical supply and opens air bailout cylinder at depth.",
+        "Uses fixed air oxygen value of 20.9% O2.",
+        "Uses DadCoDat-style rounding for Actual O2 and EAD finishing formula."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "Pabs",
+          "label": "Absolute Pressure",
+          "formula": "depth / 10 + 1"
+        },
+        {
+          "step": 2,
+          "id": "Bused",
+          "label": "Bailout Gas Used at Surface Equivalent",
+          "formula": "((bpstart - bpend) * bpvol) / Pabs"
+        },
+        {
+          "step": 3,
+          "id": "Tair",
+          "label": "Time Breathing Bailout Air",
+          "formula": "Bused / 20",
+          "notes": "Fixed 20 L/min"
+        },
+        {
+          "step": 4,
+          "id": "Tnitrox",
+          "label": "Time on Nitrox",
+          "formula": "divetime - Tair"
+        },
+        {
+          "step": 5,
+          "id": "ActOx_raw",
+          "label": "Actual O2 Raw",
+          "formula": "((Tair * 20.9) + (Tnitrox * nitrox)) / divetime"
+        },
+        {
+          "step": 6,
+          "id": "ActOx",
+          "label": "Actual O2 Rounded",
+          "formula": "remainder > 0 ? floor(ActOx_raw) + 0.1 : ActOx_raw"
+        },
+        {
+          "step": 7,
+          "id": "N2",
+          "label": "Adjusted Nitrogen",
+          "formula": "(100 - ActOx) + 2"
+        },
+        {
+          "step": 8,
+          "id": "EAD_raw",
+          "label": "EAD Raw",
+          "formula": "Pabs * N2 / 79"
+        },
+        {
+          "step": 9,
+          "id": "EAD_final",
+          "label": "EAD Final",
+          "formula": "floor(EAD_raw * 10) - 9.9"
+        }
+      ],
+      "status_rules": [
+        {
+          "condition": "pO2_actox > 1.50",
+          "band": "critical",
+          "message": "pO2 exceeds 1.50 bar."
+        },
+        {
+          "condition": "pO2_actox > 1.40 and <= 1.50",
+          "band": "warning",
+          "message": "pO2 elevated in 1.40–1.50 bar band."
+        },
+        {
+          "condition": "pO2_actox <= 1.40",
+          "band": "ok",
+          "message": "pO2 within normal-use band; use EAD for air table selection."
+        }
+      ]
+    },
+    {
+      "id": "nitrox_failure_switch_to_air",
+      "name": "Loss of Nitrox — Change to Air",
+      "group": "Nitrox Emergency",
+      "source_file": "nitrox-failure-switch-to-air(1).html",
+      "description": "Emergency scenario where Nitrox umbilical supply fails and diver switches to air for the remainder of bottom time.",
+      "inputs": [
+        {
+          "id": "depth",
+          "label": "Dive Depth",
+          "unit": "msw",
+          "type": "number",
+          "default": 40,
+          "validation": "must be >= 0"
+        },
+        {
+          "id": "divetime",
+          "label": "Total Dive Time",
+          "unit": "min",
+          "type": "number",
+          "default": 30,
+          "validation": "must be > 0"
+        },
+        {
+          "id": "nitrox",
+          "label": "Nitrox O2 before loss",
+          "unit": "%",
+          "type": "number",
+          "default": 35,
+          "validation": "must be between 21 and 60"
+        },
+        {
+          "id": "tair",
+          "label": "Time on Air after loss",
+          "unit": "min",
+          "type": "number",
+          "default": 10,
+          "validation": "must be >= 0 and must not exceed total dive time"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "actox",
+          "label": "Actual O2",
+          "unit": "%",
+          "display": "1 decimal"
+        },
+        {
+          "id": "ead",
+          "label": "Equivalent Air Depth",
+          "unit": "msw",
+          "display": "1 decimal"
+        }
+      ],
+      "warnings": [
+        "Emergency scenario: Nitrox umbilical supply is lost during the dive; diver switches to air.",
+        "Time on Air cannot exceed Total Dive Time.",
+        "Uses fixed air oxygen value of 20.9% O2.",
+        "Uses DadCoDat-style rounding for Actual O2 and EAD finishing formula."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "Pabs",
+          "label": "Absolute Pressure",
+          "formula": "depth / 10 + 1"
+        },
+        {
+          "step": 2,
+          "id": "Tnitrox",
+          "label": "Time on Nitrox",
+          "formula": "divetime - tair"
+        },
+        {
+          "step": 3,
+          "id": "ActOx_raw",
+          "label": "Actual O2 Raw",
+          "formula": "((tair * 20.9) + (Tnitrox * nitrox)) / divetime"
+        },
+        {
+          "step": 4,
+          "id": "ActOx",
+          "label": "Actual O2 Rounded",
+          "formula": "remainder > 0 ? floor(ActOx_raw) + 0.1 : ActOx_raw"
+        },
+        {
+          "step": 5,
+          "id": "N2",
+          "label": "Adjusted Nitrogen",
+          "formula": "(100 - ActOx) + 2"
+        },
+        {
+          "step": 6,
+          "id": "EAD_raw",
+          "label": "EAD Raw",
+          "formula": "Pabs * N2 / 79"
+        },
+        {
+          "step": 7,
+          "id": "EAD_final",
+          "label": "EAD Final",
+          "formula": "floor(EAD_raw * 10) - 9.9"
+        }
+      ],
+      "status_rules": [
+        {
+          "condition": "pO2 > 1.50",
+          "band": "critical",
+          "message": "pO2 exceeds 1.50 bar."
+        },
+        {
+          "condition": "pO2 > 1.40 and <= 1.50",
+          "band": "warning",
+          "message": "pO2 elevated in 1.40–1.50 bar band."
+        },
+        {
+          "condition": "pO2 <= 1.40",
+          "band": "ok",
+          "message": "pO2 within normal-use band; use EAD for air table selection."
+        }
+      ]
+    },
+    {
+      "id": "nitrox_ead_table_lookup",
+      "name": "Nitrox EAD + Table Lookup",
+      "group": "Gas / Nitrox",
+      "source_file": "nitrox_ead_table_lookup.html",
+      "description": "Calculates EAD from depth and O2 percentage, then looks up Safety EAD and DacDoDat table depth using an exact-match reference table.",
+      "inputs": [
+        {
+          "id": "depth",
+          "label": "Depth",
+          "unit": "msw",
+          "type": "number",
+          "default": null,
+          "validation": "must be numeric if provided"
+        },
+        {
+          "id": "o2",
+          "label": "O2 in Nitrox",
+          "unit": "%",
+          "type": "number",
+          "default": null,
+          "validation": "must be numeric if provided"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "ead",
+          "label": "EAD",
+          "unit": "msw",
+          "display": "rounded integer"
+        },
+        {
+          "id": "safety",
+          "label": "Safety EAD",
+          "unit": "msw",
+          "display": "shown only on exact table match"
+        },
+        {
+          "id": "tableDepth",
+          "label": "DacDoDat Table Depth",
+          "unit": "msw",
+          "display": "shown only on exact table match"
+        }
+      ],
+      "warnings": [
+        "EAD is always calculated.",
+        "Safety EAD and DacDoDat Table Depth are not calculated; they are read only from the exact-match reference table.",
+        "If there is no exact depth/O2 match, only EAD is shown."
+      ],
+      "formula_steps": [
+        {
+          "step": 1,
+          "id": "fo2",
+          "label": "Fraction of O2",
+          "formula": "o2 / 100"
+        },
+        {
+          "step": 2,
+          "id": "ead_raw",
+          "label": "EAD Raw",
+          "formula": "((depth + 10) * (1 - fo2) / 0.79) - 10"
+        },
+        {
+          "step": 3,
+          "id": "ead",
+          "label": "EAD Rounded",
+          "formula": "round(ead_raw)"
+        },
+        {
+          "step": 4,
+          "id": "lookup",
+          "label": "Exact Lookup Key",
+          "formula": "depth|o2"
+        },
+        {
+          "step": 5,
+          "id": "match_behavior",
+          "label": "Table Match Behavior",
+          "formula": "if exact key exists, return safety and tableDepth; else show only ead"
+        }
+      ],
+      "lookup_table": {
+        "name": "EAD Safety / DacDoDat Table",
+        "match_fields": [
+          "depth_msw",
+          "o2_percent"
+        ],
+        "return_fields": [
+          "safety_ead_msw",
+          "table_depth_to_use_msw"
+        ],
+        "rows": [
+          {
+            "depth_msw": 30,
+            "o2_percent": 40,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 40,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 40,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 40,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 40,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 40,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 40,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 40,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 40,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 40,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 40,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 40,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 40,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 40,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 40,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 40,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 40,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 39,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 39,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 39,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 39,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 39,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 39,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 39,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 39,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 39,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 39,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 39,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 39,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 39,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 39,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 39,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 39,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 39,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 39,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 39,
+            "safety_ead_msw": 8,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 38,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 38,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 38,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 38,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 38,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 38,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 38,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 38,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 38,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 38,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 38,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 38,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 38,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 38,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 38,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 38,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 38,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 38,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 38,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 38,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 37,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 37,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 37,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 37,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 37,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 37,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 37,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 37,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 37,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 37,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 37,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 37,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 37,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 37,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 37,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 37,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 37,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 37,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 37,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 37,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 37,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 36,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 36,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 36,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 36,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 36,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 36,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 36,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 36,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 36,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 36,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 36,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 36,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 36,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 36,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 36,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 36,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 36,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 36,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 36,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 36,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 36,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 36,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 36,
+            "safety_ead_msw": 8,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 35,
+            "o2_percent": 35,
+            "safety_ead_msw": 28,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 35,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 35,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 35,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 35,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 35,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 35,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 35,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 35,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 35,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 35,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 35,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 35,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 35,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 35,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 35,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 35,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 35,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 35,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 35,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 35,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 35,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 35,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 35,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 37,
+            "o2_percent": 34,
+            "safety_ead_msw": 30.5,
+            "table_depth_to_use_msw": 31
+          },
+          {
+            "depth_msw": 36,
+            "o2_percent": 34,
+            "safety_ead_msw": 30,
+            "table_depth_to_use_msw": 30
+          },
+          {
+            "depth_msw": 35,
+            "o2_percent": 34,
+            "safety_ead_msw": 29,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 34,
+            "safety_ead_msw": 28,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 34,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 34,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 34,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 34,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 34,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 34,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 34,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 34,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 34,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 34,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 34,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 34,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 34,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 34,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 34,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 34,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 34,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 34,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 34,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 34,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 34,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 34,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 38,
+            "o2_percent": 33,
+            "safety_ead_msw": 32,
+            "table_depth_to_use_msw": 33
+          },
+          {
+            "depth_msw": 37,
+            "o2_percent": 33,
+            "safety_ead_msw": 31,
+            "table_depth_to_use_msw": 32
+          },
+          {
+            "depth_msw": 36,
+            "o2_percent": 33,
+            "safety_ead_msw": 30,
+            "table_depth_to_use_msw": 31
+          },
+          {
+            "depth_msw": 35,
+            "o2_percent": 33,
+            "safety_ead_msw": 29,
+            "table_depth_to_use_msw": 30
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 33,
+            "safety_ead_msw": 29,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 33,
+            "safety_ead_msw": 28,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 33,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 33,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 33,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 33,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 33,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 33,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 33,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 33,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 33,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 33,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 33,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 33,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 33,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 33,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 33,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 33,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 33,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 33,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 33,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 33,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 33,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 11,
+            "o2_percent": 33,
+            "safety_ead_msw": 8,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 40,
+            "o2_percent": 32,
+            "safety_ead_msw": 34,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 39,
+            "o2_percent": 32,
+            "safety_ead_msw": 34,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 38,
+            "o2_percent": 32,
+            "safety_ead_msw": 33,
+            "table_depth_to_use_msw": 33
+          },
+          {
+            "depth_msw": 37,
+            "o2_percent": 32,
+            "safety_ead_msw": 32,
+            "table_depth_to_use_msw": 32
+          },
+          {
+            "depth_msw": 36,
+            "o2_percent": 32,
+            "safety_ead_msw": 31,
+            "table_depth_to_use_msw": 31
+          },
+          {
+            "depth_msw": 35,
+            "o2_percent": 32,
+            "safety_ead_msw": 30,
+            "table_depth_to_use_msw": 30
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 32,
+            "safety_ead_msw": 29,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 32,
+            "safety_ead_msw": 28,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 32,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 32,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 32,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 32,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 32,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 32,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 32,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 32,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 32,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 32,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 32,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 32,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 32,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 32,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 32,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 32,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 32,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 32,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 32,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 32,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 32,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 11,
+            "o2_percent": 32,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 41,
+            "o2_percent": 31,
+            "safety_ead_msw": 36,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 40,
+            "o2_percent": 31,
+            "safety_ead_msw": 35,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 39,
+            "o2_percent": 31,
+            "safety_ead_msw": 34,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 38,
+            "o2_percent": 31,
+            "safety_ead_msw": 33,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 37,
+            "o2_percent": 31,
+            "safety_ead_msw": 32,
+            "table_depth_to_use_msw": 33
+          },
+          {
+            "depth_msw": 36,
+            "o2_percent": 31,
+            "safety_ead_msw": 31,
+            "table_depth_to_use_msw": 32
+          },
+          {
+            "depth_msw": 35,
+            "o2_percent": 31,
+            "safety_ead_msw": 31,
+            "table_depth_to_use_msw": 31
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 31,
+            "safety_ead_msw": 30,
+            "table_depth_to_use_msw": 30
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 31,
+            "safety_ead_msw": 29,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 31,
+            "safety_ead_msw": 28,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 31,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 31,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 31,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 31,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 31,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 31,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 31,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 31,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 31,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 31,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 31,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 31,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 31,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 31,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 31,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 31,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 31,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 31,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 31,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 31,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 11,
+            "o2_percent": 31,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 9
+          },
+          {
+            "depth_msw": 43,
+            "o2_percent": 30,
+            "safety_ead_msw": 38,
+            "table_depth_to_use_msw": 39
+          },
+          {
+            "depth_msw": 42,
+            "o2_percent": 30,
+            "safety_ead_msw": 37,
+            "table_depth_to_use_msw": 39
+          },
+          {
+            "depth_msw": 41,
+            "o2_percent": 30,
+            "safety_ead_msw": 37,
+            "table_depth_to_use_msw": 39
+          },
+          {
+            "depth_msw": 40,
+            "o2_percent": 30,
+            "safety_ead_msw": 36,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 39,
+            "o2_percent": 30,
+            "safety_ead_msw": 35,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 38,
+            "o2_percent": 30,
+            "safety_ead_msw": 34,
+            "table_depth_to_use_msw": 36
+          },
+          {
+            "depth_msw": 37,
+            "o2_percent": 30,
+            "safety_ead_msw": 33,
+            "table_depth_to_use_msw": 33
+          },
+          {
+            "depth_msw": 36,
+            "o2_percent": 30,
+            "safety_ead_msw": 32,
+            "table_depth_to_use_msw": 32
+          },
+          {
+            "depth_msw": 35,
+            "o2_percent": 30,
+            "safety_ead_msw": 31,
+            "table_depth_to_use_msw": 32
+          },
+          {
+            "depth_msw": 34,
+            "o2_percent": 30,
+            "safety_ead_msw": 30,
+            "table_depth_to_use_msw": 31
+          },
+          {
+            "depth_msw": 33,
+            "o2_percent": 30,
+            "safety_ead_msw": 29,
+            "table_depth_to_use_msw": 30
+          },
+          {
+            "depth_msw": 32,
+            "o2_percent": 30,
+            "safety_ead_msw": 28,
+            "table_depth_to_use_msw": 29
+          },
+          {
+            "depth_msw": 31,
+            "o2_percent": 30,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 28
+          },
+          {
+            "depth_msw": 30,
+            "o2_percent": 30,
+            "safety_ead_msw": 27,
+            "table_depth_to_use_msw": 27
+          },
+          {
+            "depth_msw": 29,
+            "o2_percent": 30,
+            "safety_ead_msw": 26,
+            "table_depth_to_use_msw": 26
+          },
+          {
+            "depth_msw": 28,
+            "o2_percent": 30,
+            "safety_ead_msw": 25,
+            "table_depth_to_use_msw": 25
+          },
+          {
+            "depth_msw": 27,
+            "o2_percent": 30,
+            "safety_ead_msw": 24,
+            "table_depth_to_use_msw": 24
+          },
+          {
+            "depth_msw": 26,
+            "o2_percent": 30,
+            "safety_ead_msw": 23,
+            "table_depth_to_use_msw": 23
+          },
+          {
+            "depth_msw": 25,
+            "o2_percent": 30,
+            "safety_ead_msw": 22,
+            "table_depth_to_use_msw": 22
+          },
+          {
+            "depth_msw": 24,
+            "o2_percent": 30,
+            "safety_ead_msw": 21,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 23,
+            "o2_percent": 30,
+            "safety_ead_msw": 20,
+            "table_depth_to_use_msw": 21
+          },
+          {
+            "depth_msw": 22,
+            "o2_percent": 30,
+            "safety_ead_msw": 19,
+            "table_depth_to_use_msw": 20
+          },
+          {
+            "depth_msw": 21,
+            "o2_percent": 30,
+            "safety_ead_msw": 18,
+            "table_depth_to_use_msw": 19
+          },
+          {
+            "depth_msw": 20,
+            "o2_percent": 30,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 19,
+            "o2_percent": 30,
+            "safety_ead_msw": 17,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 18,
+            "o2_percent": 30,
+            "safety_ead_msw": 16,
+            "table_depth_to_use_msw": 18
+          },
+          {
+            "depth_msw": 17,
+            "o2_percent": 30,
+            "safety_ead_msw": 15,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 16,
+            "o2_percent": 30,
+            "safety_ead_msw": 14,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 15,
+            "o2_percent": 30,
+            "safety_ead_msw": 13,
+            "table_depth_to_use_msw": 15
+          },
+          {
+            "depth_msw": 14,
+            "o2_percent": 30,
+            "safety_ead_msw": 12,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 13,
+            "o2_percent": 30,
+            "safety_ead_msw": 11,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 12,
+            "o2_percent": 30,
+            "safety_ead_msw": 10,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 11,
+            "o2_percent": 30,
+            "safety_ead_msw": 9,
+            "table_depth_to_use_msw": 12
+          },
+          {
+            "depth_msw": 10,
+            "o2_percent": 30,
+            "safety_ead_msw": 8,
+            "table_depth_to_use_msw": 9
+          }
+        ]
+      }
+    }
+  ],
+  "calculator_count": 10
+}

@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/fam.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ESOT Guide — retained content component styles, ocean theme replaced */
+
+:root{
+  --bg:var(--fam-bg);--bg2:var(--fam-bg);--panel:#ffffff;--card:#f2f8fd;
+  --border:#b0cfe8;--border2:#d0e6f5;
+  --ocean:var(--fam-navy);--ocean-d:var(--fam-navy-d);--ocean-l:#1a7ab5;
+  --safe:#006b35;--warn:#a07000;--warn2:#c85000;--danger:#c0002a;
+  --text:#102030;--text2:#2a4a65;--text3:#4a7090;
+  --mono:'Space Mono',monospace;--body:'Outfit',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+
+
+
+100%{transform:translateY(-20px) scale(1.1);opacity:0}}
+
+
+.nav-inner::-webkit-scrollbar{display:none;}
+
+
+
+
+.nav-dmac{color:var(--ocean)!important;font-weight:700;background:rgba(0,119,182,.06);border:1px solid var(--border)!important;}
+.nav-crit{color:var(--warn2)!important;}
+.wrapper{max-width:1100px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:1;}
+
+.hero-badge{font-family:var(--mono);font-size:.7rem;color:var(--ocean);border:1.5px solid var(--ocean);background:rgba(0,119,182,.08);padding:.3rem .9rem;border-radius:20px;margin-bottom:1.2rem;letter-spacing:.1em;animation:fadeUp .6s ease both;}
+.hero h1{font-size:clamp(2.2rem,5.5vw,4.5rem);font-weight:800;color:var(--text);line-height:1.1;margin-bottom:.6rem;animation:fadeUp .6s .1s ease both;}
+.hero h1 span{color:var(--ocean);}
+.hero-sub{font-size:1.05rem;color:var(--text2);max-width:640px;margin:0 auto 2rem;animation:fadeUp .6s .2s ease both;}
+.hero-path{display:flex;gap:0;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;animation:fadeUp .6s .3s ease both;}
+.path-step{background:white;border:1.5px solid var(--border);border-radius:10px;padding:.8rem 1.2rem;text-align:center;min-width:130px;}
+.path-step .val{font-size:1.2rem;font-weight:700;color:var(--ocean);font-family:var(--mono);}
+.path-step .lbl{font-size:.7rem;color:var(--text3);margin-top:.2rem;}
+.path-arrow{font-size:1.4rem;color:var(--border);padding:0 .5rem;}
+.path-step.hi{background:var(--ocean);border-color:var(--ocean);}
+.path-step.hi .val{color:white;}
+.path-step.hi .lbl{color:rgba(255,255,255,.8);}
+.scroll-cue{animation:fadeUp .6s .4s ease both,bob 2s 1.2s ease-in-out infinite;color:var(--text3);font-size:.78rem;display:flex;flex-direction:column;align-items:center;gap:.4rem;}
+.scroll-arrow{font-size:1.3rem;color:var(--ocean);}
+50%{transform:translateY(6px)}}
+to{opacity:1;transform:translateY(0)}}
+section{padding:5rem 0;border-bottom:1px solid var(--border2);}
+section:last-of-type{border-bottom:none;}
+.section-label{font-family:var(--mono);font-size:.68rem;color:var(--ocean);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;}
+.sl-dmac{color:var(--ocean-d)!important;background:rgba(0,50,100,.06);padding:.15rem .5rem;border-radius:4px;font-size:.65rem;}
+.sl-crit{background:rgba(200,80,0,.1);color:var(--warn2);padding:.15rem .5rem;border-radius:4px;font-size:.65rem;}
+h2{font-size:clamp(1.7rem,3.5vw,2.5rem);color:var(--text);margin-bottom:.7rem;line-height:1.2;font-weight:700;}
+h3{font-size:1.2rem;color:var(--ocean);margin:2rem 0 .7rem;font-weight:600;}
+h4{font-size:1rem;color:var(--text);margin:.8rem 0 .4rem;font-weight:600;}
+p{margin-bottom:1rem;color:var(--text2);}
+.lead{font-size:1.05rem;color:var(--text2);margin-bottom:1.8rem;}
+.callout{border-radius:10px;padding:1.1rem 1.4rem;margin:1.2rem 0;border-left:4px solid;display:flex;gap:.8rem;align-items:flex-start;}
+.callout-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem;}
+.callout-body{flex:1;}
+.callout-body strong{display:block;margin-bottom:.25rem;font-size:.92rem;}
+.callout-body p{margin:0;font-size:.88rem;}
+.callout.info{background:rgba(0,119,182,.06);border-color:var(--ocean);}
+.callout.info strong{color:var(--ocean);}
+.callout.warn{background:rgba(160,112,0,.06);border-color:var(--warn);}
+.callout.warn strong{color:var(--warn);}
+.callout.danger{background:rgba(192,0,42,.06);border-color:var(--danger);}
+.callout.danger strong{color:var(--danger);}
+.callout.safe{background:rgba(0,107,53,.06);border-color:var(--safe);}
+.callout.safe strong{color:var(--safe);}
+.callout.dmac{background:rgba(0,40,90,.06);border-color:var(--ocean-d);}
+.callout.dmac strong{color:var(--ocean-d);}
+.eq-box{background:linear-gradient(135deg,#e3f1fb,#d0e8f7);border:2px solid var(--ocean);border-radius:12px;padding:1.2rem 1.8rem;margin:1.2rem 0;text-align:center;box-shadow:0 4px 18px rgba(0,119,182,.1);}
+.eq-label{font-family:var(--mono);font-size:.65rem;color:var(--ocean);letter-spacing:.1em;margin-bottom:.4rem;text-transform:uppercase;}
+.eq{font-family:var(--mono);font-size:clamp(.95rem,2.2vw,1.25rem);color:var(--text);display:block;padding:.4rem 0;font-weight:700;}
+.eq sub,.eq sup{font-size:.6em;}
+/* TABS */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.5rem 0 0;}
+.tab-btn{font-family:var(--mono);font-size:.72rem;padding:.45rem 1rem;border-radius:6px 6px 0 0;border:1.5px solid var(--border);border-bottom:none;background:var(--card);color:var(--text3);cursor:pointer;transition:all .2s;}
+.tab-btn.active{background:white;color:var(--ocean);border-color:var(--ocean);font-weight:700;}
+.tab-content{display:none;border:1.5px solid var(--border);border-radius:0 12px 12px 12px;padding:1.5rem;background:white;margin-bottom:1.5rem;}
+.tab-content.active{display:block;}
+/* EVO STACK */
+.evo-stack{display:flex;flex-direction:column;gap:0;margin:2rem 0;}
+.evo-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:1.5rem 2rem;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:start;}
+.evo-year{font-family:var(--mono);font-size:.65rem;color:var(--text3);margin-bottom:.3rem;letter-spacing:.05em;}
+.evo-name{font-size:1.5rem;font-weight:800;color:var(--ocean);margin-bottom:.5rem;}
+.evo-badge{display:inline-block;font-family:var(--mono);font-size:.62rem;padding:.2rem .6rem;border-radius:4px;margin-bottom:.8rem;}
+.evo-badge.old{background:rgba(192,0,42,.08);color:var(--danger);border:1px solid var(--danger);}
+.evo-badge.mid{background:rgba(160,112,0,.08);color:var(--warn);border:1px solid var(--warn);}
+.evo-badge.cur{background:rgba(0,107,53,.08);color:var(--safe);border:1px solid var(--safe);}
+.evo-right{display:flex;justify-content:flex-end;}
+.evo-arrow{text-align:center;padding:.8rem 0;font-family:var(--mono);font-size:.75rem;color:var(--text3);background:linear-gradient(to right,transparent,var(--border2),transparent);margin:0;}
+/* CALC */
+.calc-wrap{background:white;border:1.5px solid var(--border);border-radius:14px;padding:1.5rem;margin:1.5rem 0;box-shadow:0 3px 14px rgba(0,119,182,.06);}
+.calc-title{font-family:var(--mono);font-size:.72rem;color:var(--ocean);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:2px solid var(--border);}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem;}
+.input-group{display:flex;flex-direction:column;gap:.3rem;}
+.input-group label{font-family:var(--mono);font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;}
+.input-group label span{text-transform:none;font-style:italic;color:var(--text3);}
+.input-group input[type=number],.input-group select{background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:8px;padding:.45rem .8rem;font-family:var(--mono);font-size:.92rem;width:100%;}
+.input-group input:focus{outline:none;border-color:var(--ocean);}
+.range-row{display:flex;align-items:center;gap:.7rem;margin:.2rem 0;}
+.range-row input[type=range]{flex:1;accent-color:var(--ocean);}
+.range-val{font-family:var(--mono);font-size:.82rem;color:var(--ocean);font-weight:700;min-width:42px;text-align:right;}
+.calc-btn{background:var(--ocean);color:white;border:none;border-radius:8px;padding:.6rem 1.4rem;font-family:var(--mono);font-size:.78rem;cursor:pointer;transition:background .2s;margin-top:.3rem;}
+.calc-btn:hover{background:var(--ocean-d);}
+.calc-btn.sec{background:var(--card);color:var(--ocean);border:1.5px solid var(--border);}
+.calc-btn.sec:hover{background:var(--border2);}
+.result-box{background:var(--card);border:2px solid var(--ocean);border-radius:12px;padding:1.1rem 1.5rem;margin-top:1rem;display:none;}
+.result-box.show{display:block;}
+.result-main{font-family:var(--mono);font-size:2rem;color:var(--ocean);font-weight:700;}
+.result-main span{font-size:1rem;color:var(--text3);font-weight:400;}
+.result-detail{font-size:.85rem;color:var(--text3);margin-top:.3rem;}
+/* GAUGE */
+.gauge-bar{height:18px;background:linear-gradient(to right,var(--safe) 0%,var(--safe) 56.25%,var(--warn) 56.25%,var(--warn) 62.5%,var(--warn2) 62.5%,var(--warn2) 82.5%,var(--danger) 82.5%);border-radius:9px;position:relative;margin-top:.8rem;}
+.gauge-pointer{position:absolute;top:-6px;width:4px;height:30px;background:var(--text);border-radius:2px;transform:translateX(-50%);transition:left .4s;}
+.gauge-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:.3rem;}
+.gauge-limits{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem;}
+.g-lim{font-family:var(--mono);font-size:.62rem;padding:.15rem .5rem;border-radius:4px;}
+.g7{background:rgba(0,107,53,.1);color:var(--safe);border:1px solid var(--safe);}
+.g5{background:rgba(160,112,0,.1);color:var(--warn);border:1px solid var(--warn);}
+.g1{background:rgba(200,80,0,.1);color:var(--warn2);border:1px solid var(--warn2);}
+/* SEGMENTS */
+.seg-list{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1rem;}
+.seg-row{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;display:flex;gap:.8rem;align-items:flex-end;flex-wrap:wrap;}
+.seg-row .input-group{flex:1;min-width:120px;}
+.seg-del{background:rgba(192,0,42,.08);color:var(--danger);border:1px solid var(--danger);border-radius:6px;padding:.3rem .7rem;font-size:.78rem;cursor:pointer;white-space:nowrap;}
+.total-bar{background:var(--card);border:2px solid var(--ocean);border-radius:12px;padding:1rem 1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:1rem;}
+.total-label{font-family:var(--mono);font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;}
+.total-val{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--ocean);}
+.total-status{font-family:var(--mono);font-size:.85rem;padding:.4rem 1rem;border-radius:8px;font-weight:700;}
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+/* TABLES */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1.5px solid var(--border);margin:1rem 0;}
+table{width:100%;border-collapse:collapse;min-width:500px;}
+th{background:var(--ocean-d);color:white;padding:.65rem .9rem;text-align:left;font-family:var(--mono);font-size:.72rem;white-space:nowrap;}
+td{padding:.55rem .9rem;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:.78rem;color:var(--text2);}
+tr:last-child td{border-bottom:none;}
+tr.hi-row td{background:rgba(0,119,182,.07);}
+td.rh{font-weight:700;color:var(--text);background:var(--card);}
+td.c0{color:var(--safe);}
+td.c1{color:var(--warn);}
+td.c2{color:var(--warn2);}
+td.c3{color:var(--danger);}
+/* LIMITS TABLE */
+.limits-table{width:100%;border-radius:12px;overflow:hidden;border:1.5px solid var(--border);margin:1.5rem 0;}
+.limits-table th{background:var(--ocean-d);color:white;padding:.8rem 1rem;text-align:left;font-family:var(--body);font-size:.88rem;font-weight:600;}
+.limits-table td{padding:.85rem 1rem;border-bottom:1px solid var(--border2);font-family:var(--body);font-size:.9rem;color:var(--text2);}
+.limits-table tr:last-child td{border-bottom:none;}
+.limits-table .l-days{font-weight:700;color:var(--text);font-size:1rem;}
+.limits-table .l-esot{font-family:var(--mono);font-weight:700;font-size:1.05rem;}
+.limits-table .l-safe .l-esot{color:var(--safe);}
+.limits-table .l-warn .l-esot{color:var(--warn);}
+.limits-table .l-warn2 .l-esot{color:var(--warn2);}
+.limits-table .l-alert td{background:rgba(192,0,42,.04);}
+/* EXAMPLE CARDS */
+.example-card{background:white;border:2px solid var(--border);border-radius:14px;overflow:hidden;margin:1.5rem 0;box-shadow:0 3px 16px rgba(0,119,182,.07);}
+.example-header{background:linear-gradient(135deg,var(--ocean),var(--ocean-d));color:white;padding:1.2rem 1.5rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem;}
+.example-header h4{color:white;font-size:1.1rem;margin:0;}
+.example-tag{background:rgba(255,255,255,.2);font-family:var(--mono);font-size:.65rem;padding:.2rem .6rem;border-radius:4px;white-space:nowrap;}
+.example-body{padding:1.5rem;}
+.calc-steps{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin:1rem 0;}
+.calc-step{padding:.9rem 1.2rem;border-bottom:1px solid var(--border2);display:flex;gap:1rem;align-items:flex-start;}
+.calc-step:last-child{border-bottom:none;}
+.step-n{width:28px;height:28px;border-radius:50%;background:var(--ocean);color:white;font-family:var(--mono);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem;}
+.step-body h4{font-size:.9rem;color:var(--text);margin-bottom:.2rem;}
+.step-body p{font-size:.85rem;color:var(--text3);margin:0 0 .2rem;}
+.step-body .math{font-family:var(--mono);color:var(--ocean);background:var(--card);padding:.3rem .7rem;border-radius:6px;display:inline-block;margin-top:.3rem;font-size:.85rem;}
+.example-result{background:var(--card);border:2px solid var(--ocean);border-radius:10px;padding:1rem 1.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;margin-top:1rem;}
+.ex-res-val{font-family:var(--mono);font-size:2rem;color:var(--ocean);font-weight:700;}
+.ex-verdict{font-size:.82rem;padding:.4rem .9rem;border-radius:8px;font-family:var(--mono);}
+/* DECISION */
+.decision-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:1.5rem 0;}
+.decision-card{background:white;border:2px solid;border-radius:12px;padding:1.4rem;box-shadow:0 3px 12px rgba(0,0,0,.06);}
+.decision-card .dc-esot{font-family:var(--mono);font-size:2rem;font-weight:700;margin-bottom:.3rem;}
+.decision-card .dc-days{font-size:.8rem;font-family:var(--mono);color:var(--text3);margin-bottom:.6rem;}
+.decision-card p{font-size:.88rem;color:var(--text2);margin-bottom:.5rem;}
+.decision-card .dc-rec{font-size:.78rem;font-family:var(--mono);padding:.25rem .6rem;border-radius:4px;display:inline-block;margin-top:.2rem;}
+.dc-green{border-color:var(--safe);}.dc-green .dc-esot{color:var(--safe);}.dc-green .dc-rec{background:rgba(0,107,53,.08);color:var(--safe);border:1px solid var(--safe);}
+.dc-amber{border-color:var(--warn);}.dc-amber .dc-esot{color:var(--warn);}.dc-amber .dc-rec{background:rgba(160,112,0,.08);color:var(--warn);border:1px solid var(--warn);}
+.dc-orange{border-color:var(--warn2);}.dc-orange .dc-esot{color:var(--warn2);}.dc-orange .dc-rec{background:rgba(200,80,0,.08);color:var(--warn2);border:1px solid var(--warn2);}
+.dc-red{border-color:var(--danger);}.dc-red .dc-esot{color:var(--danger);}.dc-red .dc-rec{background:rgba(192,0,42,.08);color:var(--danger);border:1px solid var(--danger);}
+/* QUIZ */
+.quiz-q-card{background:white;border:1.5px solid var(--border);border-radius:12px;padding:1.3rem;margin:.8rem 0;box-shadow:0 2px 10px rgba(0,119,182,.05);}
+.qq{font-size:.98rem;color:var(--text);margin-bottom:.9rem;font-weight:600;}
+.q-opts{display:flex;flex-direction:column;gap:.5rem;}
+.q-opt{background:var(--card);border:1.5px solid var(--border);border-radius:7px;padding:.65rem .9rem;cursor:pointer;transition:all .2s;font-size:.88rem;display:flex;gap:.7rem;align-items:flex-start;user-select:none;}
+.q-opt:hover:not(.disabled){border-color:var(--ocean);background:rgba(0,119,182,.05);}
+.q-opt.correct{border-color:var(--safe);background:rgba(0,107,53,.08);color:var(--safe);}
+.q-opt.wrong{border-color:var(--danger);background:rgba(192,0,42,.06);color:var(--danger);}
+.q-opt.disabled{pointer-events:none;}
+.q-letter{font-family:var(--mono);font-size:.7rem;color:var(--ocean);border:1px solid var(--ocean);border-radius:3px;padding:.08rem .35rem;flex-shrink:0;background:rgba(0,119,182,.08);}
+.q-fb{margin-top:.7rem;padding:.75rem .9rem;border-radius:7px;font-size:.85rem;display:none;line-height:1.5;}
+.q-fb.show{display:block;}
+.q-fb.correct{background:rgba(0,107,53,.08);border:1px solid var(--safe);color:var(--safe);}
+.q-fb.wrong{background:rgba(192,0,42,.06);border:1px solid var(--danger);color:var(--danger);}
+.quiz-score{background:white;border:2px solid var(--ocean);border-radius:12px;padding:2rem;text-align:center;display:none;box-shadow:0 4px 20px rgba(0,119,182,.12);margin-top:1.5rem;}
+.quiz-score.show{display:block;}
+.score-num{font-size:3rem;font-weight:800;color:var(--ocean);font-family:var(--mono);}
+.score-bar{height:12px;background:var(--border2);border-radius:6px;overflow:hidden;margin:1rem auto;max-width:300px;}
+.score-bar-inner{height:100%;border-radius:6px;background:linear-gradient(to right,var(--safe),var(--ocean));transition:width .8s;}
+/* STERK */
+.arg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;margin:1.2rem 0;}
+.arg-card{background:white;border:1.5px solid var(--border);border-radius:12px;padding:1.3rem;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.arg-num{font-family:var(--mono);font-size:.68rem;color:var(--warn2);margin-bottom:.5rem;}
+/* MISC */
+.chip{display:inline-block;font-family:var(--mono);font-size:.65rem;padding:.18rem .55rem;border-radius:4px;border:1px solid;margin:.1rem;}
+.chip.safe{color:var(--safe);border-color:var(--safe);background:rgba(0,107,53,.07);}
+.chip.warn{color:var(--warn);border-color:var(--warn);background:rgba(160,112,0,.07);}
+.chip.warn2{color:var(--warn2);border-color:var(--warn2);background:rgba(200,80,0,.07);}
+.chip.danger{color:var(--danger);border-color:var(--danger);background:rgba(192,0,42,.07);}
+.chip.info{color:var(--ocean);border-color:var(--ocean);background:rgba(0,119,182,.07);}
+.gls{border-bottom:1.5px dashed var(--ocean-l);cursor:help;color:var(--ocean);position:relative;}
+.gls:hover::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:white;border:1.5px solid var(--ocean);color:var(--text);padding:.6rem .8rem;border-radius:8px;font-size:.77rem;width:220px;text-align:center;z-index:50;line-height:1.4;pointer-events:none;box-shadow:0 4px 16px rgba(0,119,182,.15);}
+.rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.collapsible-hdr{font-family:var(--mono);font-size:.72rem;color:var(--text3);cursor:pointer;padding:.5rem .8rem;background:var(--card);border:1.5px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;user-select:none;}
+.collapsible-hdr:hover{border-color:var(--ocean);color:var(--ocean);}
+.collapsible-body{display:none;padding:.8rem 0 0;}
+.collapsible-body.open{display:block;}
+.steps-plain{margin:1.2rem 0;}
+.step-plain{display:flex;gap:.9rem;margin-bottom:1.1rem;align-items:flex-start;}
+.step-plain .sn{width:30px;height:30px;border-radius:50%;background:var(--ocean);color:white;font-family:var(--mono);font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-plain .sb h4{color:var(--text);margin-bottom:.2rem;font-size:.95rem;}
+.step-plain .sb p{margin:0;font-size:.88rem;color:var(--text3);}
+footer{background:white;border-top:2px solid var(--border);padding:2.5rem 0;text-align:center;color:var(--text3);font-size:.78rem;font-family:var(--mono);position:relative;z-index:1;}
+footer strong{color:var(--text2);}
+@media(max-width:650px){.two-col,.rep-grid,.evo-card,#cmp_result{grid-template-columns:1fr!important;}.evo-right{justify-content:flex-start;}}
+
+
+/* ── CONTEXTUAL HELP (Companion DOCX) ─────────────────────── */
+.ctx-help-row{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  margin:.6rem 0 1rem;
+}
+.ctx-help-btn{
+  width:30px;height:30px;border-radius:999px;
+  border:1.5px solid var(--ocean);
+  background:rgba(0,119,182,.08);
+  color:var(--ocean);
+  font-family:var(--mono);
+  font-weight:800;
+  cursor:pointer;
+  line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.ctx-help-btn:hover{background:rgba(0,119,182,.14);}
+.ctx-help-hint{
+  font-family:var(--mono);
+  font-size:.7rem;
+  color:var(--text3);
+}
+.ctx-help-panel{
+  display:none;
+  background:white;
+  border:1.5px solid var(--border);
+  border-left:4px solid var(--ocean);
+  border-radius:12px;
+  padding:1rem 1.2rem;
+  margin:0 0 1.4rem 0;
+  box-shadow:0 3px 14px rgba(0,119,182,.06);
+}
+.ctx-help-panel.open{display:block;}
+.ctx-help-panel h4{
+  margin:.1rem 0 .6rem;
+  color:var(--ocean);
+  font-size:1rem;
+  font-weight:700;
+}
+.ctx-help-panel h5{
+  margin:.8rem 0 .4rem;
+  color:var(--text);
+  font-size:.92rem;
+  font-weight:700;
+}
+.ctx-help-panel p{
+  margin:0 0 .65rem;
+  color:var(--text2);
+  font-size:.9rem;
+}
+.ctx-help-panel ul{
+  margin:.2rem 0 .8rem 1.2rem;
+  color:var(--text2);
+  font-size:.9rem;
+}
+.ctx-help-panel li{margin:.2rem 0;}
+
+
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oxygen Toxicity in Diving — From Science to DMAC 35</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div id="progress-strip"><div id="progress-fill"></div></div>
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <div class="sidebar-brand">
+      <div class="sidebar-nsea-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39 53" fill="none"><path d="M19.3197 0C29.9897 0 38.4697 7.23999 38.4697 18.27V52.47H28.3097V18.69C28.3097 12.69 24.7997 9.11002 19.3097 9.11002C13.8197 9.11002 10.2497 12.69 10.2497 18.69V52.52H0.179688V18.32C0.179688 7.32001 8.6497 0.0499878 19.3197 0.0499878" fill="#FFEE02"/></svg></div>
+      <div class="sidebar-nsea-name">N-SEA</div>
+    </div>
+    <div class="logo-line">N-Sea &middot; Familiarisation Guide</div>
+    <div class="manual-title">Oxygen Toxicity<br/>From Science to DMAC 35</div>
+    <div class="manual-sub">ESOT &amp; OTU &mdash; DMAC 35 Rev.1 Feb 2025</div>
+  </div>
+  <div id="sidebar-progress">
+    <div class="sp-label">Progress</div>
+    <div class="sp-bar-wrap"><div class="sp-bar" id="sp-bar-fill"></div></div>
+    <div class="sp-count" id="sp-count-text">0 / 13 sections</div>
+  </div>
+  <div id="nav-search-wrap">
+    <input id="nav-search" type="text" placeholder="Search sections..." oninput="filterNav(this.value)"/>
+  </div>
+  <ul id="nav-list">
+    <li><a href="#hero" onclick="setActive(this)"><span class="nav-num">00</span>Introduction</a></li>
+    <li><a href="#s01" onclick="setActive(this)"><span class="nav-num">01</span>Why Oxygen Becomes Toxic</a></li>
+    <li><a href="#s02" onclick="setActive(this)"><span class="nav-num">02</span>History of Exposure Models</a></li>
+    <li><a href="#s03" onclick="setActive(this)"><span class="nav-num">03</span>pO&#x2082; Calculator</a></li>
+    <li><a href="#s04" onclick="setActive(this)"><span class="nav-num">04</span>ESOT Science</a></li>
+    <li><a href="#s05" onclick="setActive(this)"><span class="nav-num">05</span>DMAC 35 Standard</a></li>
+    <li><a href="#s06" onclick="setActive(this)"><span class="nav-num">06</span>Calculators</a></li>
+    <li><a href="#s07" onclick="setActive(this)"><span class="nav-num">07</span>Dive Planner</a></li>
+    <li><a href="#s08" onclick="setActive(this)"><span class="nav-num">08</span>Recovery</a></li>
+    <li><a href="#s09" onclick="setActive(this)"><span class="nav-num">09</span>Reference Tables</a></li>
+    <li><a href="#s10" onclick="setActive(this)"><span class="nav-num">10</span>Worked Examples</a></li>
+    <li><a href="#s11" onclick="setActive(this)"><span class="nav-num">11</span>DMAC 35 Limits</a></li>
+    <li><a href="#s12" onclick="setActive(this)"><span class="nav-num">12</span>Critique</a></li>
+    <li><a href="#s13" onclick="setActive(this)" class="nav-quiz"><span class="nav-num">&#9733;</span>Knowledge Quiz</a></li>
+  </ul>
+  <div id="sidebar-footer">
+    <strong>Prepared by:</strong> F. Schrijver &amp; M. Jeffery<br/>
+    <strong>Based on:</strong> Risberg &amp; van Ooij, UHM 2022<br/>
+    <strong>Standard:</strong> DMAC 35 Rev.1 Feb 2025
+  </div>
+</nav>
+<div id="main">
+  <div id="topbar">
+    <div class="breadcrumb">N-Sea &rsaquo; <span>Oxygen Toxicity — ESOT &amp; DMAC 35</span></div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline" onclick="window.print()">&#128438; Print</button>
+    </div>
+  </div>
+  <div id="content">
+
+
+
+
+
+
+<section class="section" id="hero" style="padding:0"><div id="cover">
+  <div class="wrapper">
+    <div class="hero-badge">Prepared by F. Schrijver &amp; M. Jeffery · Based on Risberg &amp; van Ooij, UHM 2022 &amp; DMAC 35 Rev.1 Feb 2025</div>
+    <h1>Oxygen Toxicity in Diving<br><span>From Science to DMAC 35</span></h1>
+    <p style="font-size:1.05rem;color:var(--ocean);font-weight:600;max-width:640px;margin:0 auto .5rem;animation:fadeUp .6s .15s ease both;">Familiarization of ESOT and OTU</p>
+    <p class="hero-sub">A complete interactive guide — from understanding why oxygen becomes toxic, through the science of ESOT, to the official DMAC 35 Rev.1 (2025) limits and implementation.</p>
+    <div class="hero-path">
+      <div class="path-step"><div class="val">UPTD</div><div class="lbl">1970 · Original</div></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step"><div class="val">Arieli K</div><div class="lbl">2019 · Accurate</div></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step"><div class="val">ESOT</div><div class="lbl">2023 · Simple + Accurate</div></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step hi"><div class="val">DMAC 35</div><div class="lbl">2025 · Official Standard</div></div>
+    </div>
+    <div class="scroll-cue"><span>Begin learning</span><span class="scroll-arrow">↓</span></div>
+  </div>
+</div></section>
+
+<!-- S01 ============================================================ -->
+<section id="s01">
+<div class="wrapper">
+  <div class="section-label">Section 01</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s01" onclick="ctxHelpToggle('s01', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s01" role="region" aria-label="Help for s01">
+    <h4>2.  Background Concepts (Sections 01–03 of the Guide)</h4>
+<h4>2.1  Section 01 — Why Oxygen Becomes Toxic</h4>
+<p>This section covers the physiological foundation: why breathing oxygen under pressure, for long enough, damages lung tissue. Two types of oxygen toxicity are introduced:</p>
+<p>The key insight from Section 01 is that pulmonary oxygen toxicity (POT) is dose-dependent and largely reversible. By tracking ESOT and observing mandatory rest periods, divers can work safely across consecutive days.</p>
+  </div>
+  <h2>What Is Oxygen Toxicity?</h2>
+  <p class="lead">Oxygen keeps us alive — but under pressure, breathing too much of it over time damages your lungs. This is the fundamental problem ESOT and DMAC 35 exist to manage.</p>
+
+  <div class="two-col">
+    <div>
+      <h3>Oxygen Under Pressure</h3>
+      <p>At depth, pressure increases. Every 10 metres of seawater adds 1 atmosphere (atm) of pressure. This means the <span class="gls" data-def="Partial Pressure: the contribution of one gas to total pressure. At depth, breathing 36% O₂, pO₂ rises well above surface values.">partial pressure of oxygen (pO₂)</span> in your breathing gas increases even if the percentage of O₂ in the mix stays the same.</p>
+      <p>Divers breathing <span class="gls" data-def="Nitrox: enriched air with more than 21% oxygen, used to extend bottom times or reduce narcosis.">nitrox</span> (oxygen-enriched air) or pure oxygen during decompression face significantly elevated pO₂ — which is what causes oxygen toxicity over time.</p>
+      <div class="callout info">
+        <div class="callout-icon">🔢</div>
+        <div class="callout-body"><strong>Simple Pressure Rule</strong><p>pO₂ (atm) = Absolute pressure (atm) × Fraction of O₂<br>At 30m breathing Nitrox 36%: pO₂ = (30/10 + 1) × 0.36 = 4.0 × 0.36 = <strong>1.44 atm</strong><br>You will learn to calculate this precisely in Section 03 — the pO₂ Calculator.</p></div>
+      </div>
+    </div>
+    <div>
+      <h3>Two Types of Oxygen Toxicity</h3>
+      <div class="callout danger">
+        <div class="callout-icon">⚡</div>
+        <div class="callout-body"><strong>CNS Toxicity — Acute (managed separately)</strong><p>At very high pO₂ (typically &gt;1.6 atm), oxygen can trigger sudden convulsions — dangerous underwater. Managed by separate CNS clock limits. <em>ESOT and DMAC 35 do not cover CNS toxicity.</em></p></div>
+      </div>
+      <div class="callout warn">
+        <div class="callout-icon">🫁</div>
+        <div class="callout-body"><strong>Pulmonary Oxygen Toxicity (POT) — Cumulative</strong><p>Sustained hyperoxic exposure damages lung tissue progressively. Symptoms: cough, chest tightness, shortness of breath — measured as reduction in <span class="gls" data-def="Vital Capacity: maximum volume of air you can exhale after a full breath. A standard lung function test.">Vital Capacity (VC)</span>. This is exactly what ESOT measures and DMAC 35 limits.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Why Does It Matter for Working Divers?</h3>
+  <p>A single dive rarely causes concern. But <span class="gls" data-def="Surface-oriented diving: diver returns to surface after each dive, unlike saturation diving where divers live at pressure.">surface-oriented occupational divers</span> may dive every day, sometimes multiple times per day, breathing high-pO₂ gases including nitrox bottom mixes and pure oxygen during surface decompression (SurDO₂). Without tracking cumulative oxygen exposure, lung function can decline progressively — even when each individual dive seems modest.</p>
+
+  <div class="callout safe">
+    <div class="callout-icon">✓</div>
+    <div class="callout-body"><strong>Good News: POT Is Manageable and Largely Reversible</strong><p>Pulmonary oxygen toxicity is dose-dependent. By tracking ESOT and staying within DMAC 35 limits — including mandatory overnight recovery — divers can work safely across consecutive days. The science behind these limits is exactly what this guide teaches.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S02 ============================================================ -->
+<section id="s02">
+<div class="wrapper">
+  <div class="section-label">Section 02</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s02" onclick="ctxHelpToggle('s02', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s02" role="region" aria-label="Help for s02">
+    <h4>2.2  Section 02 — The Science Behind ESOT</h4>
+<p>This section traces the development of oxygen exposure indices from UPTD (1970) through Arieli K to ESOT, explaining why each step was an improvement.</p>
+<h5>UPTD — The Old System</h5>
+<p>The Unit Pulmonary Toxic Dose was the standard for over 50 years. The formula (DMAC 35 Equation 1) is:</p>
+<p>UPTD has two significant limitations for surface-oriented diving: (1) it is inaccurate for short exposures (&lt;5 hours) above 1 atm — which is the most common scenario in commercial diving — and (2) it has no validated recovery function, so it cannot be used to calculate how long to rest between dives. The Repex exposure limits (Hamilton et al. 1988) that used UPTD were based primarily on expert opinion rather than controlled scientific data.</p>
+<h5>ESOT — The Current System</h5>
+<p>Equivalent Surface Oxygen Time was introduced by Risberg, van Ooij and Matity (2023) as a simplified, more accurate alternative. The formula (DMAC 35 Equations 2 and 3) is:</p>
+<p>The reference point is intuitive: ESOT = 1 means one minute of breathing 100% O₂ at surface pressure (pO₂ = 1.0 atm). Every other combination scales from there. At pO₂ = 1.4 atm, kp = 1.4^2.285 = 2.16, so the same dive time generates 2.16 times more ESOT than breathing pure O₂ at the surface.</p>
+<h5>Arieli K (mentioned but not used operationally)</h5>
+<p>Arieli K is a more complex toxicity index that ESOT was designed to approximate. It predicts POT development with equal accuracy to ESOT but requires computational effort that makes it impractical in the field. ESOT is a mathematical transformation of Arieli K. You do not need to calculate Arieli K.</p>
+  </div>
+  <h2>The Evolution of Oxygen Monitoring</h2>
+  <p class="lead">Five decades of science produced progressively better ways to measure oxygen toxicity risk. Each step solved a specific problem with the approach before it.</p>
+
+  <div class="evo-stack">
+    <div class="evo-card">
+      <div>
+        <div class="evo-year">1970 · Bardin &amp; Lambertsen</div>
+        <div class="evo-name">UPTD / OTU</div>
+        <span class="evo-badge old">SUPERSEDED</span>
+        <p style="font-size:.9rem;">Unit Pulmonary Toxic Dose — also known as OTU (Oxygen Toxicity Unit). Used as the standard for over 50 years. The classic Repex limits (Hamilton et al. 1988) set 850 UPTD as a single-day maximum, reducing to 300 UPTD/day for long-duration diving.</p>
+        <p style="font-size:.88rem;color:var(--text3);"><strong>The problem:</strong> UPTD is not an accurate predictor of POT for short (&lt;5h) exposures exceeding 1 atm — precisely the most common scenario in surface-oriented diving. It also has no validated recovery function, so you cannot calculate how long to rest between dives.</p>
+      </div>
+      <div class="evo-right">
+        <div class="eq-box" style="margin:0;min-width:200px;">
+          <div class="eq-label">UPTD Formula</div>
+          <span class="eq">UPTD = t × √( (0.5/(pO₂–0.5))<sup>–1.2</sup> )</span>
+          <div style="font-size:.7rem;color:var(--text3);margin-top:.4rem;">= t × (0.5/(pO₂–0.5))<sup>–0.6</sup> &nbsp;· t in min · pO₂ in atm</div>
+        </div>
+      </div>
+    </div>
+    <div class="evo-arrow">↓ More accurate, but harder to compute</div>
+    <div class="evo-card">
+      <div>
+        <div class="evo-year">2002–2019 · Arieli et al.</div>
+        <div class="evo-name">Arieli K</div>
+        <span class="evo-badge mid">ACCURATE BUT IMPRACTICAL</span>
+        <p style="font-size:.9rem;">Arieli's index predicts pulmonary oxygen toxicity significantly better than UPTD — especially for short, high-pO₂ exposures typical in surface diving. It captures the non-linear relationship between pO₂ and time far more accurately.</p>
+        <p style="font-size:.88rem;color:var(--text3);"><strong>The problem:</strong> Time is <em>squared</em> in the formula. For a multi-segment dive, calculating accumulated K requires complex square-root sums that are error-prone in the field.</p>
+      </div>
+      <div class="evo-right">
+        <div class="eq-box" style="margin:0;min-width:200px;">
+          <div class="eq-label">Arieli K Formula</div>
+          <span class="eq">K = t² × pO₂<sup>4.57</sup></span>
+          <div style="font-size:.7rem;color:var(--text3);margin-top:.4rem;">t in hours · pO₂ in atm</div>
+        </div>
+      </div>
+    </div>
+    <div class="evo-arrow">↓ Same predictive accuracy · dramatically simpler</div>
+    <div class="evo-card" style="border-color:rgba(0,107,53,.4);box-shadow:0 6px 24px rgba(0,107,53,.1);">
+      <div>
+        <div class="evo-year">2023 · Risberg, van Ooij &amp; Matity · Endorsed by DMAC 35 Rev.1, 2025</div>
+        <div class="evo-name">ESOT ✓</div>
+        <span class="evo-badge cur">OFFICIAL DMAC 35 STANDARD</span>
+        <p style="font-size:.9rem;">Equivalent Surface Oxygen Time. Mathematically ESOT = 60 × √K — same predictive accuracy as Arieli K, but expressing the result as minutes of equivalent oxygen exposure at the surface transforms a complex calculation into simple addition: calculate each dive segment's ESOT, then add them.</p>
+        <p style="font-size:.88rem;color:var(--text3);">ESOT = 1 means one minute of breathing 100% O₂ at surface pressure. This intuitive reference point makes it easy to plan and communicate oxygen exposure. DMAC 35 Rev.1 (Feb 2025) formally recommends replacing UPTD with ESOT.</p>
+      </div>
+      <div class="evo-right">
+        <div class="eq-box" style="margin:0;min-width:200px;border-color:var(--safe);">
+          <div class="eq-label">ESOT Formula</div>
+          <span class="eq">ESOT = t × pO₂<sup>2.285</sup></span>
+          <div style="font-size:.7rem;color:var(--text3);margin-top:.4rem;">t in min · pO₂ in atm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S03 pO2 CALCULATOR ============================================================ -->
+<section id="s03">
+<div class="wrapper">
+  <div class="section-label">Section 03</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s03" onclick="ctxHelpToggle('s03', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s03" role="region" aria-label="Help for s03">
+    <h4>2.3  Section 03 — Calculating pO₂ from Depth and Gas Mix</h4>
+<p>Before you can calculate ESOT, you need the partial pressure of oxygen (pO₂) at the depth you are diving. The calculator in Section 03 does this for you. The formula is:</p>
+<p>Examples: Air (21% O₂) at 27 msw gives pO₂ = 3.7 × 0.21 = 0.78 atm. Nitrox 40 at 24 msw gives pO₂ = 3.4 × 0.40 = 1.36 atm, which the guide rounds to 1.4 atm for table lookups.</p>
+<p>Common confusion: FiO₂ vs pO₂</p>
+<p>FiO₂ is the fraction (percentage) of oxygen in the gas mix — e.g. 0.40 for Nitrox 40. pO₂ is the partial pressure of that oxygen at depth, which increases with depth. ESOT is calculated using pO₂, not FiO₂. Always calculate pO₂ first using Section 03 before entering values into the ESOT calculators.</p>
+  </div>
+  <h2>pO₂ Calculator</h2>
+  <p class="lead">Before you can calculate ESOT, you need to know the partial pressure of oxygen (pO₂) for each phase of the dive. This calculator converts depth and gas mix into pO₂ — the value that drives everything downstream.</p>
+
+  <div class="callout info">
+    <div class="callout-icon">📐</div>
+    <div class="callout-body"><strong>How pO₂ is calculated</strong><p>Absolute pressure (atm) = (Depth in msw ÷ 10) + 1<br>pO₂ (atm) = Absolute pressure × Fraction of O₂ in gas (FiO₂)<br><em>Example: 20m breathing Nitrox 40% → (20/10 + 1) × 0.40 = 3 × 0.40 = 1.2 atm</em></p></div>
+  </div>
+
+  <div class="calc-wrap">
+    <div class="calc-title">pO₂ from Depth &amp; Gas Mix</div>
+    <div class="calc-grid">
+      <div class="input-group">
+        <label>Depth <span>(msw)</span></label>
+        <input type="number" id="p2depth" value="24" min="0" max="120" oninput="calcPO2()">
+      </div>
+      <div class="input-group">
+        <label>O₂ Fraction in Gas <span>(FiO₂ %)</span></label>
+        <div class="range-row">
+          <input type="range" id="p2fio2r" min="21" max="100" step="1" value="40" oninput="document.getElementById('p2fio2').value=this.value;document.getElementById('p2fio2v').textContent=this.value+'%';calcPO2()">
+          <span class="range-val" id="p2fio2v">40%</span>
+        </div>
+        <input type="number" id="p2fio2" value="40" min="21" max="100" step="1" oninput="document.getElementById('p2fio2r').value=this.value;document.getElementById('p2fio2v').textContent=this.value+'%';calcPO2()">
+      </div>
+    </div>
+    <div class="result-box show" id="rpo2">
+      <div class="result-main" id="rpo2v">1.36 <span>atm</span></div>
+      <div class="result-detail" id="rpo2d">Absolute pressure: 3.40 atm · FiO₂: 40% · pO₂ = 3.40 × 0.40</div>
+      <div id="rpo2warn" style="margin-top:.7rem;"></div>
+    </div>
+  </div>
+
+  <div class="callout info" style="margin-top:.5rem;">
+    <div class="callout-icon">📌</div>
+    <div class="callout-body"><strong>Common pO₂ Reference Values</strong>
+    <p>Surface air: 0.21 atm · Surface 100% O₂: 1.0 atm · 12msw pure O₂ (SurDO₂): 2.2 atm · 15msw pure O₂: 2.5 atm · CNS working limit: pO₂ = 1.6 atm maximum</p></div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>CNS toxicity is a separate concern</strong><p>DMAC 35 and ESOT manage pulmonary (lung) toxicity. CNS convulsion risk is managed by separate CNS clock limits. Both must be monitored simultaneously for all hyperoxic dives.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S04 ESOT SCIENCE ============================================================ -->
+<section id="s04">
+<div class="wrapper">
+  <div class="section-label">Section 04</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s04" onclick="ctxHelpToggle('s04', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s04" role="region" aria-label="Help for s04">
+    <h4>3.  The ESOT Formulas in Detail (Section 04 of the Guide)</h4>
+<p>Section 04 of the guide is the mathematical core. It presents all six DMAC 35 equations with plain-language explanations. This section of the companion document explains each one in full.</p>
+<h5>3.1  Equation 3 — Basic ESOT</h5>
+<p>This is the core formula. Multiply exposure time by pO₂ raised to the power 2.285. The exponent 2.285 captures the non-linear relationship between oxygen pressure and toxicity — doubling pO₂ more than doubles the toxic load. The toxicity weighting factor kp = pO₂^2.285 is pre-calculated in the lookup tables (Tables 3 and 4 in DMAC 35, and the Section 09 table in the guide).</p>
+<h5>3.2  Equation 4 — Accumulated ESOT for Multi-Segment Dives</h5>
+<p>For dives with more than one pO₂ (e.g. a bottom phase at 1.4 atm followed by an in-water decompression stop at 0.5 atm, then a chamber O₂ phase at 2.2 atm), calculate ESOT separately for each segment and add them together. Air breaks can be ignored — air breathing at normal diving depths contributes negligible ESOT.</p>
+<p>The Dive Planner in Section 07 of the guide handles this automatically for up to four segments.</p>
+<h5>3.3  Equation 5 — Recovery (Residual ESOT)</h5>
+<p>This equation answers: &quot;How much ESOT remains from my first dive after X hours of surface rest?&quot; The residual ESOT is added to the ESOT of the next dive to give the total cumulative load.</p>
+<p>Critical points about Equation 5:</p>
+<ul>
+<li>The recovery rate depends on how long the preceding exposure lasted (texp), NOT on what pO₂ was used. Two divers with identical ESOT but different dive durations recover at different speeds — the one with the longer dive recovers more slowly.</li>
+<li>This equation applies within a 24-hour period. Any surface interval of 12 hours or more resets the ESOT clock to zero for planning purposes.</li>
+<li>The 2025 revision changed the recovery variable from pO₂ (used in the original 2023 Risberg paper) to texp (exposure duration). Always use the 2025 form shown above.</li>
+<li>This equation should not be applied across more than two consecutive exposures on the same day. For three or more same-day dives, texp accumulates — see the explanatory text in Section 08 of the guide.</li>
+</ul>
+<p>Why does the recovery rate depend on dive duration, not pO₂?</p>
+<p>The lung tissue damage caused by a given ESOT is not simply reversed at a fixed rate. Longer exposures cause a pattern of injury that heals more slowly, even if the total ESOT value is identical to a shorter, higher-pO₂ exposure. Equation 5 captures this empirically validated behaviour. It is one of the key scientific advantages of the ESOT model over UPTD.</p>
+<h5>3.4  Equation 6 — Predicted VC Reduction</h5>
+<p>This equation predicts the expected reduction in Vital Capacity (VC) as a percentage. VC is the standard clinical measure of pulmonary oxygen toxicity — a measurable reduction indicates real lung function impairment.</p>
+<p>Two important caveats: (1) This is a median population prediction. Individual variation is very large — some divers show significantly more VC reduction than the formula predicts, others significantly less. (2) At ESOT = 660 (the single-day limit), the formula predicts roughly 0.88% VC reduction — modest, but the limit is set conservatively to protect the more sensitive portion of the diving population.</p>
+<h5>3.5  UPTD Conversion Formula</h5>
+<p>This formula allows historical UPTD-based records to be compared against ESOT limits. Note that ESOT and UPTD are only identical at pO₂ = 1.0 atm (100% O₂ at the surface). They diverge at other pressures, with UPTD underestimating toxicity at low pO₂ and overestimating at high pO₂ relative to ESOT.</p>
+  </div>
+  <h2>Understanding ESOT — The Science</h2>
+  <p class="lead">Five equations govern how ESOT is calculated, accumulated, and how it recovers during surface intervals. Each is explained in plain English before the mathematics.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('te1',this)">Basic ESOT</button>
+    <button class="tab-btn" onclick="showTab('te2',this)">Multi-Segment</button>
+    <button class="tab-btn" onclick="showTab('te3',this)">Recovery</button>
+    <button class="tab-btn" onclick="showTab('te4',this)">VC Reduction</button>
+    <button class="tab-btn" onclick="showTab('te5',this)">UPTD Conversion</button>
+  </div>
+
+  <div id="te1" class="tab-content active">
+    <h3>Basic ESOT (DMAC 35 Eq. 3)</h3>
+    <p><strong>Plain English:</strong> Multiply your dive time by a factor (kp) that grows rapidly with oxygen pressure. At pO₂ = 1.0 atm, kp = exactly 1.0. At pO₂ = 1.6 atm, kp = 2.93 — nearly three times worse than breathing surface oxygen for the same duration.</p>
+    <div class="eq-box"><div class="eq-label">DMAC 35 Equation 3</div><span class="eq">ESOT = t × pO₂<sup>2.285</sup></span><div style="font-size:.75rem;color:var(--text3);margin-top:.4rem;">t = exposure time in minutes · pO₂ = partial pressure of O₂ in atm (from Section 03)</div></div>
+    <div class="steps-plain">
+      <div class="step-plain"><div class="sn">1</div><div class="sb"><h4>Calculate pO₂ using the Section 03 calculator</h4><p>You need depth and gas mix fraction. The result (in atm) is what you raise to the power 2.285.</p></div></div>
+      <div class="step-plain"><div class="sn">2</div><div class="sb"><h4>Raise pO₂ to the power 2.285 to get kp</h4><p>This is the toxicity weighting factor. It is pre-calculated in the Section 09 lookup table for common pO₂ values. Use a calculator for other values.</p></div></div>
+      <div class="step-plain"><div class="sn">3</div><div class="sb"><h4>Multiply kp by the time (minutes) to get ESOT</h4><p>ESOT = 1 means one minute breathing 100% O₂ at surface pressure. Everything scales from this reference point.</p></div></div>
+    </div>
+    <div class="callout info"><div class="callout-icon">💡</div><div class="callout-body"><strong>The Reference Point</strong><p>At pO₂ = 1.0 atm: kp = 1.0<sup>2.285</sup> = 1.0. So 1 minute of breathing 100% O₂ at the surface = 1 ESOT exactly. Every other combination scales up from there. → <a href="#s06" style="color:var(--ocean);font-weight:600;">ESOT Calculator (Section 06)</a></p></div></div>
+  </div>
+
+  <div id="te2" class="tab-content">
+    <h3>Accumulated ESOT — Multi-Segment Dives (DMAC 35 Eq. 4)</h3>
+    <p><strong>Plain English:</strong> When a dive has several phases at different depths or gas mixes, calculate ESOT for each segment separately — then simply add them together. This is ESOT's key operational advantage over Arieli K.</p>
+    <div class="eq-box"><div class="eq-label">DMAC 35 Equation 4</div><span class="eq">ESOT<sub>acc</sub> = ESOT₁ + ESOT₂ + … + ESOT<sub>n</sub></span></div>
+    <div class="callout info"><div class="callout-icon">📐</div><div class="callout-body"><strong>Why simple addition works</strong><p>With Arieli K, time is squared — so you cannot simply add segments together. The mathematical transformation that converts K to ESOT (ESOT = 60 × √K) linearises the accumulation, making addition valid. This is the entire reason ESOT was developed.</p></div></div>
+    <div class="callout dmac"><div class="callout-icon">📋</div><div class="callout-body"><strong>Practical note: Air breaks</strong><p>When calculating ESOT for a dive that includes air breaks, the air break period may be ignored — air breathing at normal diving depths contributes negligible ESOT (pO₂ ≈ 0.21–0.5 atm, kp ≈ 0.02–0.21). This simplification is explicitly permitted by DMAC 35. <strong>Operational standard for air break frequency:</strong> 5 minutes of compressed air breathing for every 20–30 minutes of O₂ breathing. DCD procedures mandate 5 min per 20 min; USN requires 5 min per 30 min. These breaks slow the development of both pulmonary and CNS oxygen toxicity and should always be included in dive planning even though they do not contribute to ESOT accumulation.</p></div></div>
+  </div>
+
+  <div id="te3" class="tab-content">
+    <h3>ESOT Recovery (DMAC 35 Eq. 5 — Revised 2025)</h3>
+    <p><strong>Plain English:</strong> After surfacing, accumulated lung exposure gradually heals. How fast you recover depends on how long the previous exposure lasted — not the depth or gas mix. Longer exposures produce a slower recovery rate. Use this equation to calculate residual ESOT before a repeat dive.</p>
+    <div class="eq-box"><div class="eq-label">DMAC 35 Equation 5 (Revised 2025)</div><span class="eq">ESOT<sub>rec</sub> = ESOT<sub>i</sub> × e<sup>–r · s<sup>t<sub>exp</sub></sup> · t</sup></span><div style="font-size:.75rem;color:var(--text3);margin-top:.5rem;">r = 0.439 · s = 0.906 · t<sub>exp</sub> = exposure duration (hours) · t = recovery time (hours)</div></div>
+    <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Important: 2025 formula change</strong><p>The original 2023 Risberg paper used pO₂ as the recovery variable. DMAC 35 Rev.1 (2025) adopted a revised, better-validated model where recovery rate depends on <em>exposure duration</em> (t<sub>exp</sub>). Always use this version for operational planning. → <a href="#s08" style="color:var(--warn);font-weight:600;">Recovery Calculator (Section 08)</a></p></div></div>
+  </div>
+
+  <div id="te4" class="tab-content">
+    <h3>Predicting Lung Impact — VC Reduction (DMAC 35 Eq. 6)</h3>
+    <p><strong>Plain English:</strong> This equation converts accumulated ESOT into a predicted percentage reduction in Vital Capacity (VC) — how much smaller your maximum lung volume becomes. The relationship is parabolic: doubling ESOT quadruples the predicted impact.</p>
+    <div class="eq-box"><div class="eq-label">DMAC 35 Equation 6</div><span class="eq">ΔVC = 0.0082 × (ESOT / 60)²</span></div>
+    <div class="callout info"><div class="callout-icon">📊</div><div class="callout-body"><strong>Individual variation is large</strong><p>These are median population values — some divers will show significantly more VC reduction, others less. → <a href="#s06" style="color:var(--ocean);font-weight:600;">VC Reduction Calculator (Section 06)</a>. The limits in DMAC 35 are set conservatively to protect the more sensitive majority of divers.</p></div></div>
+  </div>
+
+  <div id="te5" class="tab-content">
+    <h3>Converting Historical UPTD Records to ESOT</h3>
+    <p><strong>Plain English:</strong> If you have historical dive records in UPTD and need to compare them against ESOT limits, use this conversion. Note that at pO₂ = 1.0 atm (100% O₂ at surface), ESOT = UPTD exactly. They diverge at other pressures because the two indices weight pO₂ differently.</p>
+    <div class="eq-box"><div class="eq-label">Conversion Formula</div><span class="eq">ESOT = UPTD × pO₂<sup>2.285</sup> × (0.5 / (pO₂ – 0.5))<sup>5/6</sup></span></div>
+    <p style="font-size:.88rem;color:var(--text3);">For multi-segment dives, each segment must be converted separately using its own pO₂.</p>
+    <p style="font-size:.88rem;margin-top:.5rem;">→ <a href="#s06" style="color:var(--ocean);font-weight:600;">ESOT vs. UPTD Comparison Calculator (Section 06, Calculator 3)</a> — shows both values side-by-side for any pO₂ and time, with contextual interpretation of the divergence.<br>→ <a href="#s06" style="color:var(--ocean);">Legacy conversion calculators (Section 06)</a> — convert an existing UPTD figure to ESOT or vice versa.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S05 DMAC 35 ============================================================ -->
+<section id="s05" style="background:rgba(0,40,90,.03);">
+<div class="wrapper">
+  <div class="section-label">Section 05 <span class="sl-dmac">OFFICIAL STANDARD</span></div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s05" onclick="ctxHelpToggle('s05', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s05" role="region" aria-label="Help for s05">
+    <h4>4.  DMAC 35 Limits and Operational Rules (Sections 05 &amp; 11)</h4>
+<h5>4.1  The Exposure Limits — DMAC 35 Table 2 / Table 5</h5>
+<p>The limits below are the authoritative values from DMAC 35 Rev.1. They appear in Section 05 and Section 11 of the guide (Section 11 is the full operational reference):</p>
+<p>How to read this table:</p>
+<ul>
+<li>The limit that applies is determined by the highest daily ESOT on ANY day in the dive series. If you have six days at 430 ESOT but one day hits 460, the 5-day rule (max 500) governs — and you have already exceeded five days, requiring a break.</li>
+<li>&quot;Daily&quot; means any rolling 24-hour period, not necessarily a calendar day.</li>
+<li>&quot;After the series&quot; means after completing the maximum number of consecutive days. The two recovery days can be used for air-only in-water dives (see below).</li>
+<li>The &gt;7 days row is not a higher limit — it means the situation requires individual medical assessment. There is no standard limit for such exposures.</li>
+</ul>
+<h5>4.2  Operational Rules (Not Just Numbers)</h5>
+<p>The limits table captures the numbers, but DMAC 35 also specifies several operational rules that must be observed:</p>
+<h5>4.3  When to Call the Diving Medical Advisor</h5>
+<p>DMAC 35 explicitly requires a Diving Medical Advisor (DMA) in the following situations:</p>
+<ul>
+<li>Any planned diving beyond 7 consecutive days of hyperoxic exposure</li>
+<li>A diver reports respiratory symptoms at any exposure level</li>
+<li>A risk assessment is needed to relax any limit (e.g. shorter than 12h overnight interval)</li>
+<li>Planned multi-week SurDO₂ or TUP operations</li>
+<li>Divers with pre-existing respiratory conditions</li>
+</ul>
+<h5>5.  The Calculators — Section-by-Section</h5>
+<p>The guide contains eight distinct calculators across Sections 06, 07, 08, and 10. This section explains what each one does, what inputs it needs, and how to interpret the output.</p>
+  </div>
+  <h2>DMAC 35 Rev.1 — February 2025</h2>
+  <p class="lead">The Diving Medical Advisory Committee formally recommends ESOT as the exposure index for pulmonary oxygen toxicity in surface-oriented diving. This section covers what DMAC 35 is, who it applies to, and what is explicitly excluded.</p>
+
+  <div class="callout dmac">
+    <div class="callout-icon">🏛️</div>
+    <div class="callout-body"><strong>What is DMAC 35?</strong><p>DMAC 35 is a guidance note published by the Diving Medical Advisory Committee (dmac-diving.org). Revision 1 (February 2025) supersedes the June 2023 original. It establishes ESOT as the official replacement for UPTD with updated, scientifically validated exposure limits. Next scheduled revision: before February 2030.</p></div>
+  </div>
+
+  <div class="two-col" style="margin-top:1.5rem;">
+    <div>
+      <h3>Who Must Calculate ESOT?</h3>
+      <div class="callout safe"><div class="callout-icon">✓</div><div class="callout-body"><strong>Must calculate ESOT</strong><p>Any surface-oriented diver breathing gas with FiO₂ &gt; 21%. This includes nitrox bottom mixes, oxygen-enriched mixes, and pure O₂ during SurDO₂ or TUP decompression.</p></div></div>
+      <div class="callout info"><div class="callout-icon">🌊</div><div class="callout-body"><strong>No calculation needed</strong><p>Divers breathing compressed air only. Air dives with in-water decompression adhering to HSE bottom-time restrictions are not expected to cause relevant POT — and can be done on designated recovery days.</p></div></div>
+    </div>
+    <div>
+      <h3>Scope Exclusions</h3>
+      <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>DMAC 35 does not apply to:</strong><p>• Saturation diving (different exposure pattern and physiology)<br>• Hyperbaric oxygen (HBO) therapy (resting patients, intermittent breathing)<br>• Military rebreather diving with high fixed pO₂<br>• CNS oxygen toxicity — managed separately via CNS clock limits</p></div></div>
+      <div class="callout info"><div class="callout-icon">🔔</div><div class="callout-body"><strong>TUP (Transfer Under Pressure) diving</strong><p>Transfer Under Pressure diving — where the diver surfaces in a closed bell and decompresses in a deck chamber — is a growing commercial method that sits between surface-oriented and saturation diving. ESOT applies directly to the oxygen breathing phases of TUP decompression. The TUP decompression tables developed by Sterk (DCD TUP / AoxTUP2B) and used commercially in the North Sea are designed with compatible oxygen exposure limits.</p></div></div>
+    </div>
+  </div>
+
+  <h3>DMAC 35 Rev.1 vs. Old Repex Limits</h3>
+  <div class="tbl-wrap">
+    <table style="min-width:unset;">
+      <thead><tr><th>Parameter</th><th>Old Repex (UPTD)</th><th>DMAC 35 Rev.1 (ESOT)</th></tr></thead>
+      <tbody>
+        <tr><td class="rh">Index used</td><td>UPTD / OTU</td><td style="color:var(--safe);font-weight:700;">ESOT</td></tr>
+        <tr><td class="rh">1-day maximum</td><td>850 UPTD</td><td style="color:var(--danger);font-weight:700;">660 ESOT</td></tr>
+        <tr><td class="rh">5-day maximum</td><td>~600 UPTD (Repex table)</td><td style="color:var(--warn);font-weight:700;">500 ESOT</td></tr>
+        <tr><td class="rh">7-day maximum</td><td>~450 UPTD (Repex table)</td><td style="color:var(--safe);font-weight:700;">450 ESOT</td></tr>
+        <tr><td class="rh">Beyond 7 days</td><td>300 UPTD/day continuous</td><td style="color:var(--ocean);font-weight:700;">&gt;7 days: require Diving Medical Advisor</td></tr>
+        <tr><td class="rh">Recovery function</td><td>Not validated</td><td style="color:var(--safe);">Validated (Eq. 5 — see Section 08)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S06 CALCULATORS ============================================================ -->
+<section id="s06">
+<div class="wrapper">
+  <div class="section-label">Section 06</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s06" onclick="ctxHelpToggle('s06', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s06" role="region" aria-label="Help for s06">
+    <h4>5.1  Section 06 — Core Calculators</h4>
+<h5>Calculator 1 — Single-Segment ESOT</h5>
+<p>The most basic calculator. Enter pO₂ (in atm) and exposure time (in minutes) and it returns:</p>
+<ul>
+<li>kp = pO₂^2.285 (the toxicity weighting factor)</li>
+<li>ESOT = t × kp</li>
+<li>A status indicator showing which DMAC 35 limit tier the result falls in</li>
+<li>The predicted VC reduction using Equation 6</li>
+</ul>
+<p>Use this for a single-depth, single-gas exposure. For dives with multiple segments (bottom gas, deco stop, chamber O₂), use the Dive Planner in Section 07 instead.</p>
+<h5>Calculator 2 — Vital Capacity (VC) Reduction</h5>
+<p>Enter any ESOT value directly and the calculator returns the predicted VC reduction using Equation 6. This is useful when you already have an ESOT result from another source and want to understand its clinical significance.</p>
+<p>A VC reduction of 2% is the traditional threshold used in research studies. The DMAC 35 single-day limit of 660 ESOT corresponds to approximately 0.88% VC reduction — well below 2%, reflecting a conservative approach that protects the more sensitive individuals in a working diving population.</p>
+<h5>Calculator 3 — ESOT vs. UPTD Side-by-Side</h5>
+<p>Enter pO₂ and time to see both ESOT and UPTD calculated simultaneously. The UPTD panel is labelled clearly as a historical comparison tool — it is NOT the authoritative operational figure.</p>
+<p>Key observations from this calculator:</p>
+<ul>
+<li>At pO₂ = 1.0 atm (100% O₂ at surface), ESOT = UPTD exactly. This is the definition.</li>
+<li>Below ~1.0 atm: UPTD underestimates toxicity relative to ESOT</li>
+<li>Above ~1.5 atm: UPTD overestimates relative to ESOT</li>
+<li>The divergence is largest at the extremes — precisely the conditions most common in SurDO₂ and chamber O₂ decompression</li>
+</ul>
+<p>Why the UPTD panel is labelled &#x27;Historical Comparison Only&#x27;</p>
+<p>UPTD values cannot be compared against DMAC 35 limits (which are set in ESOT). Showing a UPTD number alongside a DMAC 35 limit without this context would be actively misleading. If you have historical UPTD records to compare, use the conversion calculators at the bottom of Section 06.</p>
+  </div>
+  <h2>ESOT Calculators</h2>
+  <p class="lead">Core calculators for ESOT computation and VC prediction. Enter your dive parameters to get live results checked against DMAC 35 limits. For multi-segment dives, use the Dive Planner in Section 07. For repetitive same-day dives with recovery, see the guided examples in Section 10.</p>
+
+  <div class="calc-wrap">
+    <div class="calc-title">Calculator 1 — Single Segment ESOT (DMAC 35 Eq. 3)</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>Time <span>(minutes)</span></label><input type="number" id="c1t" value="120" min="1" max="600" oninput="calcC1()"></div>
+      <div class="input-group"><label>pO₂ <span>(atm — use S03 calculator)</span></label>
+        <div class="range-row"><input type="range" id="c1pr" min="0.5" max="2.5" step="0.05" value="1.4" oninput="document.getElementById('c1p').value=parseFloat(this.value).toFixed(2);document.getElementById('c1pv').textContent=parseFloat(this.value).toFixed(2);calcC1()"><span class="range-val" id="c1pv">1.40</span></div>
+        <input type="number" id="c1p" value="1.4" min="0.51" max="2.5" step="0.05" oninput="document.getElementById('c1pr').value=this.value;document.getElementById('c1pv').textContent=parseFloat(this.value).toFixed(2);calcC1()">
+      </div>
+    </div>
+    <div class="result-box show" id="r1">
+      <div class="result-main" id="r1v">259 <span>ESOT</span></div>
+      <div class="result-detail" id="r1d">kp = 1.4<sup>2.285</sup> = 2.163 · ESOT = 2.163 × 120</div>
+      <div class="gauge-bar" style="margin-top:.8rem;"><div class="gauge-pointer" id="r1g" style="left:36.3%"></div></div>
+      <div class="gauge-labels"><span>0</span><span>450</span><span>500</span><span>660</span><span>800+</span></div>
+      <div class="gauge-limits"><div class="g-lim g7">≤450 = 7-day</div><div class="g-lim g5">≤500 = 5-day</div><div class="g-lim g1">≤660 = single day</div></div>
+      <div id="r1s" style="margin-top:.6rem;font-family:var(--mono);font-size:.78rem;color:var(--safe);">✓ Within 7-day limit (≤450)</div>
+    </div>
+  </div>
+
+  <div class="calc-wrap">
+    <div class="calc-title">Calculator 2 — Vital Capacity Reduction (DMAC 35 Eq. 6)</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>Accumulated ESOT</label>
+        <div class="range-row"><input type="range" id="c4r" min="0" max="1200" step="10" value="450" oninput="document.getElementById('c4n').value=this.value;calcVC()"><span class="range-val" id="c4v">450</span></div>
+        <input type="number" id="c4n" value="450" min="0" step="10" oninput="document.getElementById('c4r').value=Math.min(this.value,1200);document.getElementById('c4v').textContent=this.value;calcVC()">
+      </div>
+    </div>
+    <div class="result-box show" id="r4">
+      <div class="result-main" id="r4v">0.46% <span>ΔVC reduction</span></div>
+      <div class="result-detail" id="r4d"></div>
+      <div style="margin-top:.8rem;height:10px;background:var(--border2);border-radius:5px;overflow:hidden;"><div id="r4bar" style="height:100%;background:linear-gradient(to right,var(--safe),var(--ocean));border-radius:5px;transition:width .4s;width:9%"></div></div>
+      <div class="gauge-labels"><span>0%</span><span style="color:var(--warn);">~2% (noticeable)</span><span style="color:var(--danger);">5%+ clinical concern</span></div>
+    </div>
+  </div>
+
+  <!-- ESOT vs UPTD comparison calculator -->
+  <div class="calc-wrap">
+    <div class="calc-title">Calculator 3 — ESOT vs. UPTD Side-by-Side Comparison</div>
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:1rem;">Enter the same dive parameters and see both indices calculated simultaneously. This illustrates where and why ESOT and UPTD diverge — and what it means operationally.</p>
+    <div class="calc-grid">
+      <div class="input-group">
+        <label>Time <span>(minutes)</span></label>
+        <input type="number" id="cmp_t" value="120" min="1" max="600" oninput="calcCmp()">
+      </div>
+      <div class="input-group">
+        <label>pO₂ <span>(atm — use S03 calculator)</span></label>
+        <div class="range-row">
+          <input type="range" id="cmp_pr" min="0.51" max="2.5" step="0.05" value="1.4" oninput="document.getElementById('cmp_p').value=parseFloat(this.value).toFixed(2);document.getElementById('cmp_pv').textContent=parseFloat(this.value).toFixed(2);calcCmp()">
+          <span class="range-val" id="cmp_pv">1.40</span>
+        </div>
+        <input type="number" id="cmp_p" value="1.4" min="0.51" max="2.5" step="0.05" oninput="document.getElementById('cmp_pr').value=this.value;document.getElementById('cmp_pv').textContent=parseFloat(this.value).toFixed(2);calcCmp()">
+      </div>
+    </div>
+
+    <div id="cmp_result" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <!-- ESOT panel -->
+      <div style="background:linear-gradient(135deg,rgba(0,119,182,.06),rgba(0,119,182,.02));border:2px solid var(--ocean);border-radius:12px;padding:1.2rem;">
+        <div style="font-family:var(--mono);font-size:.65rem;color:var(--ocean);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">ESOT · DMAC 35 Standard</div>
+        <div style="font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--ocean);" id="cmp_esot_val">—</div>
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--text3);margin:.4rem 0;" id="cmp_esot_formula">—</div>
+        <div style="margin-top:.6rem;">
+          <div class="gauge-bar" style="height:12px;"><div class="gauge-pointer" id="cmp_esot_gauge" style="left:0%"></div></div>
+          <div class="gauge-labels" style="font-size:.56rem;"><span>0</span><span>450</span><span>500</span><span>660</span><span>800+</span></div>
+        </div>
+        <div style="margin-top:.6rem;font-family:var(--mono);font-size:.72rem;" id="cmp_esot_status">—</div>
+      </div>
+      <!-- UPTD panel -->
+      <div style="background:linear-gradient(135deg,rgba(160,112,0,.06),rgba(160,112,0,.02));border:2px solid var(--warn);border-radius:12px;padding:1.2rem;">
+        <div style="font-family:var(--mono);font-size:.65rem;color:var(--warn);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">UPTD / OTU · Legacy System — Historical Comparison Only</div>
+        <div style="font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--warn);" id="cmp_uptd_val">—</div>
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--text3);margin:.4rem 0;" id="cmp_uptd_formula">—</div>
+        <div style="margin-top:.6rem;">
+          <div style="height:12px;background:linear-gradient(to right,#006b35 0%,#006b35 53%,#a07000 53%,#a07000 62%,#c85000 62%,#c85000 100%);border-radius:6px;position:relative;">
+            <div id="cmp_uptd_gauge" style="position:absolute;top:-5px;width:4px;height:22px;background:var(--text);border-radius:2px;transform:translateX(-50%);transition:left .4s;left:0%"></div>
+          </div>
+          <div class="gauge-labels" style="font-size:.56rem;"><span>0</span><span>450</span><span>500</span><span>850</span></div>
+        </div>
+        <div style="margin-top:.6rem;font-family:var(--mono);font-size:.72rem;" id="cmp_uptd_status">—</div>
+      </div>
+    </div>
+
+    <!-- Divergence callout (filled by JS) -->
+    <div id="cmp_diverge" style="margin-top:1rem;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:1rem 1.3rem;font-size:.85rem;color:var(--text2);"></div>
+
+    <div class="callout info" style="margin-top:1rem;">
+      <div class="callout-icon">🔬</div>
+      <div class="callout-body"><strong>When do they diverge most?</strong>
+      <p>Try pO₂ values below 0.8 atm or above 1.6 atm — this is where UPTD becomes the least accurate predictor of pulmonary oxygen toxicity, and where ESOT is most meaningfully different. At pO₂ = 1.0 atm (100% O₂ at surface), they are identical by definition.</p></div>
+    </div>
+  </div>
+
+  <!-- Collapsible UPTD converters -->
+  <div class="collapsible-hdr" onclick="toggleCollapse('uptd-body',this)">
+    <span>▼ Legacy Records: UPTD ↔ ESOT Conversion Calculators</span>
+    <span style="font-size:.65rem;color:var(--text3);">Only needed for historical UPTD records</span>
+  </div>
+  <div class="collapsible-body open" id="uptd-body">
+    <div class="calc-wrap">
+      <div class="calc-title">Convert UPTD → ESOT</div>
+      <div class="calc-grid">
+        <div class="input-group"><label>UPTD value</label><input type="number" id="c2u" value="80" min="1"></div>
+        <div class="input-group"><label>pO₂ at time of exposure <span>(atm)</span></label>
+          <div class="range-row"><input type="range" id="c2pr" min="0.51" max="2.5" step="0.05" value="1.4" oninput="document.getElementById('c2p').value=parseFloat(this.value).toFixed(2);document.getElementById('c2pv').textContent=parseFloat(this.value).toFixed(2)"><span class="range-val" id="c2pv">1.40</span></div>
+          <input type="number" id="c2p" value="1.4" min="0.51" max="2.5" step="0.05" oninput="document.getElementById('c2pr').value=this.value;document.getElementById('c2pv').textContent=parseFloat(this.value).toFixed(2)">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcC2()">Convert UPTD → ESOT</button>
+      <div class="result-box" id="r2"><div class="result-main" id="r2v">—</div><div class="result-detail" id="r2d"></div></div>
+    </div>
+    <div class="calc-wrap">
+      <div class="calc-title">Convert ESOT → UPTD</div>
+      <div class="calc-grid">
+        <div class="input-group"><label>ESOT value</label><input type="number" id="c3e" value="200" min="1"></div>
+        <div class="input-group"><label>pO₂ <span>(atm)</span></label>
+          <div class="range-row"><input type="range" id="c3pr" min="0.51" max="2.5" step="0.05" value="1.4" oninput="document.getElementById('c3p').value=parseFloat(this.value).toFixed(2);document.getElementById('c3pv').textContent=parseFloat(this.value).toFixed(2)"><span class="range-val" id="c3pv">1.40</span></div>
+          <input type="number" id="c3p" value="1.4" min="0.51" max="2.5" step="0.05" oninput="document.getElementById('c3pr').value=this.value;document.getElementById('c3pv').textContent=parseFloat(this.value).toFixed(2)">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcC3()">Convert ESOT → UPTD</button>
+      <div class="result-box" id="r3"><div class="result-main" id="r3v">—</div><div class="result-detail" id="r3d"></div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S07 DIVE PLANNER ============================================================ -->
+<section id="s07">
+<div class="wrapper">
+  <div class="section-label">Section 07</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s07" onclick="ctxHelpToggle('s07', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s07" role="region" aria-label="Help for s07">
+    <h4>5.2  Section 07 — Multi-Segment Dive Planner</h4>
+<p>The Dive Planner handles dives with up to four distinct pO₂ segments. For each segment, enter the pO₂ and the exposure time. The planner:</p>
+<ul>
+<li>Calculates ESOT for each segment individually</li>
+<li>Sums them using Equation 4 to give total ESOTacc</li>
+<li>Checks the total against all three DMAC 35 tier limits</li>
+<li>Shows a step-by-step calculation breakdown so you can verify the arithmetic</li>
+</ul>
+<p>Examples of multi-segment dives that require this planner:</p>
+<ul>
+<li>Nitrox bottom phase + in-water air decompression stop</li>
+<li>Nitrox bottom phase + SurDO₂ chamber O₂ breathing</li>
+<li>TUP dive with multiple depth phases</li>
+</ul>
+<p>Air break segments can be entered as zero or simply omitted — they contribute negligible ESOT.</p>
+  </div>
+  <h2>Multi-Segment Dive Planner</h2>
+  <p class="lead">Add each phase of your dive — bottom, ascent, deco stop, SurDO₂. ESOT accumulates and is checked against DMAC 35 limits in real time. This is a free-form operational planning tool. For step-by-step guided examples that teach the DMAC 35 methodology, see Section 10.</p>
+
+  <div class="calc-wrap">
+    <div class="calc-title">Dive Segment Builder (DMAC 35 Eq. 3 + 4)</div>
+    <p style="font-size:.78rem;color:var(--text3);font-family:var(--mono);margin-bottom:.8rem;">Pre-loaded example: Seg 1 = nitrox bottom phase (120 min @ pO₂ 1.40 atm) · Seg 2 = SurDO₂/DDC O₂ phase (30 min @ pO₂ 2.20 atm). Clear and build your own.</p>
+    <div class="seg-list" id="segList"></div>
+    <div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1.2rem;">
+      <button class="calc-btn" onclick="addSeg()">+ Add Segment</button>
+      <button class="calc-btn sec" onclick="clearSegs()">Clear All</button>
+    </div>
+    <div class="total-bar">
+      <div><div class="total-label">Total ESOT</div><div class="total-val" id="segTotal">0</div></div>
+      <div><div class="total-label">ΔVC Predicted</div><div class="total-val" id="segVC" style="font-size:1.4rem;">0.00%</div></div>
+      <div class="total-status" id="segStatus"></div>
+    </div>
+    <div style="margin-top:1rem;">
+      <div class="gauge-bar" style="height:26px;border-radius:13px;"><div class="gauge-pointer" id="segGauge" style="left:0%"></div></div>
+      <div class="gauge-labels"><span>0</span><span>450</span><span>500</span><span>660</span><span>800+</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S08 RECOVERY ============================================================ -->
+<section id="s08">
+<div class="wrapper">
+  <div class="section-label">Section 08</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s08" onclick="ctxHelpToggle('s08', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s08" role="region" aria-label="Help for s08">
+    <h4>5.3  Section 08 — Recovery Calculator</h4>
+<p>This is the implementation of DMAC 35 Equation 5. It answers: after my first dive, how much ESOT remains going into my second dive?</p>
+<p>Inputs:</p>
+<ul>
+<li>Initial ESOT (the total ESOT from the first dive)</li>
+<li>Exposure duration (texp) of the first dive in hours</li>
+<li>Recovery time (surface interval) in hours</li>
+</ul>
+<p>Outputs:</p>
+<ul>
+<li>Residual ESOT: the amount remaining after the surface interval</li>
+<li>Recovery fraction: what percentage of the original ESOT persists</li>
+<li>A chart showing recovery curves for six different exposure durations (0.5h to 6h), based on DMAC Figure 1</li>
+</ul>
+<p>The residual ESOT from this calculator is added to the ESOT of the second dive to give the total accumulated exposure for the day.</p>
+<p>12-hour rule</p>
+<p>If the surface interval is 12 hours or more, the residual ESOT is treated as zero for planning purposes. You do not need to use the recovery calculator in this case — simply start fresh with the new dive&#x27;s ESOT. This is why DMAC 35 mandates a 12h overnight normoxic interval.</p>
+<h4>7.  Recovery Curves (Section 08 — Figure 1)</h4>
+<p>The recovery chart in Section 08 is an interactive reproduction of DMAC 35 Figure 1. It shows six curves, one for each preceding exposure duration from 0.5 hours (fastest recovery) to 6 hours (slowest recovery). The Y-axis is logarithmic and shows residual ESOT as a fraction of the original (1.0 = 100% remains; 0.1 = 10% remains).</p>
+<h5>7.1  How to Read the Chart</h5>
+<ul>
+<li>Identify the preceding exposure duration (texp in hours)</li>
+<li>Select the curve equal to or longer than your texp (conservative approach, as recommended by DMAC 35)</li>
+<li>Find your surface interval on the X-axis</li>
+<li>Read the relative dose on the Y-axis</li>
+<li>Multiply the original ESOT by that fraction to get residual ESOT</li>
+</ul>
+<p>Example from DMAC 35 Appendix I: First dive of 160 min (approx. 2.67h) at pO₂ = 1.4 atm, ESOT = 346. Surface interval = 5 hours. Using the 3-hour curve (conservative), residual ≈20%. Residual ESOT = 346 × 0.20 = 69. Second dive ESOT = 130. Total = 69 + 130 = 199.</p>
+<h5>7.2  Important Limitations</h5>
+<ul>
+<li>Figure 1 should not be used for more than two successive exposures on the same day. For three or more exposures, texp must accumulate (see Equation 5 explanatory text in DMAC 35 Appendix II).</li>
+<li>The chart is a graphical approximation. The Section 08 calculator uses Equation 5 directly and is more precise.</li>
+<li>The slider in the interactive chart allows you to drag the surface interval and watch residual ESOT change in real time.</li>
+</ul>
+  </div>
+  <h2>Recovery Calculator</h2>
+  <p class="lead">After a hyperoxic dive, lung tissue heals progressively during the surface interval. DMAC 35 Equation 5 quantifies how much ESOT remains before your next dive. The recovery rate depends on how long the previous exposure lasted — not the pO₂.</p>
+
+  <div class="callout dmac">
+    <div class="callout-icon">🌙</div>
+    <div class="callout-body"><strong>The 12-Hour Rule</strong><p>Any continuous surface interval of 12 hours or more breathing normal air effectively zeros the ESOT clock — residual ESOT is treated as zero for planning purposes. For same-day repetitive dives with shorter intervals, always calculate residual ESOT using Eq. 5 or the calculator below.</p></div>
+  </div>
+
+  <div class="calc-wrap">
+    <div class="calc-title">Residual ESOT After Surface Interval (DMAC 35 Eq. 5)</div>
+    <div class="calc-grid">
+      <div class="input-group"><label>Initial ESOT <span>(end of previous dive)</span></label><input type="number" id="ri" value="346" min="1" max="2000" oninput="calcRec()"></div>
+      <div class="input-group"><label>Exposure Duration <span>(hours — previous dive total time)</span></label>
+        <div class="range-row"><input type="range" id="retr" min="0.1" max="12" step="0.1" value="2.67" oninput="document.getElementById('ret').value=parseFloat(this.value).toFixed(2);document.getElementById('retv').textContent=parseFloat(this.value).toFixed(2)+'h';calcRec()"><span class="range-val" id="retv">2.67h</span></div>
+        <input type="number" id="ret" value="2.67" min="0.1" max="24" step="0.1" oninput="document.getElementById('retr').value=Math.min(this.value,12);document.getElementById('retv').textContent=parseFloat(this.value).toFixed(2)+'h';calcRec()">
+        <span style="font-size:.72rem;color:var(--text3);font-family:var(--mono);">Convert: 60 min = 1.00h · 90 min = 1.50h · 120 min = 2.00h · 160 min = 2.67h · Values &gt;12h: type directly into the field above</span>
+      </div>
+      <div class="input-group"><label>Surface Interval <span>(hours breathing air)</span></label>
+        <div class="range-row"><input type="range" id="rtr" min="0.5" max="12" step="0.25" value="5" oninput="document.getElementById('rt').value=this.value;document.getElementById('rtv').textContent=this.value+'h';calcRec()"><span class="range-val" id="rtv">5h</span></div>
+        <input type="number" id="rt" value="5" min="0.25" max="24" step="0.25" oninput="document.getElementById('rtr').value=Math.min(this.value,12);document.getElementById('rtv').textContent=this.value+'h';calcRec()">
+      </div>
+    </div>
+    <div class="result-box show" id="rrec">
+      <div class="result-main" id="rrecv">64 <span>ESOT residual</span></div>
+      <div class="result-detail" id="rrecd"></div>
+    </div>
+  </div>
+
+  <h3>DMAC Figure 1 — Recovery Curves (Interactive)</h3>
+  <p style="font-size:.88rem;color:var(--text2);margin-bottom:.8rem;">Logarithmic Y-axis shows residual fraction (%) for six exposure durations. Drag the slider to explore any recovery time.</p>
+  <div class="rec-chart-wrap" style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.2rem 0;">
+    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:.8rem;">
+      <label style="font-family:var(--mono);font-size:.7rem;color:var(--text3);">Recovery Time:</label>
+      <input type="range" id="fig1Slider" min="0.5" max="12" step="0.5" value="5" oninput="drawFigure1(parseFloat(this.value));document.getElementById('fig1Val').textContent=this.value+'h'" style="flex:1;accent-color:var(--ocean);max-width:300px;">
+      <span id="fig1Val" style="font-family:var(--mono);font-size:.85rem;color:var(--ocean);font-weight:700;min-width:40px;">5h</span>
+    </div>
+    <canvas id="fig1Canvas" width="700" height="340" style="width:100%;border-radius:8px;background:white;"></canvas>
+    <div id="fig1Legend" style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.7rem;font-family:var(--mono);font-size:.65rem;"></div>
+  </div>
+
+  <!-- Chart explanation -->
+  <div style="background:white;border:1.5px solid var(--border);border-radius:14px;padding:1.5rem;margin-top:1rem;">
+    <h4 style="color:var(--ocean);margin-top:0;margin-bottom:1rem;font-size:1rem;">How to Read This Chart</h4>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;margin-bottom:1.2rem;">
+      <div>
+        <p style="font-size:.88rem;margin-bottom:.5rem;"><strong style="color:var(--text);">X-axis</strong> — time spent on the surface breathing normal air (0–12 hours).</p>
+        <p style="font-size:.88rem;margin-bottom:.5rem;"><strong style="color:var(--text);">Y-axis (logarithmic)</strong> — the fraction of your original ESOT that remains. <span style="font-family:var(--mono);font-size:.82rem;">1.00</span> means nothing has recovered yet; <span style="font-family:var(--mono);font-size:.82rem;">0.01</span> means 99% has cleared.</p>
+        <p style="font-size:.88rem;margin:0;"><strong style="color:var(--text);">The six curves</strong> — each line is a different preceding exposure duration, from 0.5 hours (dark blue, fastest recovery) to 6 hours (purple, slowest). The longer your preceding dive, the flatter the curve — your lungs heal more slowly.</p>
+      </div>
+      <div>
+        <p style="font-size:.88rem;margin-bottom:.6rem;"><strong style="color:var(--text);">Key insight: recovery rate depends on exposure duration, not pO₂.</strong> This is the core of DMAC 35 Equation 5. Two divers with the same ESOT but different dive durations will recover at different speeds — the one who accumulated that ESOT over a longer time recovers more slowly.</p>
+        <p style="font-size:.88rem;margin:0;">Drag the slider to any surface interval and read the coloured dots to see exactly how much ESOT each exposure duration carries into the next dive.</p>
+      </div>
+    </div>
+
+    <div class="callout safe" style="margin:0 0 1rem;">
+      <div class="callout-icon">✓</div>
+      <div class="callout-body"><strong>Why 12 hours? The maths behind the overnight rule</strong>
+      <p>Slide to 12h and every curve approaches or falls below 1% residual — at that point the difference between exposure durations is operationally negligible and the clock is treated as zeroed. At 8 hours, a heavy 6-hour exposure still carries ~10% residual. At 10.5 hours it is still ~8%. The 12-hour mandatory interval is specifically the point where the biology and the calculation converge into a clean, safe operational rule.</p></div>
+    </div>
+
+    <div style="background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:1rem 1.2rem;">
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--ocean);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">Example — reading the chart at 10.5h surface interval</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem;">
+        <div style="font-size:.8rem;"><span style="color:#0077b6;font-weight:700;">■ 0.5h exposure</span><br>→ 1.2% residual</div>
+        <div style="font-size:.8rem;"><span style="color:#00b4d8;font-weight:700;">■ 1h exposure</span><br>→ 1.5% residual</div>
+        <div style="font-size:.8rem;"><span style="color:#38b000;font-weight:700;">■ 2h exposure</span><br>→ 2.3% residual</div>
+        <div style="font-size:.8rem;"><span style="color:#f77f00;font-weight:700;">■ 3h exposure</span><br>→ 3.2% residual</div>
+        <div style="font-size:.8rem;"><span style="color:#d00037;font-weight:700;">■ 4h exposure</span><br>→ 4.5% residual</div>
+        <div style="font-size:.8rem;"><span style="color:#7209b7;font-weight:700;">■ 6h exposure</span><br>→ 7.8% residual</div>
+      </div>
+      <p style="font-size:.78rem;color:var(--text3);margin:.6rem 0 0;">If your original ESOT was 450 after a 6-hour exposure, you still carry ~35 ESOT into the next dive after 10.5 hours. Not zero — which is why the 12-hour rule exists.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S09 TABLES ============================================================ -->
+<section id="s09">
+<div class="wrapper">
+  <div class="section-label">Section 09</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s09" onclick="ctxHelpToggle('s09', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s09" role="region" aria-label="Help for s09">
+    <h4>6.  The Lookup Table (Section 09)</h4>
+<p>Section 09 contains the interactive ESOT lookup table, which reproduces Tables 3 and 4 from DMAC 35. It is designed for quick field use without a calculator.</p>
+<h5>6.1  How the Table Works</h5>
+<p>The table is indexed by pO₂ (rows) and exposure time in minutes (columns). The value at each intersection is the pre-calculated ESOT for that combination. The table covers pO₂ from 0.5 to 2.5 atm and times from 15 to 240 minutes.</p>
+<p>For exposure times not in the table columns, use the k-factor method: the k column gives pO₂^2.285 for each row. Multiply k by your actual exposure time in minutes to get ESOT. For example, at pO₂ = 1.4 atm, k = 2.16. A 75-minute exposure gives ESOT = 2.16 × 75 = 162.</p>
+<h5>6.2  Interactive Features</h5>
+<p>Hover over any cell in the guide&#x27;s table to see a tooltip showing the pO₂, time, and ESOT for that cell, plus its DMAC 35 limit status. Cells are colour-coded:</p>
+<ul>
+<li>Green — within the 7-day limit (≤450 ESOT)</li>
+<li>Amber — within the 5-day limit (≤500 ESOT)</li>
+<li>Orange — within the single-day limit (≤660 ESOT)</li>
+<li>Red — exceeds all DMAC 35 limits (&gt;660 ESOT)</li>
+</ul>
+<p>Using the table for multi-segment dives</p>
+<p>Read the ESOT for each segment from the relevant row and column, then add the values together. This is exactly what DMAC 35 Appendix I demonstrates with the worked examples. See Example 1 (Nitrox IW decompression) and Example 2 (SurDO₂) in Appendix III of DMAC 35 for a full walkthrough.</p>
+<h4>8.  Scientific Context (Sections 09 &amp; 12 of the Guide)</h4>
+<h4>8.1  Section 09 — Repex vs. DMAC 35 Comparison</h4>
+<p>This section of the guide presents a structured comparison between the historical Repex (UPTD-based) system and DMAC 35. It is intended to explain why the standard changed — not to provide dual operating limits. For all operational planning, use DMAC 35 values exclusively.</p>
+<p>Key differences:</p>
+  </div>
+  <h2>Reference Tables</h2>
+  <p class="lead">Integrated DMAC 35 lookup tables. Familiarise yourself with these values before working through the guided examples in Section 10 — particularly the ESOT lookup table, where you can find kp values for common pO₂ and time combinations.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('tt1',this)">ESOT Lookup</button>
+    <button class="tab-btn" onclick="showTab('tt2',this)">VC Reduction</button>
+    <button class="tab-btn" onclick="showTab('tt3',this)">Recovery Fractions</button>
+  </div>
+
+  <div id="tt1" class="tab-content active">
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:.5rem;">ESOT = kp × time. Colour-coded: <span class="chip safe">green ≤450</span> <span class="chip warn">amber ≤500</span> <span class="chip warn2">orange ≤660</span> <span class="chip danger">red &gt;660</span>. Source: DMAC 35 Rev.1 + Risberg &amp; van Ooij, UHM 2022 (merged time columns).</p>
+    <div style="margin-bottom:.8rem;display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:.78rem;font-family:var(--mono);color:var(--text3);">Highlight pO₂ row:</span>
+      <select style="background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:6px;padding:.35rem .7rem;font-family:var(--mono);font-size:.78rem;width:auto;" id="t1f" onchange="hiT1()">
+        <option value="">— none —</option>
+        <option>0.5</option><option>0.6</option><option>0.7</option><option>0.8</option><option>0.9</option><option>1.0</option>
+        <option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option>1.5</option><option>1.6</option>
+        <option>1.9</option><option>2.2</option><option>2.5</option>
+      </select>
+    </div>
+    <div class="tbl-wrap"><table id="tbl1"><thead><tr><th>pO₂ (atm)</th><th>kp</th><th>5</th><th>10</th><th>15</th><th>20</th><th>30</th><th>40</th><th>60</th><th>80</th><th>90</th><th>120</th><th>150</th><th>180</th><th>240</th></tr></thead><tbody id="t1b"></tbody></table></div>
+    <p style="font-size:.75rem;color:var(--text3);margin-top:.5rem;">For times not listed: ESOT = kp × time (min). Air breaks (5 min per 20–30 min O₂ breathing) do not contribute to ESOT and may be excluded from calculations. This table does not address CNS oxygen toxicity.</p>
+  </div>
+
+  <div id="tt2" class="tab-content">
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:.8rem;">Predicted ΔVC from DMAC 35 Eq. 6: ΔVC = 0.0082 × (ESOT/60)². Median values only — individual variation is substantial.</p>
+    <div class="tbl-wrap"><table style="min-width:unset;"><thead><tr><th>ESOT</th><th>ΔVC (%)</th><th>DMAC 35 Limit Tier</th><th>Status</th></tr></thead><tbody id="t2b"></tbody></table></div>
+  </div>
+
+  <div id="tt3" class="tab-content">
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:.8rem;">Residual fraction (%) of ESOT remaining after surface interval. Calculated from DMAC 35 Eq. 5 (r=0.439, s=0.906).</p>
+    <div class="tbl-wrap"><table id="tbl3"><thead><tr><th>Recovery Time (h)</th><th>0.5h exp.</th><th>1h exp.</th><th>2h exp.</th><th>3h exp.</th><th>4h exp.</th><th>6h exp.</th></tr></thead><tbody id="t3b"></tbody></table></div>
+    <p style="font-size:.75rem;color:var(--text3);margin-top:.5rem;">≥12h surface interval → residual treated as zero. Do not use for &gt;2 successive same-day exposures without medical advisor.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S10 EXAMPLES ============================================================ -->
+<section id="s10">
+<div class="wrapper">
+  <div class="section-label">Section 10 <span class="sl-dmac">DMAC 35 APPENDIX III — INTERACTIVE</span></div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s10" onclick="ctxHelpToggle('s10', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s10" role="region" aria-label="Help for s10">
+    <h4>5.4  Section 10 — Worked Examples (Calculators A, B, C)</h4>
+<p>Section 10 provides three fully worked examples that demonstrate how to apply the formulas in realistic operational scenarios:</p>
+<p>Each worked example shows the full step-by-step calculation with intermediate values. Adjust the sliders and inputs to explore how changing surface intervals, gas mixes, or bottom times affect the final result.</p>
+  </div>
+  <h2>Worked Example Calculators</h2>
+  <p class="lead">Three interactive calculators based on DMAC 35 Appendix III examples. Every step updates live as you change parameters — teaching you exactly how to apply the methodology in practice. Default values match the official DMAC 35 examples.</p>
+
+  <!-- CALC A -->
+  <div class="example-card">
+    <div class="example-header">
+      <div><h4>Calculator A — Nitrox In-Water Decompression Dive</h4><p style="color:rgba(255,255,255,.8);font-size:.82rem;margin:.3rem 0 0;">Nitrox bottom gas · In-water staged decompression stop</p></div>
+      <span class="example-tag">DMAC 35 Example 1</span>
+    </div>
+    <div class="example-body">
+      <div class="calc-grid" style="margin-bottom:1.2rem;">
+        <div class="input-group"><label>Bottom Depth <span>(msw)</span></label><input type="number" id="a_depth" value="24" min="1" max="100" oninput="calcA()"></div>
+        <div class="input-group"><label>Bottom Time <span>(min)</span></label><input type="number" id="a_bt" value="120" min="1" max="360" oninput="calcA()"></div>
+        <div class="input-group"><label>Bottom Gas O₂ <span>(%)</span></label><input type="number" id="a_fio2" value="40" min="22" max="100" oninput="calcA()"></div>
+        <div class="input-group"><label>Deco Stop Depth <span>(msw)</span></label><input type="number" id="a_ddepth" value="3" min="1" max="30" oninput="calcA()"></div>
+        <div class="input-group"><label>Deco Stop Time <span>(min)</span></label><input type="number" id="a_dt" value="36" min="1" max="240" oninput="calcA()"></div>
+        <div class="input-group"><label>Deco Gas O₂ <span>(%)</span></label><input type="number" id="a_dfio2" value="40" min="21" max="100" oninput="calcA()"></div>
+      </div>
+      <div class="calc-steps" id="a_steps"></div>
+      <div class="example-result" id="a_result" style="display:none;">
+        <div><div class="total-label">Total ESOT</div><div class="ex-res-val" id="a_total">—</div></div>
+        <div id="a_chips"></div>
+        <div class="ex-verdict" id="a_verdict"></div>
+      </div>
+      <div class="callout info" style="margin-top:1rem;"><div class="callout-icon">💡</div><div class="callout-body"><strong>How kp is determined</strong><p>kp = pO₂<sup>2.285</sup>. For any pO₂ not in the lookup table, use the exact formula as this calculator does. The Section 09 table gives pre-computed kp values for common pO₂ levels.</p></div></div>
+    </div>
+  </div>
+
+  <!-- CALC B -->
+  <div class="example-card">
+    <div class="example-header">
+      <div><h4>Calculator B — SurDO₂ / DDC Decompression Dive</h4><p style="color:rgba(255,255,255,.8);font-size:.82rem;margin:.3rem 0 0;">Nitrox bottom gas · Surface decompression with O₂ in deck decompression chamber</p></div>
+      <span class="example-tag">DMAC 35 Example 2</span>
+    </div>
+    <div class="example-body">
+      <div class="calc-grid" style="margin-bottom:1.2rem;">
+        <div class="input-group"><label>Bottom Depth <span>(msw)</span></label><input type="number" id="b_depth" value="24" min="1" max="100" oninput="calcB()"></div>
+        <div class="input-group"><label>Bottom Time <span>(min)</span></label><input type="number" id="b_bt" value="120" min="1" max="360" oninput="calcB()"></div>
+        <div class="input-group"><label>Bottom Gas O₂ <span>(%)</span></label><input type="number" id="b_fio2" value="40" min="22" max="100" oninput="calcB()"></div>
+        <div class="input-group"><label>DDC Equivalent Depth <span>(msw)</span></label><input type="number" id="b_ddcdepth" value="12" min="1" max="30" oninput="calcB()"></div>
+        <div class="input-group"><label>DDC O₂ Breathing Time <span>(min)</span></label><input type="number" id="b_ddct" value="30" min="1" max="120" oninput="calcB()"></div>
+        <div class="input-group"><label>DDC Gas O₂ <span>(% — BIBS O₂ = 100%)</span></label><input type="number" id="b_ddcfio2" value="100" min="50" max="100" oninput="calcB()"></div>
+      </div>
+      <div class="calc-steps" id="b_steps"></div>
+      <div class="example-result" id="b_result" style="display:none;">
+        <div><div class="total-label">Total ESOT</div><div class="ex-res-val" id="b_total">—</div></div>
+        <div id="b_chips"></div>
+        <div class="ex-verdict" id="b_verdict"></div>
+      </div>
+      <div class="callout warn" style="margin-top:1rem;"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Compare A and B with identical bottom phases</strong><p>Change Calc B to match Calc A's bottom phase and see how much ESOT the DDC O₂ adds. At 12msw, breathing 100% O₂ produces pO₂ = 2.2 atm and kp = 6.06 — the SurDO₂ penalty is immediately visible as a percentage of the total.</p></div></div>
+    </div>
+  </div>
+
+  <!-- CALC C -->
+  <div class="example-card">
+    <div class="example-header">
+      <div><h4>Calculator C — Same-Day Repetitive Dive with Residual ESOT</h4><p style="color:rgba(255,255,255,.8);font-size:.82rem;margin:.3rem 0 0;">Two dives in one day · Surface interval recovery · DMAC 35 Eq. 5</p></div>
+      <span class="example-tag">DMAC 35 Example 3</span>
+    </div>
+    <div class="example-body">
+      <div class="rep-grid" style="margin-bottom:1.2rem;">
+        <div>
+          <div style="font-family:var(--mono);font-size:.7rem;color:var(--ocean);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:2px solid var(--border);">Dive 1</div>
+          <div class="input-group" style="margin-bottom:.7rem;"><label>Bottom Depth <span>(msw)</span></label><input type="number" id="c_d1depth" value="21" min="1" max="100" oninput="calcC()"></div>
+          <div class="input-group" style="margin-bottom:.7rem;"><label>Bottom Time <span>(min)</span></label><input type="number" id="c_d1bt" value="160" min="1" max="400" oninput="calcC()"></div>
+          <div class="input-group"><label>O₂ fraction <span>(%)</span></label><input type="number" id="c_d1fio2" value="45" min="22" max="100" oninput="calcC()"></div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:.7rem;color:var(--ocean);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:2px solid var(--border);">Dive 2</div>
+          <div class="input-group" style="margin-bottom:.7rem;"><label>Bottom Depth <span>(msw)</span></label><input type="number" id="c_d2depth" value="21" min="1" max="100" oninput="calcC()"></div>
+          <div class="input-group" style="margin-bottom:.7rem;"><label>Bottom Time <span>(min)</span></label><input type="number" id="c_d2bt" value="60" min="1" max="400" oninput="calcC()"></div>
+          <div class="input-group"><label>O₂ fraction <span>(%)</span></label><input type="number" id="c_d2fio2" value="45" min="22" max="100" oninput="calcC()"></div>
+        </div>
+      </div>
+      <div class="input-group" style="max-width:320px;margin-bottom:1.2rem;">
+        <label>Surface Interval <span>(hours between dives)</span></label>
+        <div class="range-row"><input type="range" id="c_sir" min="0.5" max="12" step="0.5" value="5" oninput="document.getElementById('c_si').value=this.value;document.getElementById('c_siv').textContent=this.value+'h';calcC()"><span class="range-val" id="c_siv">5h</span></div>
+        <input type="number" id="c_si" value="5" min="0.5" max="24" step="0.5" oninput="document.getElementById('c_sir').value=Math.min(this.value,12);document.getElementById('c_siv').textContent=this.value+'h';calcC()">
+      </div>
+      <div class="calc-steps" id="c_steps"></div>
+      <div class="example-result" id="c_result" style="display:none;">
+        <div><div class="total-label">Total Daily ESOT</div><div class="ex-res-val" id="c_total">—</div></div>
+        <div id="c_chips"></div>
+        <div class="ex-verdict" id="c_verdict"></div>
+      </div>
+      <div class="callout info" style="margin-top:1rem;"><div class="callout-icon">🔄</div><div class="callout-body"><strong>Adjust the surface interval slider</strong><p>Watch how residual ESOT in Step 2 changes as you lengthen or shorten the interval. At ≥12h, the ESOT clock resets to zero. At 1h, very little recovery has occurred.</p></div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S11 LIMITS ============================================================ -->
+<section id="s11" style="background:rgba(0,40,90,.03);">
+<div class="wrapper">
+  <div class="section-label">Section 11 <span class="sl-dmac">DMAC 35 TABLE 2</span></div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s11" onclick="ctxHelpToggle('s11', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s11" role="region" aria-label="Help for s11">
+    <h4>4.  DMAC 35 Limits and Operational Rules (Sections 05 &amp; 11)</h4>
+<h5>4.1  The Exposure Limits — DMAC 35 Table 2 / Table 5</h5>
+<p>The limits below are the authoritative values from DMAC 35 Rev.1. They appear in Section 05 and Section 11 of the guide (Section 11 is the full operational reference):</p>
+<p>How to read this table:</p>
+<ul>
+<li>The limit that applies is determined by the highest daily ESOT on ANY day in the dive series. If you have six days at 430 ESOT but one day hits 460, the 5-day rule (max 500) governs — and you have already exceeded five days, requiring a break.</li>
+<li>&quot;Daily&quot; means any rolling 24-hour period, not necessarily a calendar day.</li>
+<li>&quot;After the series&quot; means after completing the maximum number of consecutive days. The two recovery days can be used for air-only in-water dives (see below).</li>
+<li>The &gt;7 days row is not a higher limit — it means the situation requires individual medical assessment. There is no standard limit for such exposures.</li>
+</ul>
+<h5>4.2  Operational Rules (Not Just Numbers)</h5>
+<p>The limits table captures the numbers, but DMAC 35 also specifies several operational rules that must be observed:</p>
+<h5>4.3  When to Call the Diving Medical Advisor</h5>
+<p>DMAC 35 explicitly requires a Diving Medical Advisor (DMA) in the following situations:</p>
+<ul>
+<li>Any planned diving beyond 7 consecutive days of hyperoxic exposure</li>
+<li>A diver reports respiratory symptoms at any exposure level</li>
+<li>A risk assessment is needed to relax any limit (e.g. shorter than 12h overnight interval)</li>
+<li>Planned multi-week SurDO₂ or TUP operations</li>
+<li>Divers with pre-existing respiratory conditions</li>
+</ul>
+<h5>5.  The Calculators — Section-by-Section</h5>
+<p>The guide contains eight distinct calculators across Sections 06, 07, 08, and 10. This section explains what each one does, what inputs it needs, and how to interpret the output.</p>
+  </div>
+  <h2>DMAC 35 Exposure Limits &amp; Operational Rules</h2>
+  <p class="lead">The complete operational framework from DMAC 35 Rev.1 (February 2025) — limits, recovery requirements, and the specific rules that govern multi-day diving operations.</p>
+
+  <table class="limits-table">
+    <thead><tr><th>Max Consecutive Days</th><th>Daily Maximum ESOT</th><th>Min. Overnight Recovery</th><th>Recovery After Series</th></tr></thead>
+    <tbody>
+      <tr class="l-safe"><td class="l-days">1 day</td><td class="l-esot">660</td><td>N/A (single day)</td><td>48 h before next hyperoxic day (DMAC Table 5)</td></tr>
+      <tr class="l-warn"><td class="l-days">Up to 5 days</td><td class="l-esot">500</td><td>12h per night</td><td>2 days off diving</td></tr>
+      <tr class="l-warn2"><td class="l-days">Up to 7 days</td><td class="l-esot">450</td><td>12h per night</td><td>2 days off diving</td></tr>
+      <tr class="l-alert"><td class="l-days">&gt;7 days</td><td colspan="3" style="text-align:center;color:var(--danger);font-weight:600;font-family:var(--mono);">Must be assessed by a qualified Diving Medical Advisor</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout safe" style="margin-top:1rem;">
+    <div class="callout-icon">🔬</div>
+    <div class="callout-body"><strong>Independent corroboration from TUP diving research</strong><p>Risberg &amp; van Ooij (2022) independently recommended daily hyperoxic exposure K ≤ 50 for multi-day TUP diving operations. Converting to ESOT: ESOT = 60 × √50 = <strong>~424 ESOT/day</strong> — sitting just below DMAC 35's 7-day limit of 450. This convergence from an independent research pathway strengthens confidence that the 450 limit is well-founded, not arbitrary.</p></div>
+  </div>
+
+  <div class="decision-grid">
+    <div class="decision-card dc-green">
+      <div class="dc-esot">≤ 450</div><div class="dc-days">7-day profile</div>
+      <p>Well within limits. Suitable for extended multi-day operations up to 7 consecutive days.</p>
+      <div class="dc-rec">12h overnight rest required · 2 days off after series</div>
+    </div>
+    <div class="decision-card dc-amber">
+      <div class="dc-esot">451–500</div><div class="dc-days">5-day profile</div>
+      <p>Within 5-day limit only. After 5 consecutive days at this level, 2 days off required before resuming.</p>
+      <div class="dc-rec">12h overnight rest required · 2 days off after series</div>
+    </div>
+    <div class="decision-card dc-orange">
+      <div class="dc-esot">501–660</div><div class="dc-days">Single day only</div>
+      <p>Exceeds 5-day limit. Maximum 1 day. Requires 48h rest before next hyperoxic exposure.</p>
+      <div class="dc-rec">48h off (or air dives) before next hyperoxic exposure</div>
+    </div>
+    <div class="decision-card dc-red">
+      <div class="dc-esot">&gt; 660</div><div class="dc-days">Exceeds all limits</div>
+      <p>Exceeds DMAC 35 single-day maximum. Contact Diving Medical Advisor. Review dive planning.</p>
+      <div class="dc-rec">Medical Advisor required before resuming hyperoxic diving</div>
+    </div>
+  </div>
+
+  <h3>Full Operational Rules</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1rem 0;">
+    <div class="callout dmac" style="margin:0;"><div class="callout-icon">🌙</div><div class="callout-body"><strong>Mandatory 12h overnight normoxic interval</strong><p>Every 24h period must include at least 12 continuous hours breathing normal air. This applies to all multi-day hyperoxic diving operations without exception.</p></div></div>
+    <div class="callout info" style="margin:0;"><div class="callout-icon">☀️</div><div class="callout-body"><strong>Air breaks delay POT development</strong><p>Intermittent breathing of compressed air during hyperoxic exposure slows the development of pulmonary oxygen toxicity. This can allow relaxation of certain limits with proper medical oversight.</p></div></div>
+    <div class="callout info" style="margin:0;"><div class="callout-icon">📅</div><div class="callout-body"><strong>Air dives permitted on recovery days</strong><p>Air-only in-water dives adhering to HSE bottom-time restrictions are permitted on designated "off" days. This flexibility allows continued operations during recovery periods.</p></div></div>
+    <div class="callout info" style="margin:0;"><div class="callout-icon">📅</div><div class="callout-body"><strong>Two recovery days after any multi-day series</strong><p>Following any hyperoxic diving series (5 or 7 day), the diver should have two days off (or air diving only) before resuming nitrox or SurDO₂ diving.</p></div></div>
+    <div class="callout warn" style="margin:0;"><div class="callout-icon">👤</div><div class="callout-body"><strong>Individual variation is large</strong><p>No limit protects everyone equally. Some divers develop symptoms at lower doses. Report any respiratory symptoms immediately — even if calculated ESOT is within limits.</p></div></div>
+    <div class="callout danger" style="margin:0;"><div class="callout-icon">🩺</div><div class="callout-body"><strong>When to call a Diving Medical Advisor</strong><p>Any diving beyond 7 consecutive days, symptoms at low exposure, planned SurDO₂ multi-week operations, or any diver with pre-existing respiratory conditions.</p></div></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S12 STERK CRITIQUE ============================================================ -->
+<section id="s12" style="background:rgba(160,80,0,.03);">
+<div class="wrapper">
+  <div class="section-label">Section 12 <span class="sl-crit">CRITICAL APPRAISAL</span></div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s12" onclick="ctxHelpToggle('s12', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s12" role="region" aria-label="Help for s12">
+    <h4>8.2  Section 12 — Limitations and Dissenting Views</h4>
+<p>DMAC 35 itself acknowledges that there is large individual variation in susceptibility to POT and that the models are not infallible. Section 12 of the guide presents these caveats and also includes a structured discussion of dissenting scientific views — most notably the argument by Sterk (van Ooij group) that extrapulmonary and systemic effects of hyperoxia are not fully captured by pulmonary-only models.</p>
+<p>This section is included to give users a complete picture of the science. However, for operational purposes, DMAC 35 Rev.1 is the current formal regulatory standard and should be followed unless a risk assessment reviewed by a competent diving physician has concluded otherwise.</p>
+<h5>9.  Quick Reference — Key Numbers at a Glance</h5>
+<h5>10.  Frequently Asked Questions</h5>
+<p>Q: The UPTD panel shows a different number to ESOT for the same dive. Which do I use?</p>
+<p>Always use ESOT for operational planning under DMAC 35. UPTD is shown for historical comparison only and cannot be checked against DMAC 35 limits. The two indices only agree at pO₂ = 1.0 atm.</p>
+<p>Q: My daily ESOT is 420 for 10 consecutive days. Is that within limits?</p>
+<p>No. 420 ESOT/day is within the 7-day tier (≤450), but 10 consecutive days exceeds the maximum of 7 days for that tier. After 7 days at this level, 2 rest days are required. Beyond 7 consecutive hyperoxic days in total, a Diving Medical Advisor must be consulted regardless of daily ESOT.</p>
+<p>Q: I have historical dive records in UPTD. Do I need to convert them?</p>
+<p>Only if you want to compare them against ESOT-based limits. Use the UPTD → ESOT converter in Section 06 of the guide (under the Legacy Records collapsible). Note that the conversion requires knowing the pO₂ of the original exposure, not just the UPTD value.</p>
+<p>Q: Can I use the guide on a tablet or phone?</p>
+<p>Yes. The HTML is fully responsive and designed to work on any screen size. Open it in the device&#x27;s web browser just as you would on a desktop.</p>
+<p>Q: My surface interval is 8 hours. Do I need to calculate residual ESOT?</p>
+<p>Yes — the 8-hour surface interval is less than the 12-hour threshold. Use Section 08 of the guide or Equation 5 directly. Enter the initial ESOT, the exposure duration (texp) of the first dive, and 8 hours as the recovery time. Add the resulting residual ESOT to the ESOT of the second dive.</p>
+<p>Q: The guide mentions that air breaks slow POT. Does this mean I don&#x27;t need to track ESOT during air breaks?</p>
+<p>Correct — ESOT does not accumulate during air breaks because the pO₂ is negligible (approximately 0.21 atm at surface). Air break periods do not need to be included in ESOT calculations. The operational standard for air break frequency is 5 minutes of air per 20–30 minutes of O₂ breathing, depending on the procedure in use (DCD: 5/20; USN: 5/30).</p>
+<p>Q: DMAC 35 says 660 ESOT is the single-day maximum. Does that mean exactly 660 is acceptable?</p>
+<p>DMAC 35 states the dive should be planned to keep ESOT lower than 660. Values right at the limit should be reviewed carefully. The 48-hour recovery requirement after a 501–660 ESOT day is mandatory. For planned multi-day series, it is strongly advisable to keep daily ESOT below 500 or 450 to maintain multi-day operational flexibility.</p>
+<p>Q: The formula for recovery uses the exponent s^texp. What if texp is longer than 6 hours?</p>
+<p>Equation 5 has no mathematical upper limit on texp. However, DMAC 35 Figure 1 (which the guide reproduces) only shows curves up to 6 hours, and DMAC 35 Appendix I notes the figure should not be used for more than two consecutive exposures on the same day. For texp exceeding 6 hours or complex same-day multi-dive scenarios, the calculator in Section 08 applies Equation 5 directly. Very long texp values will produce a slow recovery rate — meaning more residual ESOT carries over. When in doubt, apply a conservative (longer) texp estimate.</p>
+<h5>11.  Disclaimer and Authoritative Sources</h5>
+<p>This document is a companion guide only</p>
+<p>The O₂TOX HTML guide and this companion document are educational tools prepared to assist users in understanding and applying DMAC 35 Rev.1. They are not substitutes for the authoritative source documents. All operational decisions should be based on DMAC 35 Rev.1 (February 2025) as published by the Diving Medical Advisory Committee (www.dmac-diving.org), with qualified diving medical advice where required.</p>
+<p>Authoritative source documents:</p>
+<ul>
+<li>DMAC 35 Rev.1 (February 2025) — available from www.dmac-diving.org</li>
+<li>Risberg J, van Ooij PJ. Hyperoxic exposure monitoring in diving: A farewell to the UPTD. Undersea Hyperb Med. 2022;49(4):395–413</li>
+<li>Risberg J, van Ooij PJ, Matity L. From UPTD to ESOT: Monitoring hyperoxic exposure in surface-oriented diving. Undersea Hyperb Med. 2023;50(3):301–6</li>
+<li>Risberg J, van Ooij P, Matity L. Recovery from pulmonary oxygen toxicity: a new (ESOT) model. Undersea Hyperb Med. 2024 [Accepted]</li>
+</ul>
+<p>The HTML guide has been verified against DMAC 35 Rev.1 for mathematical accuracy. All formulas, constants, and limit values have been independently checked against the source document. If any discrepancy is found, the published DMAC 35 document takes precedence.</p>
+<p>End of Companion Reference Document</p>
+  </div>
+  <h2>A Counter-Perspective: Is OTU Still Valid?</h2>
+  <p class="lead">Now that you fully understand ESOT and DMAC 35, you are in a position to evaluate this debate. Prof. Dr. W. Sterk (The Netherlands) is not only an independent diving medicine researcher — he is the developer of the proprietary <strong>AoxTUP2B (DCD TUP) decompression tables</strong>, used commercially by N-Sea, described as the single largest operator of North Sea offshore TUP diving in recent years. His arguments against replacing OTU with ESOT — grounded in decades of operational experience and real-world table development — deserve careful consideration alongside the formal standard.</p>
+
+  <div style="background:white;border:2px solid var(--warn2);border-radius:14px;padding:1.5rem 2rem;margin-bottom:2rem;box-shadow:0 3px 16px rgba(200,80,0,.08);display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;">
+    <div style="font-size:2.5rem;flex-shrink:0;">⚖️</div>
+    <div style="flex:1;">
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--warn2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Professional Discussion &amp; Conclusions — Not a formally published paper</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:.2rem;">A Critical Appraisal of ESOT Versus OTU-Based Oxygen Exposure Limits in Surface-Oriented Diving</div>
+      <div style="font-size:.88rem;color:var(--text2);">Prof. Dr. W. Sterk — Diving Medicine Researcher &amp; Developer of DCD TUP Decompression Tables (AoxTUP2B), The Netherlands</div>
+      <div style="font-size:.78rem;color:var(--text3);margin-top:.4rem;font-family:var(--mono);">Based on operational evidence from the Oosterschelde Project (1984–1988) and approximately 40 years of OTU field experience.</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-icon">📌</div>
+    <div class="callout-body"><strong>Context for the Reader</strong><p>This section presents Sterk's arguments as fairly as possible. DMAC 35 is the current formal regulatory standard. Sterk's critique represents a legitimate and experienced counter-view. Both perspectives are presented here because operational divers and supervisors benefit from understanding the ongoing scientific debate.</p></div>
+  </div>
+
+  <h3>Sterk's Core Arguments</h3>
+  <div class="arg-grid">
+    <div class="arg-card"><div class="arg-num">ARGUMENT 1</div><h4>Minimal Practical Difference</h4><p style="font-size:.88rem;color:var(--text2);margin:0;">When ESOT and OTU values are calculated side by side within real decompression tables, the numerical differences are small. Operational decision thresholds remain essentially unchanged. The theoretical refinement may not translate to meaningful field benefit.</p></div>
+    <div class="arg-card"><div class="arg-num">ARGUMENT 2</div><h4>40 Years of Validated OTU Evidence</h4><p style="font-size:.88rem;color:var(--text2);margin:0;">OTU-based limits have approximately four decades of operational application, including the extensive Oosterschelde storm surge barrier project (1984–1988). No evidence of unacceptable oxygen-related morbidity has emerged when limits are properly followed. ESOT has not yet matched this empirical record.</p></div>
+    <div class="arg-card"><div class="arg-num">ARGUMENT 3</div><h4>Systemic Symptoms Not Modelled</h4><p style="font-size:.88rem;color:var(--text2);margin:0;">Oosterschelde divers showed oxygen-related symptoms beyond lung function changes: extreme fatigue, musculoskeletal pain, paresthesia, dizziness, nausea, headache — some resembling DCS. Neither ESOT nor UPTD models these systemic effects, leaving an unresolved gap in any purely pulmonary index.</p></div>
+    <div class="arg-card"><div class="arg-num">ARGUMENT 4</div><h4>Recovery Modelling Questioned</h4><p style="font-size:.88rem;color:var(--text2);margin:0;">ESOT's modelled recovery suggests near-elimination after ~12 hours. Yet DMAC 35 still mandates non-diving periods after prolonged exposure — implicitly recognising that the mathematical recovery model may not fully reflect physiological reality. Cumulative systemic stress may persist beyond what the formula predicts.</p></div>
+    <div class="arg-card"><div class="arg-num">ARGUMENT 5</div><h4>Operational Simplicity Matters</h4><p style="font-size:.88rem;color:var(--text2);margin:0;">Increased computational complexity without demonstrable safety benefit may introduce confusion in the field. The OTU system, widely understood and embedded in existing procedures, delivers operational clarity that ESOT has not yet fully replaced in practice.</p></div>
+    <div class="arg-card"><div class="arg-num">ARGUMENT 6</div><h4>Validation Gap</h4><p style="font-size:.88rem;color:var(--text2);margin:0;">Long-term field validation of ESOT comparable to OTU-based systems is still lacking. ESOT is mathematically sound, but operational diving safety demands more than theory — it requires accumulated real-world evidence. Replacing established limits before that evidence exists carries its own risk.</p></div>
+  </div>
+
+  <h3>The Oosterschelde Evidence Base</h3>
+  <div style="background:white;border:2px solid var(--border);border-radius:14px;overflow:hidden;margin:1rem 0;">
+    <div style="background:linear-gradient(135deg,#3a3a3a,#1a1a2a);color:white;padding:1.1rem 1.5rem;">
+      <h4 style="color:white;margin:0;">Oosterschelde Storm Surge Barrier Project, Netherlands (1984–1988)</h4>
+      <p style="color:rgba(255,255,255,.75);font-size:.8rem;margin:.3rem 0 0;">One of the largest civil engineering dive operations in history — a key dataset for operational oxygen exposure research</p>
+    </div>
+    <div style="padding:1.3rem 1.5rem;">
+      <p style="font-size:.88rem;color:var(--text2);">This project generated extensive real-world data on repetitive hyperoxic exposure in working divers. The observation of systemic symptoms — some mimicking DCS — highlighted that cumulative oxygen stress may have physiological dimensions beyond what any single pulmonary index captures. In the field, differential diagnosis between oxygen toxicity and DCS was difficult without laboratory testing.</p>
+    </div>
+  </div>
+
+  <h3>Where Both Sides Agree</h3>
+  <div class="callout safe">
+    <div class="callout-icon">✓</div>
+    <div class="callout-body"><strong>Points of convergence</strong><p>Both ESOT/DMAC 35 and Sterk's OTU framework converge on approximately 450 units/day as a safe limit for multi-day operations. Both systems require overnight recovery and rest days after extended series. Both acknowledge individual variation. The debate is about the underlying model — not about the fundamental need for exposure limits.</p></div>
+  </div>
+
+  <div class="callout dmac">
+    <div class="callout-icon">📋</div>
+    <div class="callout-body"><strong>Bottom Line</strong><p>DMAC 35 Rev.1 (2025) is the current formal regulatory standard and should be followed operationally. Sterk's concerns about systemic effects and overconfidence in recovery models deserve ongoing scientific attention. Both perspectives sharpen your understanding of why monitoring oxygen exposure is not simply a mathematical exercise — it involves real physiological complexity.</p></div>
+  </div>
+
+  <h3>What This Means in Practice</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0;">
+    <div class="callout safe" style="margin:0;"><div class="callout-icon">✓</div><div class="callout-body"><strong>Follow DMAC 35 — it is the law</strong><p>ESOT and the DMAC 35 limits are the required regulatory framework. Compliance is not optional. Use this guide's calculators and stay within the published limits.</p></div></div>
+    <div class="callout warn" style="margin:0;"><div class="callout-icon">👂</div><div class="callout-body"><strong>Take symptoms seriously at any ESOT level</strong><p>Sterk's systemic symptom data means you should not dismiss fatigue, joint pain, or neurological symptoms simply because your calculated ESOT is within limits. Report everything to your Diving Medical Advisor.</p></div></div>
+    <div class="callout info" style="margin:0;"><div class="callout-icon">📉</div><div class="callout-body"><strong>Treat limits as ceilings, not targets</strong><p>Sterk's validation concern is best addressed by accumulating less exposure over time, not more. Experienced supervisors plan dives well below the maximum — the limits exist for emergencies, not routine daily targets.</p></div></div>
+    <div class="callout dmac" style="margin:0;"><div class="callout-icon">🔬</div><div class="callout-body"><strong>Recovery models are estimates — behave accordingly</strong><p>The Eq. 5 recovery curve is well-validated but not infallible. Mandatory rest days exist precisely because the mathematical model cannot capture all individual variation. Do not use the calculator to justify cutting rest short.</p></div></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ S13 QUIZ ============================================================ -->
+<section id="s13">
+<div class="wrapper">
+  <div class="section-label">Section 13</div>
+  <div class="ctx-help-row">
+    <button class="ctx-help-btn" type="button" aria-expanded="false" aria-controls="ctx-help-panel-s13" onclick="ctxHelpToggle('s13', this)">?</button>
+    <span class="ctx-help-hint">Help for this section</span>
+  </div>
+  <div class="ctx-help-panel" id="ctx-help-panel-s13" role="region" aria-label="Help for s13">
+    <h4>Section 13 — Quiz &amp; self-check</h4>
+<p>Use the quiz as a quick check that you understand the key concepts (pO₂, ESOT accumulation, recovery, and the DMAC 35 consecutive-day limits).</p>
+<p>A reference quiz to test understanding</p>
+  </div>
+  <h2>Knowledge Check</h2>
+  <p class="lead">15 questions covering ESOT science, DMAC 35 operational rules, and the Sterk critique. Answer each question — the correct answer and explanation are revealed immediately.</p>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:.8rem;">
+    <button class="calc-btn sec" onclick="resetQuiz()" style="font-size:.75rem;">↺ Reset Quiz</button>
+  </div>
+
+  <div id="quizBox"></div>
+  <div class="quiz-score" id="quizScore">
+    <div class="score-num" id="scoreNum">0/15</div>
+    <div class="score-bar"><div class="score-bar-inner" id="scoreBarInner" style="width:0%"></div></div>
+    <p style="color:var(--text3);margin-top:.5rem;" id="scoreMsg"></p>
+    <button class="calc-btn" style="margin-top:1.2rem;" onclick="resetQuiz()">↺ Try Again</button>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="wrapper">
+    <strong>ESOT &amp; DMAC 35 Interactive Guide</strong><br>
+    Prepared by F. Schrijver &amp; M. Jeffery · Based on Risberg &amp; van Ooij, Undersea Hyperb Med. 2022;49:395–413 &amp; DMAC 35 Rev.1 Feb 2025<br>
+    <span style="font-size:.7rem;">For educational purposes. Always consult a qualified Diving Medical Advisor for operational decisions. DMAC 35 is the authoritative regulatory document.</span>
+  </div>
+</footer>
+
+
+
+<script>
+// ============================================================
+// UTILITIES
+// ============================================================
+function showTab(id,btn){
+  const parent=btn.closest('section')||document;
+  parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleCollapse(id,hdr){
+  const b=document.getElementById(id);
+  const open=b.classList.toggle('open');
+  hdr.querySelector('span:first-child').textContent=(open?'▼ ':'▶ ')+hdr.querySelector('span:first-child').textContent.slice(2);
+}
+// Status helper
+function statusInfo(e){
+  if(e<=450)return{col:var_safe,bg:'rgba(0,107,53,.1)',txt:'✓ Within daily ESOT for ≤7 consecutive days. >7 days requires Diving Medical Advisor.',lbl:'7-day'};
+  if(e<=500)return{col:var_warn,bg:'rgba(160,112,0,.1)',txt:'⚠ 5-day limit only (451–500). >7 days requires Diving Medical Advisor.',lbl:'5-day'};
+  if(e<=660)return{col:var_warn2,bg:'rgba(200,80,0,.1)',txt:'⚠ Single day only (501–660)',lbl:'1-day'};
+  return{col:var_danger,bg:'rgba(192,0,42,.1)',txt:'✗ Exceeds all DMAC 35 limits',lbl:'Exceeds'};
+}
+var var_safe='#006b35',var_warn='#a07000',var_warn2='#c85000',var_danger='#c0002a',var_ocean='#0077b6';
+function gaugeLeft(e){return Math.min(e/800*100,99)+'%';}
+function chipSet(e){
+  if(e<=450)return`<span class="chip safe">✓ 7-day</span><span class="chip safe">✓ 5-day</span><span class="chip safe">✓ 1-day</span>`;
+  if(e<=500)return`<span class="chip warn">⚠ 5-day max</span><span class="chip safe">✓ 1-day</span>`;
+  if(e<=660)return`<span class="chip warn2">⚠ 1-day max</span>`;
+  return`<span class="chip danger">✗ Exceeds all limits</span>`;
+}
+
+// BUBBLES
+(function(){
+  const c=document.getElementById('bubbles');
+  for(let i=0;i<14;i++){
+    const b=document.createElement('div');
+    b.className='bubble';
+    const s=Math.random()*28+8;
+    b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*20+10}s;animation-delay:${Math.random()*10}s;`;
+    c.appendChild(b);
+  }
+})();
+
+// ============================================================
+// S03: pO2 CALCULATOR
+// ============================================================
+function calcPO2(){
+  const depth=parseFloat(document.getElementById('p2depth').value)||0;
+  const fio2=parseFloat(document.getElementById('p2fio2').value)||21;
+  const abs=depth/10+1;
+  const po2=abs*(fio2/100);
+  document.getElementById('rpo2v').innerHTML=po2.toFixed(3)+' <span>atm</span>';
+  document.getElementById('rpo2d').textContent=`Absolute pressure: ${abs.toFixed(2)} atm · FiO₂: ${fio2}% · pO₂ = ${abs.toFixed(2)} × ${(fio2/100).toFixed(2)}`;
+  let warn='';
+  if(po2>1.6)warn=`<div style="background:rgba(192,0,42,.08);border:1px solid var(--danger);border-radius:8px;padding:.5rem .8rem;font-family:var(--mono);font-size:.78rem;color:var(--danger);">⚡ pO₂ > 1.6 atm — CNS convulsion risk. Do not use at this depth with this gas mix.</div>`;
+  else if(po2>1.4)warn=`<div style="background:rgba(200,80,0,.07);border:1px solid var(--danger,#c85000);border-radius:8px;padding:.5rem .8rem;font-family:var(--mono);font-size:.78rem;color:#c85000;">⚠ pO₂ &gt; 1.4 atm — monitor CNS closely. kp = ${po2.toFixed(3)}<sup>2.285</sup> = ${Math.pow(po2,2.285).toFixed(4)}</div>`;
+  else warn=`<div style="font-family:var(--mono);font-size:.78rem;color:var(--safe);">kp = ${po2.toFixed(3)}<sup>2.285</sup> = ${Math.pow(po2,2.285).toFixed(4)} · ESOT/min = ${Math.pow(po2,2.285).toFixed(4)}</div>`;
+  document.getElementById('rpo2warn').innerHTML=warn;
+}
+
+// ============================================================
+// S06: ESOT CALCULATORS
+// ============================================================
+function calcC1(){
+  const t=parseFloat(document.getElementById('c1t').value)||0;
+  const p=parseFloat(document.getElementById('c1p').value)||0;
+  document.getElementById('c1pr').value=p;
+  document.getElementById('c1pv').textContent=parseFloat(p).toFixed(2);
+  const kp=Math.pow(p,2.285);
+  const esot=kp*t;
+  const s=statusInfo(esot);
+  document.getElementById('r1v').innerHTML=esot.toFixed(1)+' <span>ESOT</span>';
+  document.getElementById('r1d').textContent=`kp = ${p.toFixed(3)}^2.285 = ${kp.toFixed(4)} · ESOT = ${kp.toFixed(4)} × ${t}`;
+  document.getElementById('r1g').style.left=gaugeLeft(esot);
+  document.getElementById('r1s').style.color=s.col;
+  document.getElementById('r1s').textContent=s.txt;
+}
+
+// ============================================================
+// S06 CALC 3: ESOT vs UPTD COMPARISON
+// ============================================================
+function calcCmp(){
+  const t=parseFloat(document.getElementById('cmp_t').value)||0;
+  const p=parseFloat(document.getElementById('cmp_p').value)||0;
+  document.getElementById('cmp_pr').value=Math.min(p,2.5);
+  document.getElementById('cmp_pv').textContent=parseFloat(p).toFixed(2);
+
+  // ESOT
+  const kpVal=Math.pow(p,2.285);
+  const esot=kpVal*t;
+
+  // UPTD: t × (0.5/(pO2–0.5))^–1.2  — valid only for pO2 > 0.5 atm
+  if(p<=0.5){
+    document.getElementById('cmp_uptd_val').textContent='N/A';
+    document.getElementById('cmp_uptd_formula').textContent='UPTD formula undefined at pO₂ ≤ 0.5 atm (division by zero)';
+    document.getElementById('cmp_uptd_gauge').style.left='0%';
+    document.getElementById('cmp_uptd_status').textContent='pO₂ must be > 0.5 atm';
+    document.getElementById('cmp_diverge').innerHTML='<span style="color:var(--danger);">UPTD is undefined at pO₂ ≤ 0.5 atm. Increase pO₂ above 0.5.</span>';
+    return;
+  }
+  const uptdFactor=Math.pow(0.5/(p-0.5),-1.2);
+  const uptd=t*Math.sqrt(uptdFactor); // DMAC Eq.1: UPTD = t × √((0.5/(pO₂−0.5))^−1.2) = t × (0.5/(pO₂−0.5))^−0.6
+
+  const diff=esot-uptd;
+  const pctDiff=uptd>0?(diff/uptd*100):0;
+
+  // ESOT panel
+  const s=statusInfo(esot);
+  document.getElementById('cmp_esot_val').textContent=esot.toFixed(1);
+  document.getElementById('cmp_esot_formula').textContent=`kp = ${p.toFixed(3)}^2.285 = ${kpVal.toFixed(4)} · ESOT = ${kpVal.toFixed(4)} × ${t}`;
+  document.getElementById('cmp_esot_gauge').style.left=gaugeLeft(esot);
+  document.getElementById('cmp_esot_status').style.color=s.col;
+  document.getElementById('cmp_esot_status').textContent=s.txt;
+
+  // UPTD panel — Repex limits (historical comparison only): 850 single-day, ~600 5-day, ~450 7-day
+  // These are NOT authoritative DMAC 35 limits; shown for historical context only.
+  function uptdStatus(u){
+    if(u<=450)return{col:'#006b35',txt:'Historical ref: within ~7-day Repex guide (≤450) [historical only]'};
+    if(u<=600)return{col:'#a07000',txt:'Historical ref: within ~5-day Repex guide (≤600) [historical only]'};
+    if(u<=850)return{col:'#c85000',txt:'Historical ref: within single-day Repex limit (≤850) [historical only]'};
+    return{col:'#c0002a',txt:'Historical ref: exceeds Repex single-day limit (850) [historical only]'};
+  }
+  const us=uptdStatus(uptd);
+  document.getElementById('cmp_uptd_val').textContent=uptd.toFixed(1);
+  document.getElementById('cmp_uptd_formula').textContent=`√((0.5/(${p.toFixed(3)}−0.5))^−1.2) = (0.5/(${p.toFixed(3)}−0.5))^−0.6 = ${Math.sqrt(uptdFactor).toFixed(4)} · UPTD = ${Math.sqrt(uptdFactor).toFixed(4)} × ${t}`;
+  document.getElementById('cmp_uptd_gauge').style.left=Math.min(uptd/850*100,99)+'%';
+  document.getElementById('cmp_uptd_status').style.color=us.col;
+  document.getElementById('cmp_uptd_status').textContent=us.txt;
+
+  // Divergence callout
+  const higher=diff>0?'ESOT':'UPTD';
+  const absDiff=Math.abs(diff).toFixed(1);
+  const absPct=Math.abs(pctDiff).toFixed(1);
+  let interpretation='';
+  if(Math.abs(pctDiff)<5){
+    interpretation='The two indices agree closely at this pO₂ — the practical difference is negligible.';
+  } else if(p<1.0){
+    interpretation=`At low pO₂ (&lt;1.0 atm), UPTD underestimates exposure relative to ESOT. Using UPTD here would give a false sense of safety.`;
+  } else if(p>1.5){
+    interpretation=`At high pO₂ (&gt;1.5 atm), UPTD overestimates relative to ESOT. The Risberg validation shows ESOT is more accurate in this range — the regime most common in SurDO₂ and nitrox deco diving.`;
+  } else {
+    interpretation=`${higher} gives the higher value at this pO₂. This is the divergence that motivated developing ESOT as a more accurate replacement.`;
+  }
+  document.getElementById('cmp_diverge').innerHTML=
+    `<strong>Divergence at pO₂ = ${p.toFixed(2)} atm, ${t} min:</strong> &nbsp;
+    ESOT = <span style="color:var(--ocean);font-weight:700;">${esot.toFixed(1)}</span> · 
+    UPTD = <span style="color:var(--warn);font-weight:700;">${uptd.toFixed(1)}</span> · 
+    Difference = <span style="font-weight:700;color:${Math.abs(pctDiff)<5?'var(--safe)':'var(--warn2)'};">${diff>0?'+':''}${absDiff} (${diff>0?'+':''}${absPct}%)</span>
+    <br><span style="color:var(--text3);font-size:.82rem;">${interpretation}</span>`;
+}
+
+function calcVC(){
+  const e=parseFloat(document.getElementById('c4n').value)||0;
+  document.getElementById('c4r').value=Math.min(e,1200);
+  document.getElementById('c4v').textContent=e;
+  const dvc=0.0082*Math.pow(e/60,2);
+  document.getElementById('r4v').innerHTML=dvc.toFixed(2)+'% <span>ΔVC reduction</span>';
+  document.getElementById('r4d').textContent=`Formula: 0.0082 × (${e}/60)² = 0.0082 × ${(e/60).toFixed(3)}² = ${dvc.toFixed(4)}%`;
+  const pct=Math.min(dvc/5*100,100);
+  document.getElementById('r4bar').style.width=pct+'%';
+}
+
+function calcC2(){
+  const u=parseFloat(document.getElementById('c2u').value)||0;
+  const p=parseFloat(document.getElementById('c2p').value)||0;
+  document.getElementById('c2pr').value=p;
+  document.getElementById('c2pv').textContent=parseFloat(p).toFixed(2);
+  const factor=Math.pow(p,2.285)*Math.pow(0.5/(p-0.5),5/6);
+  const esot=u*factor;
+  document.getElementById('r2').classList.add('show');
+  document.getElementById('r2v').innerHTML=esot.toFixed(1)+' <span>ESOT</span>';
+  document.getElementById('r2d').textContent=`Conversion factor at pO₂=${p.toFixed(2)}: ${factor.toFixed(4)} · ESOT = ${u} × ${factor.toFixed(4)}`;
+}
+function calcC3(){
+  const e=parseFloat(document.getElementById('c3e').value)||0;
+  const p=parseFloat(document.getElementById('c3p').value)||0;
+  document.getElementById('c3pr').value=p;
+  document.getElementById('c3pv').textContent=parseFloat(p).toFixed(2);
+  const factor=Math.pow(p,2.285)*Math.pow(0.5/(p-0.5),5/6);
+  const uptd=e/factor;
+  document.getElementById('r3').classList.add('show');
+  document.getElementById('r3v').innerHTML=uptd.toFixed(1)+' <span>UPTD</span>';
+  document.getElementById('r3d').textContent=`UPTD = ${e} / ${factor.toFixed(4)}`;
+}
+
+// ============================================================
+// S07: DIVE PLANNER
+// ============================================================
+let segs=[];
+function addSeg(t,p){
+  segs.push({t:t||90,p:p||1.4});
+  renderSegs();
+}
+function removeSeg(i){segs.splice(i,1);renderSegs();}
+function clearSegs(){segs=[];renderSegs();}
+function renderSegs(){
+  const list=document.getElementById('segList');
+  list.innerHTML='';
+  let total=0;
+  segs.forEach((s,i)=>{
+    const kp=Math.pow(s.p,2.285);
+    const e=kp*s.t;
+    total+=e;
+    const row=document.createElement('div');
+    row.className='seg-row';
+    row.innerHTML=`<div class="input-group"><label>Time (min)</label><input type="number" value="${s.t}" min="1" oninput="segs[${i}].t=parseFloat(this.value)||0;renderSegs()"></div>
+      <div class="input-group"><label>pO₂ (atm)</label><input type="number" value="${s.p}" min="0.5" max="2.5" step="0.05" oninput="segs[${i}].p=parseFloat(this.value)||0;renderSegs()"></div>
+      <div style="font-family:var(--mono);font-size:.78rem;color:var(--ocean);align-self:center;white-space:nowrap;">kp=${kp.toFixed(3)}<br>ESOT=${e.toFixed(1)}</div>
+      <button class="seg-del" onclick="removeSeg(${i})">✕</button>`;
+    list.appendChild(row);
+  });
+  const dvc=0.0082*Math.pow(total/60,2);
+  document.getElementById('segTotal').textContent=total.toFixed(1);
+  document.getElementById('segVC').textContent=dvc.toFixed(2)+'%';
+  document.getElementById('segGauge').style.left=gaugeLeft(total);
+  const s=statusInfo(total);
+  const st=document.getElementById('segStatus');
+  st.textContent=s.txt;st.style.background=s.bg;st.style.color=s.col;
+}
+
+// ============================================================
+// S08: RECOVERY
+// ============================================================
+function esotRec(esotI,tExp,t){
+  const rate=0.439*Math.pow(0.906,tExp);
+  return esotI*Math.exp(-rate*t);
+}
+function calcRec(){
+  const esotI=parseFloat(document.getElementById('ri').value)||346;
+  const tExp=parseFloat(document.getElementById('ret').value)||2.67;
+  const t=parseFloat(document.getElementById('rt').value)||5;
+  document.getElementById('retr').value=Math.min(tExp,12);
+  document.getElementById('retv').textContent=parseFloat(tExp).toFixed(2)+'h';
+  document.getElementById('rtr').value=Math.min(t,12);
+  document.getElementById('rtv').textContent=t+'h';
+  const residual=t>=12?0:esotRec(esotI,tExp,t);
+  const rate=0.439*Math.pow(0.906,tExp);
+  document.getElementById('rrecv').innerHTML=residual.toFixed(1)+' <span>ESOT residual</span>';
+  document.getElementById('rrecd').textContent=`rate = 0.439 × 0.906^${tExp.toFixed(2)} = ${rate.toFixed(4)} · ESOT_rec = ${esotI} × e^(−${rate.toFixed(4)} × ${t}) · ${(residual/esotI*100).toFixed(1)}% remains`;
+}
+
+// Figure 1
+const fig1Exps=[0.5,1,2,3,4,6];
+const fig1Colors=['#0077b6','#00b4d8','#38b000','#f77f00','#d00037','#7209b7'];
+function drawFigure1(recovT){
+  const canvas=document.getElementById('fig1Canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const ml=60,mr=20,mt=20,mb=50;
+  ctx.clearRect(0,0,W,H);
+  // Grid
+  ctx.fillStyle='#f9fbfd';ctx.fillRect(ml,mt,W-ml-mr,H-mt-mb);
+  // log Y: 0.001 to 1.0
+  const logMin=Math.log10(0.001),logMax=0;
+  function yPos(v){return mt+(H-mt-mb)*(1-(Math.log10(Math.max(v,0.0001))-logMin)/(logMax-logMin));}
+  function xPos(t){return ml+(W-ml-mr)*t/12;}
+  // Y gridlines
+  ctx.strokeStyle='#ddeef8';ctx.lineWidth=1;
+  [0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1.0].forEach(v=>{
+    const y=yPos(v);
+    ctx.beginPath();ctx.moveTo(ml,y);ctx.lineTo(W-mr,y);ctx.stroke();
+    ctx.fillStyle='#4a7090';ctx.font='10px Space Mono,monospace';
+    ctx.fillText((v<1?(v<0.01?v.toString():v.toString()):'1.00'),2,y+4);
+  });
+  // X gridlines
+  [0,2,4,6,8,10,12].forEach(t=>{
+    const x=xPos(t);
+    ctx.strokeStyle='#ddeef8';ctx.beginPath();ctx.moveTo(x,mt);ctx.lineTo(x,H-mb);ctx.stroke();
+    ctx.fillStyle='#4a7090';ctx.font='10px Space Mono,monospace';ctx.textAlign='center';
+    ctx.fillText(t+'h',x,H-mb+15);
+  });
+  ctx.textAlign='left';
+  // Axis labels
+  ctx.fillStyle='#102030';ctx.font='11px Outfit,sans-serif';
+  ctx.fillText('Residual fraction',ml+4,mt+14);
+  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Relative ESOT (%/100)',0,0);ctx.restore();
+  ctx.fillText('Recovery time (hours)',ml+(W-ml-mr)/2-40,H-5);
+  // Curves
+  const steps=200;
+  fig1Exps.forEach((tExp,ci)=>{
+    ctx.strokeStyle=fig1Colors[ci];ctx.lineWidth=2;ctx.beginPath();
+    let first=true;
+    for(let i=0;i<=steps;i++){
+      const t=i/steps*12;
+      const rate=0.439*Math.pow(0.906,tExp);
+      const v=Math.exp(-rate*t);
+      const x=xPos(t),y=yPos(v);
+      if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  });
+  // Recovery time marker
+  ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(xPos(recovT),mt);ctx.lineTo(xPos(recovT),H-mb);ctx.stroke();
+  ctx.setLineDash([]);
+  // Dots at marker
+  fig1Exps.forEach((tExp,ci)=>{
+    const rate=0.439*Math.pow(0.906,tExp);
+    const v=Math.exp(-rate*recovT);
+    const x=xPos(recovT),y=yPos(v);
+    ctx.fillStyle=fig1Colors[ci];
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+  });
+  // Legend
+  const ld=document.getElementById('fig1Legend');
+  ld.innerHTML=fig1Exps.map((tExp,ci)=>{
+    const rate=0.439*Math.pow(0.906,tExp);
+    const v=Math.exp(-rate*recovT);
+    return`<span style="color:${fig1Colors[ci]};">■ ${tExp}h exp → ${(v*100).toFixed(1)}% at ${recovT}h</span>`;
+  }).join('');
+}
+drawFigure1(5);
+
+// Fix 8: redraw canvas on resize
+(function(){
+  let resizeTimer;
+  function onResize(){
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(()=>{
+      const c=document.getElementById('fig1Canvas');
+      c.width=c.offsetWidth*window.devicePixelRatio||700;
+      c.height=340*window.devicePixelRatio||340;
+      c.style.width='100%';
+      drawFigure1(parseFloat(document.getElementById('fig1Slider').value));
+    },120);
+  }
+  window.addEventListener('resize',onResize);
+  if(window.ResizeObserver){
+    new ResizeObserver(onResize).observe(document.getElementById('fig1Canvas'));
+  }
+})();
+
+// ============================================================
+// S09: TABLES
+// ============================================================
+const t1pO2=[0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.9,2.2,2.5];
+// kp computed from DMAC 35 Eq.2: kp = pO₂^2.285
+const t1kpCalc=t1pO2.map(p=>Math.pow(p,2.285));
+const t1times=[5,10,15,20,30,40,60,80,90,120,150,180,240];
+function cellClass(v){if(v<=450)return'c0';if(v<=500)return'c1';if(v<=660)return'c2';return'c3';}
+function buildT1(){
+  const tb=document.getElementById('t1b');tb.innerHTML='';
+  t1pO2.forEach((p,ri)=>{
+    const kp=t1kpCalc[ri];
+    const tr=document.createElement('tr');tr.dataset.po2=p;
+    let cells=`<td class="rh">${p.toFixed(1)}</td><td class="rh">${kp.toFixed(3)}</td>`;
+    t1times.forEach(t=>{
+      const v=kp*t;
+      cells+=`<td class="${cellClass(v)}">${v<1?'<1':v.toFixed(0)}</td>`;
+    });
+    tr.innerHTML=cells;tb.appendChild(tr);
+  });
+}
+function hiT1(){
+  const f=document.getElementById('t1f').value;
+  document.querySelectorAll('#t1b tr').forEach(r=>{
+    r.classList.toggle('hi-row',r.dataset.po2===f&&f!=='');
+  });
+}
+function buildT2(){
+  const tb=document.getElementById('t2b');tb.innerHTML='';
+  [100,200,300,350,400,450,500,550,600,660,700,800,900,1000].forEach(e=>{
+    const dvc=(0.0082*Math.pow(e/60,2)).toFixed(2);
+    let tier='—',chip='';
+    if(e<=450){tier='7-day (≤450)';chip='<span class="chip safe">Safe</span>';}
+    else if(e<=500){tier='5-day (≤500)';chip='<span class="chip warn">Caution</span>';}
+    else if(e<=660){tier='Single day (≤660)';chip='<span class="chip warn2">High</span>';}
+    else{tier='Exceeds all limits';chip='<span class="chip danger">Exceeds</span>';}
+    tb.insertAdjacentHTML('beforeend',`<tr><td class="rh">${e}</td><td>${dvc}%</td><td>${tier}</td><td>${chip}</td></tr>`);
+  });
+}
+function buildT3(){
+  const tb=document.getElementById('t3b');tb.innerHTML='';
+  for(let h=0.5;h<=12.1;h+=0.5){
+    const cells=fig1Exps.map(tExp=>{
+      const rate=0.439*Math.pow(0.906,tExp);
+      const v=Math.exp(-rate*h)*100;
+      const cls=v>50?'c0':v>20?'':v>5?'c1':'c2';
+      return`<td class="${cls}">${v.toFixed(1)}%</td>`;
+    });
+    tb.insertAdjacentHTML('beforeend',`<tr><td class="rh">${h.toFixed(1)}h</td>${cells.join('')}</tr>`);
+  }
+}
+
+// ============================================================
+// S10: EXAMPLE CALCULATORS
+// ============================================================
+function kp(pv){return Math.pow(Math.max(pv,0.01),2.285);}
+function absP(msw){return msw/10+1;}
+function po2c(msw,fio2pct){return absP(msw)*(fio2pct/100);}
+function stepHTML(n,title,body){return`<div class="calc-step"><div class="step-n">${n}</div><div class="step-body"><h4>${title}</h4>${body}</div></div>`;}
+function mathDiv(s){return`<div class="math">${s}</div>`;}
+function showExResult(pfx,esot,stepsHTML){
+  document.getElementById(`${pfx}_steps`).innerHTML=stepsHTML;
+  const r=document.getElementById(`${pfx}_result`);r.style.display='flex';
+  document.getElementById(`${pfx}_total`).textContent=esot.toFixed(1);
+  const s=statusInfo(esot);
+  document.getElementById(`${pfx}_chips`).innerHTML=`<div><div class="total-label">Days permitted</div><div style="margin-top:.4rem;">${chipSet(esot)}</div></div>`;
+  const v=document.getElementById(`${pfx}_verdict`);
+  v.textContent=s.txt;v.style.cssText=`background:${s.bg};color:${s.col};border:1px solid ${s.col};`;
+}
+function calcA(){
+  const depth=parseFloat(document.getElementById('a_depth').value)||24;
+  const bt=parseFloat(document.getElementById('a_bt').value)||120;
+  const fio2=parseFloat(document.getElementById('a_fio2').value)||40;
+  const ddepth=parseFloat(document.getElementById('a_ddepth').value)||3;
+  const dt=parseFloat(document.getElementById('a_dt').value)||36;
+  const dfio2=parseFloat(document.getElementById('a_dfio2').value)||40;
+  const po2Bot=po2c(depth,fio2),kpBot=kp(po2Bot),esotBot=kpBot*bt;
+  const po2Dec=po2c(ddepth,dfio2),kpDec=kp(po2Dec),esotDec=kpDec*dt;
+  const total=esotBot+esotDec;
+  const html=
+    stepHTML(1,'Calculate pO₂ for each segment',
+      `<p>Bottom at ${depth}msw: (${depth}/10+1) × ${fio2}/100 = ${absP(depth).toFixed(2)} × ${(fio2/100).toFixed(2)} = <strong>${po2Bot.toFixed(3)} atm</strong></p>
+       <p>Deco at ${ddepth}msw: (${ddepth}/10+1) × ${dfio2}/100 = ${absP(ddepth).toFixed(2)} × ${(dfio2/100).toFixed(2)} = <strong>${po2Dec.toFixed(3)} atm</strong></p>`)+
+    stepHTML(2,`kp and ESOT — Bottom (${bt} min)`,
+      `<p>kp = ${po2Bot.toFixed(3)}<sup>2.285</sup> = <strong>${kpBot.toFixed(4)}</strong></p>`+
+      mathDiv(`ESOT<sub>bottom</sub> = ${kpBot.toFixed(4)} × ${bt} = <strong>${esotBot.toFixed(1)}</strong>`))+
+    stepHTML(3,`kp and ESOT — Deco stop (${dt} min)`,
+      `<p>kp = ${po2Dec.toFixed(3)}<sup>2.285</sup> = <strong>${kpDec.toFixed(4)}</strong></p>`+
+      mathDiv(`ESOT<sub>deco</sub> = ${kpDec.toFixed(4)} × ${dt} = <strong>${esotDec.toFixed(1)}</strong>`))+
+    stepHTML(4,'Total ESOT (DMAC 35 Eq. 4)',
+      mathDiv(`ESOT<sub>total</sub> = ${esotBot.toFixed(1)} + ${esotDec.toFixed(1)} = <strong>${total.toFixed(1)} ESOT</strong>`));
+  showExResult('a',total,html);
+}
+function calcB(){
+  const depth=parseFloat(document.getElementById('b_depth').value)||24;
+  const bt=parseFloat(document.getElementById('b_bt').value)||120;
+  const fio2=parseFloat(document.getElementById('b_fio2').value)||40;
+  const ddcdepth=parseFloat(document.getElementById('b_ddcdepth').value)||12;
+  const ddct=parseFloat(document.getElementById('b_ddct').value)||30;
+  const ddcfio2=parseFloat(document.getElementById('b_ddcfio2').value)||100;
+  const po2Bot=po2c(depth,fio2),kpBot=kp(po2Bot),esotBot=kpBot*bt;
+  const po2DDC=po2c(ddcdepth,ddcfio2),kpDDC=kp(po2DDC),esotDDC=kpDDC*ddct;
+  const total=esotBot+esotDDC;
+  const html=
+    stepHTML(1,'Calculate pO₂ for each segment',
+      `<p>Bottom at ${depth}msw: ${absP(depth).toFixed(2)} × ${(fio2/100).toFixed(2)} = <strong>${po2Bot.toFixed(3)} atm</strong></p>
+       <p>DDC at ${ddcdepth}msw, ${ddcfio2}% O₂: ${absP(ddcdepth).toFixed(2)} × ${(ddcfio2/100).toFixed(2)} = <strong>${po2DDC.toFixed(3)} atm</strong></p>`)+
+    stepHTML(2,`kp and ESOT — Bottom (${bt} min)`,
+      `<p>kp = <strong>${kpBot.toFixed(4)}</strong></p>`+
+      mathDiv(`ESOT<sub>bottom</sub> = ${kpBot.toFixed(4)} × ${bt} = <strong>${esotBot.toFixed(1)}</strong>`))+
+    stepHTML(3,`kp and ESOT — DDC O₂ (${ddct} min) — the SurDO₂ penalty`,
+      `<p>kp = <strong>${kpDDC.toFixed(4)}</strong> <span style="color:var(--warn2);font-size:.8rem;">(${(esotDDC/total*100).toFixed(0)}% of total ESOT)</span></p>`+
+      mathDiv(`ESOT<sub>DDC</sub> = ${kpDDC.toFixed(4)} × ${ddct} = <strong>${esotDDC.toFixed(1)}</strong>`))+
+    stepHTML(4,'Total ESOT (DMAC 35 Eq. 4)',
+      mathDiv(`ESOT<sub>total</sub> = ${esotBot.toFixed(1)} + ${esotDDC.toFixed(1)} = <strong>${total.toFixed(1)} ESOT</strong>`));
+  showExResult('b',total,html);
+}
+function calcC(){
+  const d1depth=parseFloat(document.getElementById('c_d1depth').value)||21;
+  const d1bt=parseFloat(document.getElementById('c_d1bt').value)||160;
+  const d1fio2=parseFloat(document.getElementById('c_d1fio2').value)||45;
+  const d2depth=parseFloat(document.getElementById('c_d2depth').value)||21;
+  const d2bt=parseFloat(document.getElementById('c_d2bt').value)||60;
+  const d2fio2=parseFloat(document.getElementById('c_d2fio2').value)||45;
+  const si=parseFloat(document.getElementById('c_si').value)||5;
+  document.getElementById('c_sir').value=Math.min(si,12);
+  document.getElementById('c_siv').textContent=si+'h';
+  const po2D1=po2c(d1depth,d1fio2),kpD1=kp(po2D1),esotD1=kpD1*d1bt;
+  const po2D2=po2c(d2depth,d2fio2),kpD2=kp(po2D2),esotD2=kpD2*d2bt;
+  const tExpH=d1bt/60;
+  const rate=0.439*Math.pow(0.906,tExpH);
+  const residualFrac=si>=12?0:Math.exp(-rate*si);
+  const esotResidual=esotD1*residualFrac;
+  const total=esotResidual+esotD2;
+  const siNote=si>=12?` <span style="color:var(--safe);font-weight:700;">≥ 12h → ESOT clock resets to zero</span>`:'';
+  const html=
+    stepHTML(1,`Dive 1 ESOT — ${d1bt} min at ${d1depth}msw, ${d1fio2}% O₂`,
+      `<p>pO₂ = ${absP(d1depth).toFixed(2)} × ${(d1fio2/100).toFixed(2)} = <strong>${po2D1.toFixed(3)} atm</strong> · kp = <strong>${kpD1.toFixed(4)}</strong></p>`+
+      mathDiv(`ESOT<sub>dive1</sub> = ${kpD1.toFixed(4)} × ${d1bt} = <strong>${esotD1.toFixed(1)}</strong>`))+
+    stepHTML(2,`Residual ESOT after ${si}h surface interval (DMAC 35 Eq. 5)${siNote}`,
+      `<p>t<sub>exp</sub> = ${d1bt}min = ${tExpH.toFixed(3)}h · rate = 0.439 × 0.906<sup>${tExpH.toFixed(3)}</sup> = <strong>${rate.toFixed(4)}</strong></p>`+
+      mathDiv(`ESOT<sub>residual</sub> = ${esotD1.toFixed(1)} × e<sup>(−${rate.toFixed(4)} × ${si})</sup> = ${esotD1.toFixed(1)} × ${residualFrac.toFixed(4)} = <strong>${esotResidual.toFixed(1)}</strong> (${(residualFrac*100).toFixed(1)}% remains)`))+
+    stepHTML(3,`Dive 2 ESOT — ${d2bt} min at ${d2depth}msw, ${d2fio2}% O₂`,
+      `<p>pO₂ = <strong>${po2D2.toFixed(3)} atm</strong> · kp = <strong>${kpD2.toFixed(4)}</strong></p>`+
+      mathDiv(`ESOT<sub>dive2</sub> = ${kpD2.toFixed(4)} × ${d2bt} = <strong>${esotD2.toFixed(1)}</strong>`))+
+    stepHTML(4,'Total Daily ESOT (DMAC 35 Eq. 4)',
+      mathDiv(`ESOT<sub>total</sub> = ${esotResidual.toFixed(1)} (residual) + ${esotD2.toFixed(1)} (dive 2) = <strong>${total.toFixed(1)} ESOT</strong>`));
+  showExResult('c',total,html);
+}
+
+// ============================================================
+// S13: QUIZ — 15 questions, full reset
+// ============================================================
+const quiz=[
+  {q:'What does ESOT stand for?',
+   opts:['Extended Surface Oxygen Time','Equivalent Surface Oxygen Time','Effective Submersion Oxygen Threshold','Estimated Saturation Oxygen Toxicity'],
+   a:1,exp:'ESOT = Equivalent Surface Oxygen Time. The value represents equivalent minutes of breathing 100% O₂ at surface pressure — ESOT=1 means one minute at pO₂=1.0 atm.'},
+  {q:'Which organisation published DMAC 35 Rev.1 in February 2025?',
+   opts:['HSE (Health & Safety Executive)','IMCA (International Marine Contractors Association)','DMAC (Diving Medical Advisory Committee)','NOAA Office of Diving Safety'],
+   a:2,exp:'DMAC 35 is published by the Diving Medical Advisory Committee (DMAC), available at dmac-diving.org. The February 2025 Revision 1 supersedes the June 2023 original.'},
+  {q:'What is the DMAC 35 maximum ESOT for a 7-day continuous diving operation?',
+   opts:['420 ESOT per day','500 ESOT per day','450 ESOT per day','660 ESOT per day'],
+   a:2,exp:'DMAC 35 Rev.1 (2025) sets 450 ESOT as the daily maximum for up to 7 consecutive days, with a minimum 12h overnight normoxic interval required between hyperoxic exposures.'},
+  {q:'What is the maximum ESOT for a single-day exposure under DMAC 35?',
+   opts:['450 ESOT','500 ESOT','660 ESOT','850 ESOT'],
+   a:2,exp:'660 ESOT is the single-day maximum in DMAC 35 Rev.1. This requires 48h of rest (or air dives only) before the next hyperoxic exposure.'},
+  {q:'A diver breathes Nitrox 40 at 24 msw. What is the pO₂?',
+   opts:['1.20 atm','1.36 atm','1.44 atm','1.60 atm'],
+   a:1,exp:'Absolute pressure at 24msw = (24/10 + 1) = 3.4 atm. pO₂ = 3.4 × 0.40 = 1.36 atm. This is within operational limits (below 1.6 atm CNS ceiling).'},
+  {q:'In the ESOT formula ESOT = t × pO₂^2.285, what does raising pO₂ to the power 2.285 produce?',
+   opts:['The UPTD equivalent value','The kp toxicity weighting factor','The exposure duration in hours','The recovery rate constant'],
+   a:1,exp:'pO₂^2.285 is called kp — the toxicity weighting factor. It represents how much more toxic each minute of exposure is relative to breathing 100% O₂ at surface (pO₂=1.0 atm, where kp=1.0 exactly).'},
+  {q:'Why can ESOT for different dive segments simply be added together — when Arieli K cannot?',
+   opts:['Because ESOT uses minutes while Arieli uses hours','Because ESOT = 60×√K, which linearises the accumulation','Because ESOT only applies to pO₂ above 1.0 atm','Because DMAC 35 defines separate limits for each segment'],
+   a:1,exp:'ESOT is mathematically defined as 60×√K. This square-root transformation linearises the Arieli K relationship, making simple addition valid for multi-segment dives. This is the core operational advantage of ESOT.'},
+  {q:'In the DMAC 35 Eq. 5 recovery formula, what determines the rate of ESOT recovery?',
+   opts:['The pO₂ of the preceding dive','The depth of the preceding dive','The duration of the preceding exposure','The total ESOT accumulated'],
+   a:2,exp:'DMAC 35 Rev.1 revised the 2023 formula. Recovery rate depends on exposure duration (t_exp in hours), not pO₂. Longer exposures → slower recovery rate. This is a key change from the original Risberg paper.'},
+  {q:'A diver completes a Nitrox 40 dive at 24m for 120 min. kp=2.163. What is their ESOT?',
+   opts:['181 ESOT','259 ESOT','294 ESOT','346 ESOT'],
+   a:1,exp:'ESOT = kp × t = 2.163 × 120 = 259 ESOT. This is well within the 7-day limit of 450 ESOT. The kp value (2.163) tells us that each minute at this pO₂ is 2.163 times as toxic as breathing 100% O₂ at the surface.'},
+  {q:'What happens to the ESOT clock when a diver has a continuous surface interval of 12 hours or more?',
+   opts:['It accumulates at half the normal rate','It is reduced by 50%','It is effectively reset to zero for planning purposes','It requires a Diving Medical Advisor to reset'],
+   a:2,exp:'Any surface interval of ≥12h breathing normal air effectively zeroes the ESOT clock under DMAC 35. No calculation is required — the next dive can be treated as a fresh start. This is the basis of the mandatory overnight normoxic interval rule.'},
+  {q:'A DDC O₂ phase at 12 msw breathing 100% O₂ produces pO₂=2.2 atm (kp=6.06). For 30 minutes, what ESOT does this add?',
+   opts:['66 ESOT','122 ESOT','182 ESOT','220 ESOT'],
+   a:2,exp:'ESOT = kp × t = 6.06 × 30 = 182 ESOT. This illustrates the SurDO₂ penalty: 30 minutes of DDC O₂ breathing adds more ESOT than 85 minutes at the 1.4 atm bottom pO₂ (kp=2.16). SurDO₂ operations need careful multi-day monitoring.'},
+  {q:'Which of these dive profiles does DMAC 35 explicitly exclude from ESOT requirements?',
+   opts:['In-water nitrox decompression','Surface decompression with oxygen (SurDO₂)','Saturation diving','Diving to 40m on nitrox 32'],
+   a:2,exp:'DMAC 35 explicitly excludes saturation diving (different exposure physiology), hyperbaric oxygen therapy, military rebreathers with fixed high pO₂, and CNS toxicity management. In-water nitrox deco and SurDO₂ are squarely within scope.'},
+  {q:'Prof. Dr. Sterk\'s critique argues OTU has a key advantage over ESOT. What is it?',
+   opts:['OTU uses a simpler formula with fewer constants','OTU has ~40 years of operational field validation including Oosterschelde','OTU limits are higher and therefore more practical','OTU accounts for CNS toxicity as well as pulmonary toxicity'],
+   a:1,exp:'Sterk\'s primary argument is the OTU evidence base: approximately 40 years of operational application including the major Oosterschelde storm surge barrier project (1984-1988), with no unacceptable O₂ morbidity when limits were followed. ESOT lacks this multi-decade field validation.'},
+  {q:'DMAC 35 still requires mandatory rest periods despite the Eq. 5 recovery formula. What does this suggest?',
+   opts:['The formula has a known mathematical error','Regulatory inertia — the rules haven\'t been updated','The mathematical model may not fully capture all physiological recovery','Rest periods only apply to saturation diving'],
+   a:2,exp:'This is one of Sterk\'s key points: DMAC 35 mandates non-diving periods even when the mathematical formula would suggest near-complete recovery. This implies that real physiological recovery — including systemic effects not captured by the pulmonary model — may take longer than the formula predicts.'},
+  {q:'What VC reduction does DMAC 35 Eq. 6 predict at the 7-day limit of 450 ESOT?',
+   opts:['About 0.15%','About 0.46%','About 1.2%','About 2.5%'],
+   a:1,exp:'ΔVC = 0.0082 × (450/60)² = 0.0082 × 7.5² = 0.0082 × 56.25 = 0.46%. This is a small, acceptable reduction — the limits are deliberately set where the predicted impact remains modest for the majority of divers. Individual variation is substantial.'},
+];
+
+let answered=[],scores=[];
+function buildQuiz(){
+  const c=document.getElementById('quizBox');
+  c.innerHTML='';
+  answered=[];scores=[];
+  quiz.forEach((q,qi)=>{
+    const d=document.createElement('div');
+    d.className='quiz-q-card';
+    d.id=`qq${qi}`;
+    d.innerHTML=`<div class="qq">Q${qi+1} of ${quiz.length}. ${q.q}</div>
+      <div class="q-opts">${q.opts.map((o,oi)=>`<div class="q-opt" id="qo${qi}_${oi}" onclick="ansQ(${qi},${oi})">
+        <span class="q-letter">${['A','B','C','D'][oi]}</span><span>${o}</span></div>`).join('')}</div>
+      <div class="q-fb" id="qf${qi}"></div>`;
+    c.appendChild(d);
+  });
+  const qs=document.getElementById('quizScore');
+  qs.classList.remove('show');
+  document.getElementById('scoreBarInner').style.width='0%';
+}
+function ansQ(qi,oi){
+  if(answered.includes(qi))return;
+  answered.push(qi);
+  const opts=document.querySelectorAll(`#qq${qi} .q-opt`);
+  opts.forEach(o=>o.classList.add('disabled'));
+  const ok=quiz[qi].a===oi;
+  opts[oi].classList.add(ok?'correct':'wrong');
+  if(!ok)opts[quiz[qi].a].classList.add('correct');
+  scores.push(ok?1:0);
+  const fb=document.getElementById(`qf${qi}`);
+  fb.className=`q-fb show ${ok?'correct':'wrong'}`;
+  fb.innerHTML=`<strong>${ok?'✓ Correct!':'✗ Not quite.'}</strong> ${quiz[qi].exp}`;
+  if(answered.length===quiz.length){
+    setTimeout(()=>{
+      const tot=scores.reduce((a,b)=>a+b,0);
+      const pct=Math.round(tot/quiz.length*100);
+      document.getElementById('scoreNum').textContent=`${tot}/${quiz.length}`;
+      document.getElementById('scoreBarInner').style.width=pct+'%';
+      const msgs=[
+        'Keep studying — work through each section carefully.',
+        'Review Sections 04–05 on ESOT science and DMAC 35.',
+        'Good foundation — revisit the operational rules in Section 11.',
+        'Solid understanding! Check any missed questions above.',
+        'Very good — nearly mastered. Review the Sterk critique.',
+        'Excellent — ESOT and DMAC 35 fully understood!'
+      ];
+      document.getElementById('scoreMsg').textContent=msgs[Math.min(Math.floor(pct/20),5)];
+      const qs=document.getElementById('quizScore');
+      qs.classList.add('show');
+      qs.scrollIntoView({behavior:'smooth',block:'start'});
+    },400);
+  }
+}
+function resetQuiz(){
+  buildQuiz();
+  document.getElementById('quizBox').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ============================================================
+// Active nav indicator
+// ============================================================
+(function(){
+  const sections=document.querySelectorAll('section[id]');
+  const navLinks=document.querySelectorAll('nav a[href^="#"]');
+  function setActive(id){
+    navLinks.forEach(a=>{
+      a.classList.toggle('nav-active',a.getAttribute('href')==='#'+id);
+    });
+  }
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); });
+  },{rootMargin:'-20% 0px -70% 0px',threshold:0});
+  sections.forEach(s=>obs.observe(s));
+})();
+</script>
+
+<script>
+/* ── Contextual help: section-by-section companion notes ── */
+function ctxHelpCloseAll(){
+  document.querySelectorAll('.ctx-help-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.ctx-help-btn[aria-expanded="true"]').forEach(b=>b.setAttribute('aria-expanded','false'));
+}
+function ctxHelpToggle(sid, btn){
+  const panel = document.getElementById('ctx-help-panel-' + sid);
+  if(!panel) return;
+
+  const isOpen = panel.classList.contains('open');
+
+  // Close others first (keeps the page tidy)
+  ctxHelpCloseAll();
+
+  if(!isOpen){
+    panel.classList.add('open');
+    if(btn) btn.setAttribute('aria-expanded','true');
+
+    // Bring the help into view without big jumps
+    setTimeout(()=>panel.scrollIntoView({behavior:'smooth', block:'nearest'}), 30);
+  }
+}
+
+// Escape closes any open help panel
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') ctxHelpCloseAll();
+});
+
+// Initialise all calculators and widgets on load
+window.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(()=>{
+    calcPO2();calcC1();calcCmp();calcVC();calcRec();
+    addSeg(120,1.4);addSeg(30,2.2);drawFigure1(5);
+    buildT1();buildT2();buildT3();buildQuiz();calcA();calcB();calcC();
+  },50);
+});
+</script>
+
+  </div><!-- #content -->
+</div><!-- #main -->
+<div id="back-to-top" title="Back to top">&uarr;</div>
+<script>
+function setActive(el){document.querySelectorAll('#nav-list a').forEach(function(a){a.classList.remove('active');});if(el)el.classList.add('active');}
+function filterNav(v){var q=String(v||'').toLowerCase();document.querySelectorAll('#nav-list li').forEach(function(li){var a=li.querySelector('a');if(!a){li.style.display=q?'none':'';return;}li.style.display=!q||a.textContent.toLowerCase().includes(q)?'':'none';});}
+window.addEventListener('scroll',function(){
+  var b=document.getElementById('back-to-top');if(b)b.classList.toggle('visible',window.scrollY>500);
+  var fill=document.getElementById('progress-fill');
+  if(fill){var h=document.documentElement;fill.style.width=Math.round(window.scrollY/(h.scrollHeight-h.clientHeight)*100)+'%';}
+});
+document.addEventListener('DOMContentLoaded',function(){
+  var b=document.getElementById('back-to-top');if(b)b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+});
+</script>
+</body>
+</html>

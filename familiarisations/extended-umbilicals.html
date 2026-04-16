@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/fam.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Extended umbilicals — retained content styles, tokens updated to fam.css vars */
+
+        :root{
+      --brand-blue:var(--fam-navy);
+      --brand-blue-2:#0b5c9e;
+      --brand-blue-3:#0c3d69;
+      --brand-yellow:var(--fam-yellow);
+      --white:#FFFFFF;
+      --bg:#eef4f8;
+      --bg2:#dfeaf3;
+      --panel:#ffffff;
+      --panel2:#f4f8fb;
+      --card:#ffffff;
+      --line:#b9cddd;
+      --text:#12324a;
+      --muted:#4f6f89;
+      --accent:var(--fam-navy);
+      --accent2:var(--fam-yellow);
+      --good:#1f8f53;
+      --warn:#b98407;
+      --bad:#b24545;
+      --shadow:0 12px 28px rgba(1,71,130,.12);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Segoe UI,Arial,sans-serif;
+      background:linear-gradient(180deg,var(--bg),var(--bg2) 100%);
+      color:var(--text);
+    }
+    .wrap{max-width:1400px;margin:auto;padding:18px}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(1,71,130,.12);
+      background:radial-gradient(circle at top right,rgba(255,238,2,.18),transparent 28%),linear-gradient(135deg,var(--fam-navy),#0b5c9e 55%,#0c3d69);
+      border-radius:28px;
+      padding:26px;
+      box-shadow:var(--shadow);
+    }
+    .hero-grid{display:grid;grid-template-columns:1.3fr .8fr;gap:20px;align-items:center}
+    .brand{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+    .logoBox{
+      width:72px;height:96px;
+      display:grid;place-items:center;
+      flex:0 0 auto;
+    }
+    .logoBox img,.logoBox svg{
+      display:block;
+      width:100%;height:100%;
+      overflow:visible;
+      shape-rendering:geometricPrecision;
+      text-rendering:geometricPrecision;
+      image-rendering:-webkit-optimize-contrast;
+    }
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,238,2,.22);color:#183650;font-size:12px;border:1px solid rgba(255,238,2,.75);margin-right:8px;font-weight:700}
+    h1,h2,h3{margin:0 0 8px 0}
+    h1{font-size:2.2rem;line-height:1.1}
+    h2{font-size:1.5rem}
+    h3{font-size:1.05rem}
+    p{line-height:1.5;color:var(--text)}
+    .muted{color:var(--muted)}
+    .hero p{max-width:90%}
+    .hero-visual{
+      background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(244,248,251,.96));
+      border:1px solid rgba(1,71,130,.12);
+      border-radius:20px;padding:14px;
+    }
+    .nav{
+      margin-top:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px
+    }
+    .nav a{
+      text-decoration:none;color:#ffffff;background:rgba(255,255,255,.12);padding:12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);text-align:center;font-size:.92rem;font-weight:700
+    }
+    .nav a:hover{background:rgba(255,238,2,.22);color:#14324a;transform:translateY(-1px)}
+    .section{margin-top:18px}
+    .grid{display:grid;gap:16px}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
+    .card{
+      background:linear-gradient(180deg,var(--card),var(--panel));
+      border-radius:var(--radius);
+      border:1px solid rgba(1,71,130,.12);
+      padding:18px;box-shadow:var(--shadow)
+    }
+    .card.soft{background:linear-gradient(180deg,var(--panel2),var(--panel))}
+    .kpi{font-size:2rem;font-weight:800;color:var(--brand-blue)}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(1,71,130,.09);font-size:12px;color:var(--brand-blue);font-weight:700}
+    .step{display:flex;gap:12px;margin:10px 0;padding:12px;border-radius:14px;background:rgba(1,71,130,.05);border:1px solid rgba(1,71,130,.08)}
+    .stepNum{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,var(--accent2),#e1d200);color:#1b2e41;font-weight:800}
+    details{background:rgba(1,71,130,.04);padding:12px 14px;border-radius:14px;border:1px solid rgba(1,71,130,.08);margin:10px 0}
+    summary{cursor:pointer;font-weight:700}
+    .tableWrap{overflow:auto;border-radius:14px;border:1px solid rgba(255,255,255,.08)}
+    table{width:100%;border-collapse:collapse;background:#ffffff}
+    th,td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    th{background:var(--brand-blue);color:#ffffff}
+    tr:nth-child(even) td{background:rgba(1,71,130,.03)}
+    label{display:block;font-size:.92rem;color:var(--brand-blue);margin:8px 0 6px;font-weight:700}
+    input,select,button,textarea{
+      width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:#ffffff;color:var(--text);font-size:1rem
+    }
+    textarea{min-height:90px}
+    .inline{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .inline-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    button{cursor:pointer;background:linear-gradient(180deg,var(--accent),var(--brand-blue-2));color:#ffffff;font-weight:800;border:none}
+    button.secondary{background:#ffffff;color:var(--brand-blue);border:1px solid rgba(1,71,130,.18)}
+    button.good{background:linear-gradient(180deg,#39d77d,#25b564);color:#06200f}
+    .result{
+      margin-top:12px;padding:14px;border-radius:14px;background:rgba(1,71,130,.06);border:1px solid rgba(1,71,130,.16)
+    }
+    .goodBox{background:rgba(41,195,106,.12);border-color:rgba(41,195,106,.25)}
+    .warnBox{background:rgba(242,184,75,.12);border-color:rgba(242,184,75,.25)}
+    .badBox{background:rgba(242,106,106,.12);border-color:rgba(242,106,106,.25)}
+    .quizQ{padding:14px;border-radius:14px;background:rgba(1,71,130,.04);margin:12px 0;border:1px solid rgba(1,71,130,.08)}
+    .quizQ label.option{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;background:#ffffff;margin:8px 0;border:1px solid rgba(1,71,130,.08)}
+    .quizQ input[type="radio"],.quizQ input[type="checkbox"]{width:auto;margin-top:3px}
+    .statusBar{height:12px;border-radius:999px;background:rgba(1,71,130,.12);overflow:hidden}
+    .statusFill{height:100%;width:0;background:linear-gradient(90deg,var(--brand-yellow),var(--accent))}
+    .svgFrame{background:linear-gradient(180deg,#f7fbfe,#edf4f9);border-radius:18px;padding:10px;border:1px solid rgba(1,71,130,.12)}
+    .footer{opacity:.85;font-size:.92rem;padding:18px 0 35px}
+    .small{font-size:.9rem}
+    .checklistItem{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;background:#ffffff;margin:8px 0;border:1px solid rgba(1,71,130,.08)}
+    .checklistItem input{width:auto;margin-top:4px}
+    .score{font-size:2rem;font-weight:800;color:var(--brand-blue)}
+    .stickyTop{position:sticky;top:10px}
+    .hidden{display:none}
+    .hero,.hero p,.hero h1,.hero h2,.hero h3{color:#ffffff}
+    .hero .muted{color:rgba(255,255,255,.82)}
+    .hero .small{color:rgba(255,255,255,.82)}
+    .hero-visual text{font-family:Segoe UI,Arial,sans-serif}
+    input,select,textarea{border:1px solid rgba(1,71,130,.18);box-shadow:inset 0 1px 2px rgba(1,71,130,.04)}
+    input:focus,select:focus,textarea:focus{outline:2px solid rgba(255,238,2,.5);border-color:rgba(1,71,130,.35)}
+
+    
+    .diagramCard{position:relative;overflow:hidden}
+    .diagramShell{display:grid;grid-template-columns:1.25fr .85fr;gap:16px;align-items:start}
+    .diagramTools{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .chip{display:inline-block;padding:5px 10px;border-radius:999px;background:rgba(255,238,2,.22);color:var(--brand-blue);font-size:12px;font-weight:800;border:1px solid rgba(1,71,130,.12)}
+    .explainBox{margin-top:12px;padding:14px;border-radius:14px;background:rgba(1,71,130,.05);border:1px solid rgba(1,71,130,.10)}
+    .hotspot{cursor:pointer;transition:transform .18s ease, opacity .18s ease}
+    .hotspot:hover{transform:scale(1.04)}
+    .hotspot.active{filter:drop-shadow(0 0 8px rgba(255,238,2,.55))}
+    .legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+    .legend div{padding:8px 10px;border-radius:10px;background:#fff;border:1px solid rgba(1,71,130,.08);font-size:.92rem}
+    .diagramModal{position:fixed;inset:0;background:rgba(5,18,31,.74);display:none;align-items:center;justify-content:center;padding:24px;z-index:20}
+    .diagramModal.show{display:flex}
+    .diagramModalCard{width:min(1200px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:18px;border:1px solid rgba(1,71,130,.18);box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    .diagramModalHead{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px}
+    .diagramModalHead h3{margin:0;color:var(--brand-blue)}
+    .modalClose{width:auto;padding:10px 16px}
+
+    @media (max-width:1100px){
+      .diagramShell{grid-template-columns:1fr}
+      .hero-grid,.grid-3,.grid-2,.nav,.inline,.inline-3{grid-template-columns:1fr}
+      .hero p{max-width:100%}
+    }
+  
+</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extended Air Diving Umbilical Training Package</title>
+  
+</head>
+<body>
+
+<div id="progress-strip"><div id="progress-fill"></div></div>
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <div class="sidebar-brand">
+      <div class="sidebar-nsea-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39 53" fill="none"><path d="M19.3197 0C29.9897 0 38.4697 7.23999 38.4697 18.27V52.47H28.3097V18.69C28.3097 12.69 24.7997 9.11002 19.3097 9.11002C13.8197 9.11002 10.2497 12.69 10.2497 18.69V52.52H0.179688V18.32C0.179688 7.32001 8.6497 0.0499878 19.3197 0.0499878" fill="#FFEE02"/></svg></div>
+      <div class="sidebar-nsea-name">N-SEA</div>
+    </div>
+    <div class="logo-line">N-Sea &middot; Training Package</div>
+    <div class="manual-title">Extended Air Diving<br/>Umbilical Operations</div>
+    <div class="manual-sub">BMS-OP-0600 &mdash; Extended Umbilical Module</div>
+  </div>
+  <div id="sidebar-progress">
+    <div class="sp-label">Progress</div>
+    <div class="sp-bar-wrap"><div class="sp-bar" id="sp-bar-fill"></div></div>
+    <div class="sp-count" id="sp-count-text">0% complete</div>
+  </div>
+  <div id="nav-search-wrap">
+    <input id="nav-search" type="text" placeholder="Search sections..." oninput="filterNav(this.value)"/>
+  </div>
+  <ul id="nav-list">
+    <li><a href="#top" onclick="setActive(this)"><span class="nav-num">00</span>Introduction &amp; Learning Path</a></li>
+    <li><a href="#visuals" onclick="setActive(this)"><span class="nav-num">01</span>Visual: Safe Distance Logic</a></li>
+    <li><a href="#diagram-lab" onclick="setActive(this)"><span class="nav-num">02</span>Diagram Lab</a></li>
+    <li><a href="#calculators" onclick="setActive(this)"><span class="nav-num">03</span>Calculators</a></li>
+    <li><a href="#sequence" onclick="setActive(this)"><span class="nav-num">04</span>Operational Sequence</a></li>
+    <li><a href="#checklists" onclick="setActive(this)"><span class="nav-num">05</span>Checklists</a></li>
+    <li><a href="#tests" onclick="setActive(this)"><span class="nav-num">06</span>Knowledge Tests</a></li>
+  </ul>
+  <div id="sidebar-footer">
+    <strong>Module:</strong> Extended Umbilical Operations<br/>
+    <strong>Standard:</strong> IMCA D040
+  </div>
+</nav>
+<div id="main">
+  <div id="topbar">
+    <div class="breadcrumb">N-Sea &rsaquo; <span>Extended Umbilical Operations</span></div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline" onclick="window.print()">&#128438; Print</button>
+    </div>
+  </div>
+  <div id="content">
+
+  <div class="wrap">
+    <section class="hero" id="top">
+      <div class="hero-grid">
+        <div>
+          <div class="brand">
+            <div class="logoBox" aria-label="N-Sea logo">
+              <svg viewBox="0 0 39 53" role="img" aria-label="N-Sea logo" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <path d="M19.3197 0C29.9897 0 38.4697 7.23999 38.4697 18.27V52.47H28.3097V18.69C28.3097 12.69 24.7997 9.11002 19.3097 9.11002C13.8197 9.11002 10.2497 12.69 10.2497 18.69V52.52H0.179688V18.32C0.179688 7.32001 8.6497 0.0499878 19.3197 0.0499878" fill="#FFEE02"/>
+              </svg>
+            </div>
+            <div>
+              <div class="badge">Interactive Training Package</div>
+              <div class="badge">Extended Umbilicals</div>
+            </div>
+          </div>
+          <h1>Extended Air Diving Umbilical Procedure<br>Training Package</h1>
+          <p>This package turns the procedure into an interactive learning tool with visual explanations, step-by-step guided learning, calculators, checklists, scenario training and built-in tests. It is designed to make the procedure easier to learn, easier to revise, and easier to use during familiarisation.</p>
+          <p class="muted">Source basis: Extended Air Diving Umbilical Procedure, including requirements for hazard clearance, standby allowance, Golden Gate / in-water tending, marking system, shallow-water limits, pre-task actions, deployment, recovery, emergency recovery, and calculation logic.</p>
+        </div>
+        <div class="hero-visual">
+          <div class="svgFrame">
+            <svg viewBox="0 0 760 360" width="100%" aria-label="Extended umbilical concept diagram">
+              <rect x="0" y="0" width="760" height="360" fill="#0c1d2b" rx="18"/>
+              <rect x="0" y="215" width="760" height="145" fill="#08263b"/>
+              <text x="28" y="36" fill="#dff8ff" font-size="22" font-family="Segoe UI, Arial">Concept overview: basket, Golden Gate and hazard-controlled excursion</text>
+              <path d="M40 138h560" stroke="#89e8ff" stroke-width="3" opacity=".35"/>
+              <rect x="160" y="100" width="40" height="128" fill="#284f63"/>
+              <rect x="148" y="204" width="64" height="20" fill="#3a6c83" rx="4"/>
+              <text x="126" y="248" fill="#dff8ff" font-size="16">Dive basket</text>
+              <line x1="180" y1="100" x2="180" y2="40" stroke="#8feeff" stroke-width="3"/>
+              <line x1="180" y1="204" x2="360" y2="204" stroke="#ffe08a" stroke-width="4" stroke-dasharray="8 6"/>
+              <rect x="350" y="182" width="24" height="44" fill="#4f7f8b" rx="3"/>
+              <text x="312" y="248" fill="#dff8ff" font-size="16">Golden Gate</text>
+              <line x1="362" y1="204" x2="480" y2="250" stroke="#5ce0ff" stroke-width="4"/>
+              <circle cx="493" cy="254" r="12" fill="#7ef1ff"/>
+              <text x="510" y="260" fill="#dff8ff" font-size="16">Working diver</text>
+              <circle cx="625" cy="180" r="44" fill="none" stroke="#ff8f8f" stroke-width="4" stroke-dasharray="7 7"/>
+              <circle cx="625" cy="180" r="20" fill="#7a3333" opacity=".65"/>
+              <text x="586" y="114" fill="#ffd2d2" font-size="16">Thruster / hazard</text>
+              <line x1="493" y1="254" x2="625" y2="180" stroke="#ffca7a" stroke-width="2" stroke-dasharray="4 6"/>
+              <text x="500" y="196" fill="#ffefb4" font-size="14">keep clearance</text>
+              <text x="32" y="328" fill="#aacfe0" font-size="15">Key idea: the diver's reachable length is restricted so the diver and umbilical cannot enter the hazard zone.</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#overview">Overview</a>
+        <a href="#visuals">Visuals</a>
+        <a href="#calculators">Calculators</a>
+        <a href="#sequence">Procedures</a>
+        <a href="#checklists">Checklists</a>
+        <a href="#tests">Tests</a>
+      </nav>
+    </section>
+
+    <section class="section grid grid-3" id="overview">
+      <div class="card soft">
+        <div class="pill">Why this matters</div>
+        <h2>Training focus</h2>
+        <p>The procedure exists to let divers work with extended umbilicals while remaining clear of identified hazards such as thrusters, propellers, intakes and other vessel or subsea threats.</p>
+      </div>
+      <div class="card soft">
+        <div class="pill">Core rule</div>
+        <div class="kpi">+2 m</div>
+        <p class="muted">Standby diver / basketman reach is two metres longer than the working diver, while still staying outside the reduced standby hazard clearance.</p>
+      </div>
+      <div class="card soft">
+        <div class="pill">Bailout planning</div>
+        <div class="kpi">62.5 L/min</div>
+        <p class="muted">Emergency breathing rate used for endurance planning, with one minute of bailout required for every 10 m of umbilical deployed.</p>
+      </div>
+    </section>
+
+    <section class="section grid grid-2">
+      <div class="card">
+        <h2>Learning path</h2>
+        <div class="step"><div class="stepNum">1</div><div><strong>Understand the purpose.</strong><br><span class="muted small">Why extended umbilical operations need planning, restrictions, verified dimensions and vessel-specific diagrams.</span></div></div>
+        <div class="step"><div class="stepNum">2</div><div><strong>Learn the hazard model.</strong><br><span class="muted small">Thrusters, intakes, discharges, mooring lines, structures, currents, visibility and position reference limitations.</span></div></div>
+        <div class="step"><div class="stepNum">3</div><div><strong>Learn how the lengths are set.</strong><br><span class="muted small">Working diver clearance, standby diver clearance, Golden Gate / in-water tending constraints and pre-task fitting positions.</span></div></div>
+        <div class="step"><div class="stepNum">4</div><div><strong>Practice procedures.</strong><br><span class="muted small">Pre-task, deployment, return, standby deployment and standby recovery.</span></div></div>
+        <div class="step"><div class="stepNum">5</div><div><strong>Pass the assessment.</strong><br><span class="muted small">Quick quiz, longer knowledge test and scenario test with scored results.</span></div></div>
+      </div>
+      <div class="card">
+        <h2>What the source procedure requires</h2>
+        <details open><summary>Risk assessment content</summary><p class="muted">Depth, currents, tidal stream, vessel velocity and heading-change limitations, hull features, and review of current umbilical management procedures.</p></details>
+        <details><summary>Hazard control principle</summary><p class="muted">All deployed umbilicals must be physically prevented from contacting identified hazards. Guards on thrusters and propellers are not accepted as a control measure on their own.</p></details>
+        <details><summary>Verified dimensions</summary><p class="muted">Dimensions and drawings must be verified by competent persons. 3D calculations are required. The diver helmet is treated as the closest point to the hazard when measuring stopper positions.</p></details>
+        <details><summary>Operational pathways</summary><p class="muted">The package covers standard basket deployment logic, Golden Gate / passive tending, standby swim line use, shallow-water issues, and emergency recovery sequence.</p></details>
+      </div>
+    </section>
+
+    <section class="section" id="visuals">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>Visual: safe distance logic</h2>
+          <div class="svgFrame">
+            <svg viewBox="0 0 700 360" width="100%" aria-label="Safe distance diagram">
+              <rect width="700" height="360" fill="#0a1d2c" rx="18"/>
+              <circle cx="560" cy="150" r="28" fill="#7a2c2c"/>
+              <circle cx="560" cy="150" r="82" fill="none" stroke="#ff8f8f" stroke-width="4" stroke-dasharray="8 7"/>
+              <text x="506" y="48" fill="#ffd5d5" font-size="17">Hazard centre</text>
+              <text x="503" y="70" fill="#ffd5d5" font-size="14">thruster / intake / propeller</text>
+              <rect x="92" y="128" width="42" height="86" fill="#3a6f8d" rx="6"/>
+              <line x1="113" y1="128" x2="113" y2="48" stroke="#8de9ff" stroke-width="4"/>
+              <text x="55" y="242" fill="#dff8ff" font-size="17">Deployment device</text>
+              <line x1="113" y1="171" x2="478" y2="171" stroke="#ffdc87" stroke-width="4" marker-end="url(#arrow1)"/>
+              <text x="233" y="161" fill="#fff0be" font-size="16">Calculated maximum diver reach</text>
+              <circle cx="472" cy="171" r="12" fill="#79ecff"/>
+              <text x="451" y="204" fill="#dff8ff" font-size="16">Working diver</text>
+              <defs>
+                <marker id="arrow1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" fill="#ffdc87"/>
+                </marker>
+              </defs>
+              <text x="38" y="314" fill="#aacfe0" font-size="15">Working diver safe length = 3D distance to hazard centre minus hazard radius minus 5 m.</text>
+              <text x="38" y="336" fill="#aacfe0" font-size="15">Standby diver safe length = 3D distance to hazard centre minus hazard radius minus 3 m.</text>
+            </svg>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Visual: active vs passive tending</h2>
+          <div class="svgFrame">
+            <svg viewBox="0 0 700 360" width="100%" aria-label="Active and passive tending diagram">
+              <rect width="700" height="360" fill="#0a1d2c" rx="18"/>
+              <text x="36" y="38" fill="#dff8ff" font-size="21">In-water tending logic</text>
+              <rect x="70" y="110" width="36" height="90" fill="#3d6e84"/>
+              <text x="44" y="224" fill="#dff8ff" font-size="14">Basket</text>
+              <rect x="270" y="136" width="20" height="56" fill="#548494"/>
+              <text x="214" y="224" fill="#dff8ff" font-size="14">In-water tend point</text>
+              <line x1="88" y1="164" x2="280" y2="164" stroke="#ffe08a" stroke-width="4"/>
+              <circle cx="420" cy="184" r="11" fill="#7cefff"/>
+              <line x1="280" y1="164" x2="420" y2="184" stroke="#5ce0ff" stroke-width="4"/>
+              <text x="398" y="216" fill="#dff8ff" font-size="14">Working diver</text>
+              <circle cx="600" cy="120" r="24" fill="#7a2c2c"/>
+              <circle cx="600" cy="120" r="70" fill="none" stroke="#ff9d9d" stroke-width="4" stroke-dasharray="6 6"/>
+              <text x="535" y="36" fill="#ffd2d2" font-size="15">Nearest hazard</text>
+              <text x="37" y="284" fill="#aacfe0" font-size="15">Passive tending / Golden Gate: use only after full risk assessment, and treat as a last option because emergency recovery can be slow.</text>
+              <text x="37" y="308" fill="#aacfe0" font-size="15">Constraint: Cmax = min(D-5, A-5) and B must stay less than C.</text>
+              <text x="37" y="332" fill="#aacfe0" font-size="15">Active tending gives enhanced umbilical management and should allow direct return if the tender becomes debilitated.</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="section" id="diagram-lab">
+      <div class="card">
+        <div class="pill">Rebuilt diagrams</div>
+        <h2>Diagram lab: rebuilt visuals with highlights</h2>
+        <p class="muted">These are rebuilt training diagrams based on the procedure logic. Each one has click targets, clean labels, and a <strong>Show explanation</strong> button so trainees can move between picture-first learning and the written rule.</p>
+      </div>
+      <div class="grid grid-2" style="margin-top:16px">
+
+        <div class="card diagramCard">
+          <div class="diagramShell">
+            <div>
+              <h3>1. Basket to Golden Gate to diver route</h3>
+              <div class="svgFrame">
+                <svg viewBox="0 0 760 420" width="100%" aria-label="Routing diagram">
+                  <rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/>
+                  <rect x="0" y="265" width="760" height="155" fill="#0d2f47"/>
+                  <rect x="80" y="110" width="54" height="130" rx="6" fill="#396982"/>
+                  <rect x="68" y="228" width="78" height="20" rx="4" fill="#5687a0"/>
+                  <text x="48" y="280" fill="#dff8ff" font-size="16">Dive basket</text>
+
+                  <line x1="107" y1="110" x2="107" y2="44" stroke="#8feeff" stroke-width="4"/>
+                  <text x="76" y="34" fill="#dff8ff" font-size="14">LARS wire</text>
+
+                  <line x1="146" y1="238" x2="326" y2="238" stroke="#ffe08a" stroke-width="5" stroke-dasharray="10 7"/>
+                  <text x="165" y="225" fill="#fff0be" font-size="15">Basket-to-gate length B</text>
+
+                  <rect x="322" y="205" width="24" height="60" rx="4" fill="#547f8f"/>
+                  <rect x="310" y="198" width="48" height="10" rx="3" fill="#8fb8c5"/>
+                  <text x="275" y="288" fill="#dff8ff" font-size="16">Golden Gate / passive point</text>
+
+                  <line x1="346" y1="238" x2="515" y2="300" stroke="#4ddfff" stroke-width="5"/>
+                  <circle cx="530" cy="306" r="12" fill="#85f1ff"/>
+                  <text x="544" y="312" fill="#dff8ff" font-size="16">Working diver</text>
+
+                  <line x1="346" y1="238" x2="445" y2="156" stroke="#9dd8ff" stroke-width="4" stroke-dasharray="7 5"/>
+                  <circle cx="456" cy="147" r="10" fill="#ffef7a"/>
+                  <text x="397" y="132" fill="#dff8ff" font-size="14">Alternative tend point</text>
+
+                  <circle cx="645" cy="155" r="26" fill="#7a3030"/>
+                  <circle cx="645" cy="155" r="78" fill="none" stroke="#ff9898" stroke-width="4" stroke-dasharray="7 7"/>
+                  <text x="585" y="70" fill="#ffd4d4" font-size="16">Nearest hazard</text>
+                  <text x="597" y="90" fill="#ffd4d4" font-size="14">thruster / intake</text>
+
+                  <line x1="530" y1="306" x2="645" y2="155" stroke="#ffc678" stroke-width="2" stroke-dasharray="5 6"/>
+                  <text x="519" y="218" fill="#ffefb4" font-size="14">Clearance must remain intact</text>
+
+                  <g class="hotspot" data-diagram="route" data-key="basket">
+                    <circle cx="107" cy="238" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/>
+                    <text x="99" y="244" fill="#ffee02" font-size="18" font-weight="700">1</text>
+                  </g>
+                  <g class="hotspot" data-diagram="route" data-key="gate">
+                    <circle cx="334" cy="238" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/>
+                    <text x="326" y="244" fill="#ffee02" font-size="18" font-weight="700">2</text>
+                  </g>
+                  <g class="hotspot" data-diagram="route" data-key="diver">
+                    <circle cx="530" cy="306" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/>
+                    <text x="522" y="312" fill="#183650" font-size="18" font-weight="700">3</text>
+                  </g>
+                  <g class="hotspot" data-diagram="route" data-key="hazard">
+                    <circle cx="645" cy="155" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/>
+                    <text x="637" y="161" fill="#183650" font-size="18" font-weight="700">4</text>
+                  </g>
+                </svg>
+              </div>
+              <div class="diagramTools">
+                <button class="secondary" onclick="toggleExplain('explain-route')">Show explanation</button>
+                <button class="secondary" onclick="openDiagramModal('Routing and control point concept', document.getElementById('route-modal').innerHTML)">Open enlarged</button>
+              </div>
+            </div>
+            <div>
+              <div class="chip">Click the yellow numbers</div>
+              <div class="explainBox" id="routeExplainBox">Select a hotspot or open the explanation.</div>
+              <div class="legend">
+                <div><strong>1 Basket:</strong> controlled starting point</div>
+                <div><strong>2 Golden Gate:</strong> control / pass-through point</div>
+                <div><strong>3 Diver:</strong> actual working reach</div>
+                <div><strong>4 Hazard:</strong> no-go zone remains protected</div>
+              </div>
+              <div class="explainBox hidden" id="explain-route">
+                <strong>Explanation:</strong><br>
+                The rebuilt route diagram turns the written procedure into one picture. The diver does not get a free, unlimited excursion from the basket. The route is deliberately controlled through a fixed point, then the last leg is limited so the diver and umbilical cannot reach the nearest hazard. That is the real training message.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card diagramCard">
+          <div class="diagramShell">
+            <div>
+              <h3>2. Hazard clearance geometry</h3>
+              <div class="svgFrame">
+                <svg viewBox="0 0 760 420" width="100%" aria-label="3D geometry diagram">
+                  <rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/>
+                  <rect x="88" y="72" width="332" height="250" fill="none" stroke="#98c3d3" stroke-width="2"/>
+                  <rect x="172" y="130" width="332" height="250" fill="none" stroke="#6e96a7" stroke-width="2"/>
+                  <line x1="88" y1="72" x2="172" y2="130" stroke="#6e96a7" stroke-width="2"/>
+                  <line x1="420" y1="72" x2="504" y2="130" stroke="#6e96a7" stroke-width="2"/>
+                  <line x1="420" y1="322" x2="504" y2="380" stroke="#6e96a7" stroke-width="2"/>
+                  <line x1="88" y1="322" x2="172" y2="380" stroke="#6e96a7" stroke-width="2"/>
+
+                  <circle cx="148" cy="260" r="10" fill="#7ef1ff"/>
+                  <text x="72" y="286" fill="#dff8ff" font-size="15">Basket / LARS point</text>
+                  <circle cx="510" cy="312" r="11" fill="#ffee02"/>
+                  <text x="520" y="319" fill="#ffee02" font-size="15">Hazard centre</text>
+                  <circle cx="510" cy="312" r="62" fill="none" stroke="#ff9797" stroke-width="4" stroke-dasharray="6 6"/>
+                  <text x="554" y="254" fill="#ffd4d4" font-size="14">Hazard radius R</text>
+
+                  <line x1="148" y1="260" x2="510" y2="312" stroke="#8ceaff" stroke-width="4"/>
+                  <text x="286" y="268" fill="#dff8ff" font-size="15">E1 = 3D distance to hazard centre</text>
+
+                  <line x1="148" y1="260" x2="420" y2="260" stroke="#ffe08a" stroke-width="4"/>
+                  <text x="242" y="248" fill="#fff0be" font-size="15">B1</text>
+                  <line x1="420" y1="260" x2="420" y2="110" stroke="#9dd8ff" stroke-width="4"/>
+                  <text x="430" y="188" fill="#dff8ff" font-size="15">A'1</text>
+                  <line x1="420" y1="110" x2="510" y2="312" stroke="#68cbff" stroke-width="4" stroke-dasharray="6 6"/>
+                  <text x="446" y="170" fill="#dff8ff" font-size="15">D</text>
+
+                  <g class="hotspot" data-diagram="geometry" data-key="distance">
+                    <circle cx="298" cy="260" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="290" y="266" fill="#183650" font-size="18" font-weight="700">1</text>
+                  </g>
+                  <g class="hotspot" data-diagram="geometry" data-key="radius">
+                    <circle cx="570" cy="312" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="562" y="318" fill="#183650" font-size="18" font-weight="700">2</text>
+                  </g>
+                  <g class="hotspot" data-diagram="geometry" data-key="clearance">
+                    <circle cx="472" cy="306" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="464" y="312" fill="#183650" font-size="18" font-weight="700">3</text>
+                  </g>
+                </svg>
+              </div>
+              <div class="diagramTools">
+                <button class="secondary" onclick="toggleExplain('explain-geometry')">Show explanation</button>
+                <button class="secondary" onclick="openDiagramModal('Hazard clearance geometry', document.getElementById('geometry-modal').innerHTML)">Open enlarged</button>
+              </div>
+            </div>
+            <div>
+              <div class="chip">Built for the calculators</div>
+              <div class="explainBox" id="geometryExplainBox">Select a hotspot or open the explanation.</div>
+              <div class="legend">
+                <div><strong>1 Distance build-up:</strong> B1, A'1 and D</div>
+                <div><strong>2 Radius:</strong> hazard + margin</div>
+                <div><strong>3 Clearance:</strong> subtract 5 m or 3 m</div>
+                <div><strong>Purpose:</strong> converts geometry into safe reach</div>
+              </div>
+              <div class="explainBox hidden" id="explain-geometry">
+                <strong>Explanation:</strong><br>
+                This picture matches the logic behind the safe-length calculator. First establish the 3D distance from deployment point to hazard centre. Then subtract the hazard radius and the required diver clearance. The result is not “how far the diver can probably get.” It is the maximum safe length.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card diagramCard">
+          <div class="diagramShell">
+            <div>
+              <h3>3. Active versus passive tending</h3>
+              <div class="svgFrame">
+                <svg viewBox="0 0 760 420" width="100%" aria-label="Active passive tending diagram">
+                  <rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/>
+                  <line x1="380" y1="40" x2="380" y2="380" stroke="#1c4764" stroke-width="2"/>
+                  <text x="108" y="42" fill="#dff8ff" font-size="20">Active tending</text>
+                  <text x="468" y="42" fill="#dff8ff" font-size="20">Passive / Golden Gate</text>
+
+                  <rect x="82" y="132" width="42" height="90" fill="#3f6e86"/>
+                  <text x="46" y="246" fill="#dff8ff" font-size="14">Basket</text>
+                  <rect x="240" y="128" width="24" height="58" fill="#548494"/>
+                  <circle cx="247" cy="202" r="16" fill="#ffee02"/>
+                  <text x="196" y="250" fill="#dff8ff" font-size="14">Tender present</text>
+                  <line x1="124" y1="176" x2="247" y2="176" stroke="#ffe08a" stroke-width="4"/>
+                  <line x1="264" y1="176" x2="330" y2="206" stroke="#4ddfff" stroke-width="4"/>
+                  <circle cx="341" cy="211" r="11" fill="#7ef1ff"/>
+                  <text x="304" y="238" fill="#dff8ff" font-size="14">Diver</text>
+
+                  <rect x="458" y="132" width="42" height="90" fill="#3f6e86"/>
+                  <text x="422" y="246" fill="#dff8ff" font-size="14">Basket</text>
+                  <rect x="616" y="128" width="24" height="58" fill="#548494"/>
+                  <line x1="500" y1="176" x2="628" y2="176" stroke="#ffe08a" stroke-width="4" stroke-dasharray="10 6"/>
+                  <line x1="640" y1="176" x2="690" y2="220" stroke="#4ddfff" stroke-width="4"/>
+                  <circle cx="701" cy="225" r="11" fill="#7ef1ff"/>
+                  <text x="664" y="252" fill="#dff8ff" font-size="14">Diver</text>
+                  <text x="583" y="247" fill="#dff8ff" font-size="14">No tender at gate</text>
+
+                  <circle cx="706" cy="108" r="20" fill="#7a2c2c"/>
+                  <circle cx="706" cy="108" r="66" fill="none" stroke="#ff9d9d" stroke-width="4" stroke-dasharray="6 6"/>
+                  <text x="642" y="30" fill="#ffd4d4" font-size="15">Nearest hazard</text>
+
+                  <g class="hotspot" data-diagram="tending" data-key="active">
+                    <circle cx="247" cy="202" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="239" y="208" fill="#183650" font-size="18" font-weight="700">1</text>
+                  </g>
+                  <g class="hotspot" data-diagram="tending" data-key="passive">
+                    <circle cx="628" cy="176" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="620" y="182" fill="#183650" font-size="18" font-weight="700">2</text>
+                  </g>
+                  <g class="hotspot" data-diagram="tending" data-key="risk">
+                    <circle cx="706" cy="108" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="698" y="114" fill="#183650" font-size="18" font-weight="700">3</text>
+                  </g>
+                </svg>
+              </div>
+              <div class="diagramTools">
+                <button class="secondary" onclick="toggleExplain('explain-tending')">Show explanation</button>
+                <button class="secondary" onclick="openDiagramModal('Active and passive tending', document.getElementById('tending-modal').innerHTML)">Open enlarged</button>
+              </div>
+            </div>
+            <div>
+              <div class="chip">Decision-quality visual</div>
+              <div class="explainBox" id="tendingExplainBox">Select a hotspot or open the explanation.</div>
+              <div class="legend">
+                <div><strong>1 Active:</strong> direct umbilical control at the point</div>
+                <div><strong>2 Passive:</strong> fixed pass-through only</div>
+                <div><strong>3 Risk:</strong> slower or more difficult emergency recovery</div>
+                <div><strong>Use case:</strong> passive is not the default</div>
+              </div>
+              <div class="explainBox hidden" id="explain-tending">
+                <strong>Explanation:</strong><br>
+                This is one of the most important judgement diagrams in the package. Active tending is the stronger control because someone is physically managing the umbilical. Passive tending may still be workable, but it must be justified, limited, and treated cautiously because recovery can become slower and more dangerous.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card diagramCard">
+          <div class="diagramShell">
+            <div>
+              <h3>4. Emergency recovery route</h3>
+              <div class="svgFrame">
+                <svg viewBox="0 0 760 420" width="100%" aria-label="Emergency recovery diagram">
+                  <rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/>
+                  <rect x="56" y="112" width="52" height="106" rx="6" fill="#3f6e86"/>
+                  <text x="34" y="246" fill="#dff8ff" font-size="15">Basket</text>
+                  <rect x="248" y="204" width="22" height="54" fill="#548494"/>
+                  <text x="210" y="288" fill="#dff8ff" font-size="15">Golden Gate</text>
+                  <line x1="108" y1="198" x2="258" y2="230" stroke="#ffe08a" stroke-width="5" stroke-dasharray="9 6"/>
+                  <line x1="270" y1="230" x2="478" y2="260" stroke="#4ddfff" stroke-width="5"/>
+                  <circle cx="492" cy="262" r="12" fill="#85f1ff"/>
+                  <text x="510" y="268" fill="#dff8ff" font-size="15">Injured diver</text>
+
+                  <line x1="270" y1="230" x2="448" y2="150" stroke="#9dd8ff" stroke-width="4"/>
+                  <circle cx="463" cy="145" r="12" fill="#ffee02"/>
+                  <text x="476" y="151" fill="#ffee02" font-size="15">Standby diver</text>
+
+                  <path d="M465 150 C 430 190, 400 214, 382 222" stroke="#ffee02" stroke-width="5" fill="none" marker-end="url(#arrowRecover)"/>
+                  <path d="M382 222 C 330 220, 280 216, 258 230" stroke="#ffee02" stroke-width="5" fill="none" marker-end="url(#arrowRecover)"/>
+                  <path d="M258 230 C 206 214, 154 204, 108 198" stroke="#ffee02" stroke-width="5" fill="none" marker-end="url(#arrowRecover)"/>
+                  <defs>
+                    <marker id="arrowRecover" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                      <polygon points="0 0, 10 3, 0 6" fill="#ffee02"/>
+                    </marker>
+                  </defs>
+
+                  <circle cx="652" cy="158" r="22" fill="#7a2c2c"/>
+                  <circle cx="652" cy="158" r="74" fill="none" stroke="#ff9d9d" stroke-width="4" stroke-dasharray="6 6"/>
+                  <text x="600" y="72" fill="#ffd4d4" font-size="15">Hazard remains excluded</text>
+
+                  <g class="hotspot" data-diagram="recovery" data-key="standby">
+                    <circle cx="463" cy="145" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="455" y="151" fill="#183650" font-size="18" font-weight="700">1</text>
+                  </g>
+                  <g class="hotspot" data-diagram="recovery" data-key="route">
+                    <circle cx="334" cy="221" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="326" y="227" fill="#183650" font-size="18" font-weight="700">2</text>
+                  </g>
+                  <g class="hotspot" data-diagram="recovery" data-key="basket">
+                    <circle cx="108" cy="198" r="22" fill="rgba(255,238,2,.22)" stroke="#ffee02" stroke-width="2"/><text x="100" y="204" fill="#183650" font-size="18" font-weight="700">3</text>
+                  </g>
+                </svg>
+              </div>
+              <div class="diagramTools">
+                <button class="secondary" onclick="toggleExplain('explain-recovery')">Show explanation</button>
+                <button class="secondary" onclick="openDiagramModal('Emergency recovery route', document.getElementById('recovery-modal').innerHTML)">Open enlarged</button>
+              </div>
+            </div>
+            <div>
+              <div class="chip">Response picture</div>
+              <div class="explainBox" id="recoveryExplainBox">Select a hotspot or open the explanation.</div>
+              <div class="legend">
+                <div><strong>1 Standby diver:</strong> goes to the casualty</div>
+                <div><strong>2 Route:</strong> bring both divers back through the controlled path</div>
+                <div><strong>3 Basket:</strong> recovery handover point</div>
+                <div><strong>Rule:</strong> recovery route must still stay clear of hazards</div>
+              </div>
+              <div class="explainBox hidden" id="explain-recovery">
+                <strong>Explanation:</strong><br>
+                Emergency recovery is not a random tow back to the surface. The diagram shows the procedure logic: standby reaches the injured diver, both are brought back through the controlled route, and the basket becomes the recovery handover point. The protected path still matters during an emergency.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div id="route-modal" class="hidden"><div class="svgFrame"><svg viewBox="0 0 760 420" width="100%"><rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/><rect x="0" y="265" width="760" height="155" fill="#0d2f47"/><rect x="80" y="110" width="54" height="130" rx="6" fill="#396982"/><rect x="68" y="228" width="78" height="20" rx="4" fill="#5687a0"/><line x1="107" y1="110" x2="107" y2="44" stroke="#8feeff" stroke-width="4"/><line x1="146" y1="238" x2="326" y2="238" stroke="#ffe08a" stroke-width="5" stroke-dasharray="10 7"/><rect x="322" y="205" width="24" height="60" rx="4" fill="#547f8f"/><line x1="346" y1="238" x2="515" y2="300" stroke="#4ddfff" stroke-width="5"/><circle cx="530" cy="306" r="12" fill="#85f1ff"/><circle cx="645" cy="155" r="26" fill="#7a3030"/><circle cx="645" cy="155" r="78" fill="none" stroke="#ff9898" stroke-width="4" stroke-dasharray="7 7"/></svg></div><p class="muted">Use the route to teach that controlled length is deliberate, not incidental.</p></div>
+      <div id="geometry-modal" class="hidden"><div class="svgFrame"><svg viewBox="0 0 760 420" width="100%"><rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/><rect x="88" y="72" width="332" height="250" fill="none" stroke="#98c3d3" stroke-width="2"/><rect x="172" y="130" width="332" height="250" fill="none" stroke="#6e96a7" stroke-width="2"/><line x1="88" y1="72" x2="172" y2="130" stroke="#6e96a7" stroke-width="2"/><line x1="420" y1="72" x2="504" y2="130" stroke="#6e96a7" stroke-width="2"/><line x1="420" y1="322" x2="504" y2="380" stroke="#6e96a7" stroke-width="2"/><line x1="88" y1="322" x2="172" y2="380" stroke="#6e96a7" stroke-width="2"/><circle cx="148" cy="260" r="10" fill="#7ef1ff"/><circle cx="510" cy="312" r="11" fill="#ffee02"/><circle cx="510" cy="312" r="62" fill="none" stroke="#ff9797" stroke-width="4" stroke-dasharray="6 6"/><line x1="148" y1="260" x2="510" y2="312" stroke="#8ceaff" stroke-width="4"/><line x1="148" y1="260" x2="420" y2="260" stroke="#ffe08a" stroke-width="4"/><line x1="420" y1="260" x2="420" y2="110" stroke="#9dd8ff" stroke-width="4"/><line x1="420" y1="110" x2="510" y2="312" stroke="#68cbff" stroke-width="4" stroke-dasharray="6 6"/></svg></div><p class="muted">This enlarged view pairs directly with the hazard-length calculator below.</p></div>
+      <div id="tending-modal" class="hidden"><div class="svgFrame"><svg viewBox="0 0 760 420" width="100%"><rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/><line x1="380" y1="40" x2="380" y2="380" stroke="#1c4764" stroke-width="2"/><text x="108" y="42" fill="#dff8ff" font-size="20">Active tending</text><text x="468" y="42" fill="#dff8ff" font-size="20">Passive / Golden Gate</text><rect x="82" y="132" width="42" height="90" fill="#3f6e86"/><rect x="240" y="128" width="24" height="58" fill="#548494"/><circle cx="247" cy="202" r="16" fill="#ffee02"/><line x1="124" y1="176" x2="247" y2="176" stroke="#ffe08a" stroke-width="4"/><line x1="264" y1="176" x2="330" y2="206" stroke="#4ddfff" stroke-width="4"/><circle cx="341" cy="211" r="11" fill="#7ef1ff"/><rect x="458" y="132" width="42" height="90" fill="#3f6e86"/><rect x="616" y="128" width="24" height="58" fill="#548494"/><line x1="500" y1="176" x2="628" y2="176" stroke="#ffe08a" stroke-width="4" stroke-dasharray="10 6"/><line x1="640" y1="176" x2="690" y2="220" stroke="#4ddfff" stroke-width="4"/><circle cx="701" cy="225" r="11" fill="#7ef1ff"/></svg></div><p class="muted">Use this as the teaching visual for why passive tending is restricted and cautious by design.</p></div>
+      <div id="recovery-modal" class="hidden"><div class="svgFrame"><svg viewBox="0 0 760 420" width="100%"><rect x="0" y="0" width="760" height="420" rx="18" fill="#0a1d2c"/><rect x="56" y="112" width="52" height="106" rx="6" fill="#3f6e86"/><rect x="248" y="204" width="22" height="54" fill="#548494"/><line x1="108" y1="198" x2="258" y2="230" stroke="#ffe08a" stroke-width="5" stroke-dasharray="9 6"/><line x1="270" y1="230" x2="478" y2="260" stroke="#4ddfff" stroke-width="5"/><circle cx="492" cy="262" r="12" fill="#85f1ff"/><line x1="270" y1="230" x2="448" y2="150" stroke="#9dd8ff" stroke-width="4"/><circle cx="463" cy="145" r="12" fill="#ffee02"/></svg></div><p class="muted">This enlarged route is useful during drills and debriefs because it turns recovery talk into one visible path.</p></div>
+    </section>
+
+    <div class="diagramModal" id="diagramModal" onclick="if(event.target===this)closeDiagramModal()">
+      <div class="diagramModalCard">
+        <div class="diagramModalHead">
+          <h3 id="diagramModalTitle">Diagram</h3>
+          <button class="secondary modalClose" onclick="closeDiagramModal()">Close</button>
+        </div>
+        <div id="diagramModalBody"></div>
+      </div>
+    </div>
+
+
+    <section class="section" id="calculators">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>Calculator 1: bailout endurance requirement</h2>
+          <p class="muted small">Based on the stated planning rule: enough bailout for <strong>1 minute for every 10 m of umbilical deployed</strong>, using <strong>62.5 L/min</strong> emergency consumption.</p>
+          <label for="umbLen">Umbilical deployed length (m)</label>
+          <input id="umbLen" type="number" min="0" step="0.1" placeholder="e.g. 55">
+          <label for="bailCyl">Available bailout gas volume (litres free gas)</label>
+          <input id="bailCyl" type="number" min="0" step="0.1" placeholder="Optional for adequacy check">
+          <div class="inline">
+            <button onclick="calcBailout()">Calculate requirement</button>
+            <button class="secondary" onclick="resetFields(['umbLen','bailCyl'],'bailoutResult')">Reset</button>
+          </div>
+          <div id="bailoutResult" class="result hidden"></div>
+        </div>
+
+        <div class="card">
+          <h2>Calculator 2: safe umbilical length to hazard</h2>
+          <p class="muted small">Uses the procedure formula for basket-to-hazard geometry. Working diver uses <strong>R + 5</strong>. Standby diver uses <strong>R + 3</strong>.</p>
+          <div class="inline-3">
+            <div><label>B1 / vertical-plane horizontal distance</label><input id="b1" type="number" step="0.1" placeholder="e.g. 18"></div>
+            <div><label>A'1 / depth below thruster</label><input id="a1" type="number" step="0.1" placeholder="e.g. 12"></div>
+            <div><label>D / lateral offset</label><input id="d1" type="number" step="0.1" placeholder="e.g. 7"></div>
+          </div>
+          <div class="inline-3">
+            <div><label>R / hazard radius incl. margin</label><input id="r1" type="number" step="0.1" placeholder="e.g. 3.5"></div>
+            <div><label>Role</label><select id="role1"><option value="5">Working diver (-5 m)</option><option value="3">Standby diver (-3 m)</option></select></div>
+            <div><label>Round to</label><select id="round1"><option value="2">2 decimals</option><option value="1">1 decimal</option><option value="0">Whole metre</option></select></div>
+          </div>
+          <div class="inline">
+            <button onclick="calcSafeLength()">Calculate safe length</button>
+            <button class="secondary" onclick="resetFields(['b1','a1','d1','r1'],'safeLenResult')">Reset</button>
+          </div>
+          <div id="safeLenResult" class="result hidden"></div>
+        </div>
+
+        <div class="card">
+          <h2>Calculator 3: passive / Golden Gate C max</h2>
+          <p class="muted small">For passive or active in-water tending. The source rule states: <strong>C max = D - 5</strong> or <strong>A - 5</strong>, whichever is shorter, and <strong>B must stay less than C</strong>.</p>
+          <div class="inline-3">
+            <div><label>A = device to nearest hazard (m)</label><input id="ggA" type="number" step="0.1"></div>
+            <div><label>B = device to in-water tend point (m)</label><input id="ggB" type="number" step="0.1"></div>
+            <div><label>D = tend point to nearest hazard (m)</label><input id="ggD" type="number" step="0.1"></div>
+          </div>
+          <div class="inline">
+            <button onclick="calcGoldenGate()">Calculate C max</button>
+            <button class="secondary" onclick="resetFields(['ggA','ggB','ggD'],'goldenResult')">Reset</button>
+          </div>
+          <div id="goldenResult" class="result hidden"></div>
+        </div>
+
+        <div class="card">
+          <h2>Calculator 4: working diver length from standby basis</h2>
+          <p class="muted small">Used when the standby diver's opposite-hazard calculation becomes limiting. Source relation: <strong>Lw = Ls - 2 + LL</strong>.</p>
+          <div class="inline">
+            <div><label>Ls = safe standby length (m)</label><input id="ls" type="number" step="0.1"></div>
+            <div><label>LL = distance between LARS centre lines (m)</label><input id="ll" type="number" step="0.1"></div>
+          </div>
+          <div class="inline">
+            <button onclick="calcWorkingFromStandby()">Calculate working length</button>
+            <button class="secondary" onclick="resetFields(['ls','ll'],'workFromStandby')">Reset</button>
+          </div>
+          <div id="workFromStandby" class="result hidden"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section grid grid-2">
+      <div class="card">
+        <h2>Umbilical marking reference</h2>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Length</th><th>Black tape</th><th>Red tape</th></tr></thead>
+            <tbody>
+              <tr><td>5 m</td><td></td><td>1 Turn</td></tr>
+              <tr><td>10 m</td><td>1 Turn</td><td></td></tr>
+              <tr><td>15 m</td><td>1 Turn +</td><td>1 Turn</td></tr>
+              <tr><td>20 m</td><td>2 Turns</td><td></td></tr>
+              <tr><td>25 m</td><td>2 Turns +</td><td>1 Turn</td></tr>
+              <tr><td>30 m</td><td>3 Turns</td><td></td></tr>
+              <tr><td>35 m</td><td>3 Turns +</td><td>1 Turn</td></tr>
+              <tr><td>40 m</td><td>4 Turns</td><td></td></tr>
+              <tr><td>45 m</td><td>4 Turns +</td><td>1 Turn</td></tr>
+              <tr><td>50 m</td><td>1 Broad Turn</td><td></td></tr>
+              <tr><td>55 m</td><td>1 Broad Turn +</td><td>1 Turn</td></tr>
+              <tr><td>60 m</td><td>1 Broad Turn + 1 Turn</td><td></td></tr>
+              <tr><td>65 m</td><td>1 Broad Turn + 1 Turn +</td><td>1 Turn</td></tr>
+              <tr><td>70 m</td><td>1 Broad Turn + 2 Turns</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Quick hazard cues</h2>
+        <div class="step"><div class="stepNum">!</div><div><strong>Never rely on thruster guards.</strong><br><span class="muted small">They do not protect divers or umbilicals adequately.</span></div></div>
+        <div class="step"><div class="stepNum">3D</div><div><strong>3D calculations are required.</strong><br><span class="muted small">Distances and drawings must be verified and signed off by competent persons.</span></div></div>
+        <div class="step"><div class="stepNum">5</div><div><strong>Working diver clearance is 5 m.</strong><br><span class="muted small">Measured from hazard radius boundary, including safety margin.</span></div></div>
+        <div class="step"><div class="stepNum">3</div><div><strong>Standby diver clearance is 3 m.</strong><br><span class="muted small">Standby still needs +2 m operational reach compared with working diver.</span></div></div>
+        <div class="step"><div class="stepNum">SW</div><div><strong>Shallow water increases risk.</strong><br><span class="muted small">DP reference reliability, thruster effects, current, visibility and vessel motion all matter more.</span></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="sequence">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>Pre-task activities</h2>
+          <div class="step"><div class="stepNum">1</div><div>Select the next shallowest dive depth from the diagrams to choose the safe diver and standby lengths.</div></div>
+          <div class="step"><div class="stepNum">2</div><div>Confirm measured horizontal distances from diver and standby LARS to nearest thrusters agree with the diagrams and dive plan.</div></div>
+          <div class="step"><div class="stepNum">3</div><div>Confirm measured umbilical lengths, swim line lengths, and correct D-ring / carabiner / stopper positions.</div></div>
+          <div class="step"><div class="stepNum">4</div><div>Fit 3 m carabiners back from each diver's harness, fit working carabiners at distance C, and secure stoppers at B+C or B+C+2.</div></div>
+          <div class="step"><div class="stepNum">5</div><div>Fit and activate strobe and mini beacon. Attach aft and forward swim lines to the Golden Gate. Fit standby swim line.</div></div>
+        </div>
+        <div class="card">
+          <h2>Deployment and return</h2>
+          <details open><summary>Deployment to worksite</summary><p class="muted">Diver 1 confirms swim lines are horizontal and under light tension, clips to aft swim line, moves to the Golden Gate, pulls free umbilical through until carabiner reaches the gate, then proceeds to the worksite. Diver 2 repeats on the forward swim line.</p></details>
+          <details><summary>Return to basket</summary><p class="muted">Tender comes up on slack. Diver returns through the Golden Gate, reconnects 3 m carabiner to the correct swim line, follows the swim line back to the basket, disconnects the yellow carabiner at the basket, then tenders recover slack.</p></details>
+          <details><summary>Standby diver deployment</summary><p class="muted">Standby basket lands on the clump. Standby diver swims to Diver 1 basket, secures 3 m carabiner on forward swim line, pulls through until yellow carabiner is in position, then proceeds through the Golden Gate following Diver 1 umbilical.</p></details>
+          <details><summary>Standby diver recovery</summary><p class="muted">Standby diver recovers injured diver back through the Golden Gate, both 3 m carabiners are connected to the aft swim line, both yellow carabiners are disconnected at the basket, slack is recovered, and standby remains in Diver 1 basket for surface recovery.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="checklists">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>Interactive supervisor checklist</h2>
+          <div id="checklistA">
+            <label class="checklistItem"><input type="checkbox">Deployment depth confirmed.</label>
+            <label class="checklistItem"><input type="checkbox">Umbilical length established and logged.</label>
+            <label class="checklistItem"><input type="checkbox">3 m harness carabiners fitted to Diver 1, Diver 2 and standby diver.</label>
+            <label class="checklistItem"><input type="checkbox">Distance C carabiners fitted to Diver 1 and Diver 2.</label>
+            <label class="checklistItem"><input type="checkbox">Standby carabiner fitted at C + 2 m.</label>
+            <label class="checklistItem"><input type="checkbox">Diver 1 and Diver 2 stoppers secured at B + C.</label>
+            <label class="checklistItem"><input type="checkbox">Standby stopper secured at B + C + 2 m.</label>
+            <label class="checklistItem"><input type="checkbox">Light sticks, strobe, and mini beacon fitted and activated.</label>
+            <label class="checklistItem"><input type="checkbox">Aft and forward swim lines attached and confirmed.</label>
+            <label class="checklistItem"><input type="checkbox">Bridge, deck crew and divers briefed.</label>
+          </div>
+          <div class="result" id="checkResultA">Checklist completion: <strong id="checkPctA">0%</strong></div>
+        </div>
+        <div class="card">
+          <h2>Field-use memory prompts</h2>
+          <div class="step"><div class="stepNum">H</div><div><strong>Hazard first.</strong><br><span class="muted small">Where is the nearest hazard, and what verified distance controls the diver?</span></div></div>
+          <div class="step"><div class="stepNum">L</div><div><strong>Length second.</strong><br><span class="muted small">Have you set the correct working, standby and Golden Gate lengths?</span></div></div>
+          <div class="step"><div class="stepNum">M</div><div><strong>Marking visible.</strong><br><span class="muted small">Can the tender and supervisor see exactly how much umbilical is out?</span></div></div>
+          <div class="step"><div class="stepNum">R</div><div><strong>Recovery path clear.</strong><br><span class="muted small">Can the diver return directly in an emergency?</span></div></div>
+          <div class="step"><div class="stepNum">SW</div><div><strong>Shallow water caution.</strong><br><span class="muted small">Have DP references, current, thruster wash, visibility and draft been reassessed?</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tests">
+      <div class="grid grid-2">
+        <div class="card stickyTop">
+          <h2>Knowledge test</h2>
+          <p class="muted small">Pass mark suggested: 80%.</p>
+          <div class="statusBar"><div class="statusFill" id="quizBar"></div></div>
+          <div class="result"><span class="score" id="quizScore">0%</span><br><span id="quizFeedback" class="muted">Complete the questions and submit.</span></div>
+          <button class="good" onclick="gradeQuiz()">Submit test</button>
+          <button class="secondary" onclick="resetQuiz()" style="margin-top:10px">Reset test</button>
+        </div>
+        <div class="card">
+          <div class="quizQ" data-answer="b">
+            <h3>1. What is the main purpose of the procedure?</h3>
+            <label class="option"><input type="radio" name="q1" value="a">To standardise decompression schedules.</label>
+            <label class="option"><input type="radio" name="q1" value="b">To allow use of standard and extended air-diving umbilicals while keeping divers clear of identified threats.</label>
+            <label class="option"><input type="radio" name="q1" value="c">To replace the vessel-specific dive plan.</label>
+          </div>
+          <div class="quizQ" data-answer="c">
+            <h3>2. The working diver must be kept how far from a physical hazard?</h3>
+            <label class="option"><input type="radio" name="q2" value="a">2 m</label>
+            <label class="option"><input type="radio" name="q2" value="b">3 m</label>
+            <label class="option"><input type="radio" name="q2" value="c">5 m</label>
+          </div>
+          <div class="quizQ" data-answer="a">
+            <h3>3. The standby diver's restricted reach should be:</h3>
+            <label class="option"><input type="radio" name="q3" value="a">2 m longer than the working diver, while still staying outside the standby clearance limit.</label>
+            <label class="option"><input type="radio" name="q3" value="b">The same as the working diver.</label>
+            <label class="option"><input type="radio" name="q3" value="c">5 m longer than the working diver.</label>
+          </div>
+          <div class="quizQ" data-answer="b">
+            <h3>4. Which statement is correct about thruster guards?</h3>
+            <label class="option"><input type="radio" name="q4" value="a">They are a sufficient hazard barrier.</label>
+            <label class="option"><input type="radio" name="q4" value="b">They can never be taken as the control measure protecting divers and equipment.</label>
+            <label class="option"><input type="radio" name="q4" value="c">They remove the need for verified diagrams.</label>
+          </div>
+          <div class="quizQ" data-answer="c">
+            <h3>5. What emergency breathing rate is used for bailout planning?</h3>
+            <label class="option"><input type="radio" name="q5" value="a">40 L/min</label>
+            <label class="option"><input type="radio" name="q5" value="b">50 L/min</label>
+            <label class="option"><input type="radio" name="q5" value="c">62.5 L/min</label>
+          </div>
+          <div class="quizQ" data-answer="a">
+            <h3>6. In passive tending / Golden Gate operations, C max is based on:</h3>
+            <label class="option"><input type="radio" name="q6" value="a">The shorter of D - 5 and A - 5, with B less than C.</label>
+            <label class="option"><input type="radio" name="q6" value="b">The longer of D and A.</label>
+            <label class="option"><input type="radio" name="q6" value="c">Any distance the supervisor prefers.</label>
+          </div>
+          <div class="quizQ" data-answer="b">
+            <h3>7. Passive tending should be treated as:</h3>
+            <label class="option"><input type="radio" name="q7" value="a">The default first choice.</label>
+            <label class="option"><input type="radio" name="q7" value="b">A last option after full risk assessment because emergency recovery can be slow and dangerous.</label>
+            <label class="option"><input type="radio" name="q7" value="c">Only a visibility aid.</label>
+          </div>
+          <div class="quizQ" data-answer="c">
+            <h3>8. Which item is specifically fitted before deployment for locating / monitoring?</h3>
+            <label class="option"><input type="radio" name="q8" value="a">Extra hot-water hose.</label>
+            <label class="option"><input type="radio" name="q8" value="b">Weak link only.</label>
+            <label class="option"><input type="radio" name="q8" value="c">Strobe light and mini beacon.</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section grid grid-2">
+      <div class="card">
+        <h2>Scenario test</h2>
+        <p class="muted small">Use the values and decide whether the setup is acceptable.</p>
+        <div class="inline-3">
+          <div><label>A = device to hazard (m)</label><input id="scA" type="number" value="38"></div>
+          <div><label>B = device to tend point (m)</label><input id="scB" type="number" value="14"></div>
+          <div><label>D = tend point to hazard (m)</label><input id="scD" type="number" value="25"></div>
+        </div>
+        <div class="inline-3">
+          <div><label>Proposed working diver C (m)</label><input id="scC" type="number" value="20"></div>
+          <div><label>Umbilical deployed (m)</label><input id="scU" type="number" value="50"></div>
+          <div><label>Available bailout free gas (L)</label><input id="scGas" type="number" value="300"></div>
+        </div>
+        <button onclick="runScenario()">Evaluate scenario</button>
+        <div id="scenarioResult" class="result hidden"></div>
+      </div>
+      <div class="card">
+        <h2>Trainer notes</h2>
+        <textarea id="trainerNotes" placeholder="Add project-specific notes, vessel-specific cautions, extra hazards, or sign-off remarks here."></textarea>
+        <div class="inline">
+          <button onclick="saveNotes()">Save notes in browser</button>
+          <button class="secondary" onclick="loadNotes()">Load saved notes</button>
+        </div>
+        <div class="result" id="notesResult">Notes are stored locally in the browser on this computer.</div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <p><strong>Implementation note:</strong> this package now uses the supplied N-Sea icon and brand colours. A full horizontal corporate wordmark could still be swapped in later if you want a more formal header treatment.</p>
+      <p><strong>Training note:</strong> this package is a learning aid and familiarisation tool. Vessel-specific verified drawings, risk assessment, approved calculations, and project dive plans still govern the actual operation.</p>
+      <p><a href="#top" style="color:#8feeff">Back to top</a></p>
+    </section>
+  </div>
+
+  <script>
+    function showResult(id, html, type='info'){
+      const el = document.getElementById(id);
+      el.className = 'result';
+      if(type==='good') el.classList.add('goodBox');
+      if(type==='warn') el.classList.add('warnBox');
+      if(type==='bad') el.classList.add('badBox');
+      el.innerHTML = html;
+      el.classList.remove('hidden');
+    }
+    function resetFields(ids, resultId){
+      ids.forEach(id=>document.getElementById(id).value='');
+      const r=document.getElementById(resultId);
+      r.classList.add('hidden');
+      r.innerHTML='';
+    }
+    function calcBailout(){
+      const L = parseFloat(document.getElementById('umbLen').value);
+      const gas = parseFloat(document.getElementById('bailCyl').value);
+      if(isNaN(L) || L < 0){showResult('bailoutResult','Enter a valid umbilical length.','bad'); return;}
+      const minutes = L / 10;
+      const required = minutes * 62.5;
+      let html = `<strong>Required emergency duration:</strong> ${minutes.toFixed(2)} min<br><strong>Required free gas:</strong> ${required.toFixed(1)} L`;
+      if(!isNaN(gas)){
+        const diff = gas - required;
+        if(diff >= 0){ html += `<br><strong>Status:</strong> Available bailout appears sufficient by ${diff.toFixed(1)} L.`; showResult('bailoutResult', html, 'good'); }
+        else { html += `<br><strong>Status:</strong> Short by ${Math.abs(diff).toFixed(1)} L.`; showResult('bailoutResult', html, 'bad'); }
+      } else showResult('bailoutResult', html, 'info');
+    }
+    function calcSafeLength(){
+      const B1 = parseFloat(document.getElementById('b1').value);
+      const A1 = parseFloat(document.getElementById('a1').value);
+      const D = parseFloat(document.getElementById('d1').value);
+      const R = parseFloat(document.getElementById('r1').value);
+      const role = parseFloat(document.getElementById('role1').value);
+      const dp = parseInt(document.getElementById('round1').value,10);
+      if([B1,A1,D,R].some(v=>isNaN(v) || v < 0)){showResult('safeLenResult','Enter all distances and radius values.','bad'); return;}
+      const C1 = Math.sqrt(B1*B1 + A1*A1);
+      const E1 = Math.sqrt(C1*C1 + D*D) - (R + role);
+      const roleText = role === 5 ? 'Working diver' : 'Standby diver';
+      let type = E1 > 0 ? 'good' : 'bad';
+      showResult('safeLenResult', `<strong>${roleText} safe umbilical length:</strong> ${E1.toFixed(dp)} m<br><span class="muted">Intermediate C1 = ${C1.toFixed(dp)} m</span>`, type);
+    }
+    function calcGoldenGate(){
+      const A = parseFloat(document.getElementById('ggA').value);
+      const B = parseFloat(document.getElementById('ggB').value);
+      const D = parseFloat(document.getElementById('ggD').value);
+      if([A,B,D].some(v=>isNaN(v) || v < 0)){showResult('goldenResult','Enter A, B and D.','bad'); return;}
+      const cMax = Math.min(D-5, A-5);
+      const ok = B < cMax;
+      const type = cMax <= 0 ? 'bad' : ok ? 'good' : 'warn';
+      showResult('goldenResult', `<strong>C max:</strong> ${cMax.toFixed(2)} m<br><strong>B &lt; C check:</strong> ${ok ? 'Pass' : 'Fail'} (B = ${B.toFixed(2)} m)`, type);
+    }
+    function calcWorkingFromStandby(){
+      const Ls = parseFloat(document.getElementById('ls').value);
+      const LL = parseFloat(document.getElementById('ll').value);
+      if([Ls,LL].some(v=>isNaN(v))){showResult('workFromStandby','Enter standby length and LARS spacing.','bad'); return;}
+      const Lw = Ls - 2 + LL;
+      showResult('workFromStandby', `<strong>Working diver safe length from standby basis:</strong> ${Lw.toFixed(2)} m`, Lw > 0 ? 'good' : 'bad');
+    }
+
+    function gradeQuiz(){
+      const answers = {q1:'b',q2:'c',q3:'a',q4:'b',q5:'c',q6:'a',q7:'b',q8:'c'};
+      let score = 0;
+      Object.keys(answers).forEach(q=>{
+        const selected = document.querySelector(`input[name="${q}"]:checked`);
+        if(selected && selected.value === answers[q]) score++;
+      });
+      const pct = Math.round((score / Object.keys(answers).length) * 100);
+      document.getElementById('quizScore').textContent = pct + '%';
+      document.getElementById('quizBar').style.width = pct + '%';
+      let feedback = 'Keep revising.';
+      if(pct >= 80) feedback = 'Pass standard achieved.';
+      else if(pct >= 60) feedback = 'Borderline. Review hazard clearances, bailout rule and Golden Gate limits.';
+      else feedback = 'Rework the learning sections before operational use.';
+      document.getElementById('quizFeedback').textContent = `${score} / 8 correct. ${feedback}`;
+    }
+    function resetQuiz(){
+      document.querySelectorAll('.quizQ input').forEach(i=>i.checked=false);
+      document.getElementById('quizScore').textContent='0%';
+      document.getElementById('quizBar').style.width='0%';
+      document.getElementById('quizFeedback').textContent='Complete the questions and submit.';
+    }
+
+    function runScenario(){
+      const A = parseFloat(document.getElementById('scA').value);
+      const B = parseFloat(document.getElementById('scB').value);
+      const D = parseFloat(document.getElementById('scD').value);
+      const C = parseFloat(document.getElementById('scC').value);
+      const U = parseFloat(document.getElementById('scU').value);
+      const gas = parseFloat(document.getElementById('scGas').value);
+      if([A,B,D,C,U,gas].some(v=>isNaN(v))){showResult('scenarioResult','Complete all scenario fields.','bad'); return;}
+      const cMax = Math.min(D-5, A-5);
+      const bailoutReq = (U/10)*62.5;
+      const cOk = C <= cMax;
+      const bOk = B < C;
+      const gasOk = gas >= bailoutReq;
+      const pass = cOk && bOk && gasOk;
+      let html = `<strong>C max permitted:</strong> ${cMax.toFixed(2)} m<br>` +
+                 `<strong>Proposed C:</strong> ${C.toFixed(2)} m → ${cOk ? 'OK' : 'Too long'}<br>` +
+                 `<strong>B &lt; C:</strong> ${bOk ? 'OK' : 'Fail'}<br>` +
+                 `<strong>Bailout required:</strong> ${bailoutReq.toFixed(1)} L<br>` +
+                 `<strong>Available bailout:</strong> ${gas.toFixed(1)} L → ${gasOk ? 'OK' : 'Insufficient'}<br><br>` +
+                 `<strong>Overall judgement:</strong> ${pass ? 'Acceptable on these simple checks only.' : 'Not acceptable on these simple checks.'}`;
+      showResult('scenarioResult', html, pass ? 'good' : 'bad');
+    }
+
+    function updateChecklist(){
+      const boxes = document.querySelectorAll('#checklistA input[type="checkbox"]');
+      const checked = [...boxes].filter(b=>b.checked).length;
+      const pct = Math.round((checked/boxes.length)*100);
+      document.getElementById('checkPctA').textContent = pct + '%';
+    }
+    document.querySelectorAll('#checklistA input[type="checkbox"]').forEach(b=>b.addEventListener('change', updateChecklist));
+
+    function saveNotes(){
+      localStorage.setItem('extendedUmbilicalTrainerNotes', document.getElementById('trainerNotes').value);
+      document.getElementById('notesResult').innerHTML = 'Notes saved on this browser.';
+    }
+    function loadNotes(){
+      document.getElementById('trainerNotes').value = localStorage.getItem('extendedUmbilicalTrainerNotes') || '';
+      document.getElementById('notesResult').innerHTML = 'Saved notes loaded.';
+    }
+
+    const diagramText = {
+      route:{
+        basket:'<strong>Basket:</strong> the controlled starting point. The route begins here, but the diver is not allowed unlimited excursion from it.',
+        gate:'<strong>Golden Gate / passive point:</strong> this is the control point that fixes or limits the route before the diver continues to the worksite.',
+        diver:'<strong>Working diver:</strong> the useful working leg starts after the control point, but the total route still has to preserve the hazard clearance.',
+        hazard:'<strong>Hazard:</strong> the no-go zone is never an abstract idea. It is the thing the whole length calculation is trying to keep diver and umbilical out of.'
+      },
+      geometry:{
+        distance:'<strong>Distance build-up:</strong> B1, A\'1 and D combine to create the 3D distance to hazard centre.',
+        radius:'<strong>Radius R:</strong> this is the hazard radius including the safety margin around the physical hazard.',
+        clearance:'<strong>Clearance subtraction:</strong> once the 3D distance is known, subtract the radius and then the diver clearance rule to get the safe maximum length.'
+      },
+      tending:{
+        active:'<strong>Active tending:</strong> a tender is present and controlling the umbilical at the in-water point. This is the stronger control.',
+        passive:'<strong>Passive / Golden Gate:</strong> the point controls route but no person is stationed there. That makes it more limited and more cautious by design.',
+        risk:'<strong>Why it matters:</strong> the procedure warns that passive tending can make emergency recovery slower or more dangerous, which is why it should not be treated as the easy default.'
+      },
+      recovery:{
+        standby:'<strong>Standby diver:</strong> reaches the casualty first and becomes the recovery diver.',
+        route:'<strong>Recovery path:</strong> both divers are brought back through the controlled route rather than improvising a new path toward the basket.',
+        basket:'<strong>Basket:</strong> this is the controlled handover point for the final recovery sequence.'
+      }
+    };
+
+    function setDiagramText(diagram,key){
+      const boxMap={route:'routeExplainBox',geometry:'geometryExplainBox',tending:'tendingExplainBox',recovery:'recoveryExplainBox'};
+      const box=document.getElementById(boxMap[diagram]);
+      if(box && diagramText[diagram] && diagramText[diagram][key]){
+        box.innerHTML = diagramText[diagram][key];
+      }
+      document.querySelectorAll(`.hotspot[data-diagram="${diagram}"]`).forEach(el=>el.classList.remove('active'));
+      const active=document.querySelector(`.hotspot[data-diagram="${diagram}"][data-key="${key}"]`);
+      if(active) active.classList.add('active');
+    }
+    document.querySelectorAll('.hotspot').forEach(el=>{
+      el.addEventListener('click', ()=>setDiagramText(el.dataset.diagram, el.dataset.key));
+    });
+
+    function toggleExplain(id){
+      document.getElementById(id).classList.toggle('hidden');
+    }
+    function openDiagramModal(title, html){
+      document.getElementById('diagramModalTitle').textContent = title;
+      document.getElementById('diagramModalBody').innerHTML = html;
+      document.getElementById('diagramModal').classList.add('show');
+      document.body.style.overflow='hidden';
+    }
+    function closeDiagramModal(){
+      document.getElementById('diagramModal').classList.remove('show');
+      document.body.style.overflow='';
+    }
+
+    setDiagramText('route','basket');
+    setDiagramText('geometry','distance');
+    setDiagramText('tending','active');
+    setDiagramText('recovery','standby');
+
+    loadNotes();
+  </script>
+  </div><!-- #content -->
+</div><!-- #main -->
+<div id="back-to-top" title="Back to top">&uarr;</div>
+<script>
+function setActive(el){document.querySelectorAll('#nav-list a').forEach(function(a){a.classList.remove('active');});if(el)el.classList.add('active');}
+function filterNav(v){var q=String(v||'').toLowerCase();document.querySelectorAll('#nav-list li').forEach(function(li){var a=li.querySelector('a');if(!a){li.style.display=q?'none':'';return;}li.style.display=!q||a.textContent.toLowerCase().includes(q)?'':'none';});}
+window.addEventListener('scroll',function(){var b=document.getElementById('back-to-top');if(b)b.classList.toggle('visible',window.scrollY>400);});
+document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('back-to-top');if(b)b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});
+</script>
+</body>
+</html>

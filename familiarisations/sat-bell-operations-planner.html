@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../assets/css/site.css">
+  <link rel="stylesheet" href="../assets/css/fam.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-Sea | SAT Operations Planner — Bell Rotation, DSV Efficiency & Dive Planning</title>
+<style>
+/* ══════════════════════════════════════════════════════════
+   RESET & BODY
+══════════════════════════════════════════════════════════ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #f0f2f5; color: #1a1a1a;
+    min-height: 100vh;
+    padding: 30px 16px;
+}
+.page { width: 100%; max-width: 1200px; margin: 0 auto; }
+
+/* ══════════════════════════════════════════════════════════
+   HEADER & NOTICE
+══════════════════════════════════════════════════════════ */
+header {
+    background: #014782; border-radius: 6px 6px 0 0;
+    padding: 18px 24px; display: flex; align-items: center; gap: 18px;
+}
+.nsea-logo { flex-shrink: 0; }
+.header-text h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.3; color: #FFEE02; }
+.header-text p  { font-size: 11.5px; color: rgba(255,255,255,0.80); margin-top: 2px; letter-spacing: 0.01em; }
+.notice { background: #014782; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 3px solid #FFEE02; padding: 9px 24px; font-size: 11px; color: rgba(255,255,255,0.75); letter-spacing: 0.015em; }
+.notice strong { color: #FFEE02; font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════
+   MAIN TAB BAR
+══════════════════════════════════════════════════════════ */
+.main-tab-bar {
+    display: flex; background: #013560;
+    border-left: 1px solid #013560; border-right: 1px solid #013560;
+    border-bottom: 3px solid #FFEE02;
+}
+.main-tab-btn {
+    padding: 13px 26px; font-size: 11px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: rgba(255,255,255,0.55); background: transparent;
+    border: none; cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -3px; transition: color 0.15s;
+}
+.main-tab-btn:hover  { color: rgba(255,255,255,0.85); }
+.main-tab-btn.active { color: #FFEE02; border-bottom-color: #FFEE02; }
+.main-panel { display: none; }
+.main-panel.active { display: block; }
+
+/* ══════════════════════════════════════════════════════════
+   BELL ROTATION COMPONENTS (verbatim from v2)
+══════════════════════════════════════════════════════════ */
+.card { background: #FFFFFF; border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; padding: 24px; }
+.card + .card { border-top: 1px solid #e8ebef; }
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #014782; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid #FFEE02; display: inline-block; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+.grid-8 { display: grid; grid-template-columns: repeat(8,1fr); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 11px; font-weight: 600; color: #4a5568; letter-spacing: 0.01em; }
+.field input, .field select { padding: 9px 11px; border: 1.5px solid #c8cdd5; border-radius: 4px; font-size: 14px; font-weight: 500; color: #1a1a1a; background: #f8f9fb; transition: border-color 0.15s, background 0.15s; width: 100%; }
+.field input:focus { outline: none; border-color: #014782; background: #fff; }
+.field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
+.field.fixed input  { background: #f0f2f5; color: #8a9299; border-color: #e0e3e8; pointer-events: none; }
+.field.active-input input { border-color: #014782; background: #fff; border-width: 2px; }
+.field.active-input label { color: #014782; }
+.field.auto-filled input { background: #e8f5e9; border-color: #1a6e3a; color: #1a6e3a; font-weight: 700; }
+.field.auto-filled label { color: #1a6e3a; }
+.metrics-strip { display: grid; gap: 0; border-top: 1px solid #e8ebef; }
+.metric-cell { padding: 12px 14px; border-right: 1px solid #e8ebef; text-align: center; }
+.metric-cell:last-child { border-right: none; }
+.mc-label { font-size: 9px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #8a9299; margin-bottom: 5px; }
+.mc-value { font-size: 16px; font-weight: 700; color: #014782; line-height: 1; }
+.mc-unit  { font-size: 9px; color: #aab0b8; margin-top: 2px; }
+.metric-cell.ok   .mc-value { color: #1a6e3a; }
+.metric-cell.warn .mc-value { color: #a05000; }
+.metric-cell.crit .mc-value { color: #8b0000; }
+.manning-panel { border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; background: #fff; }
+.manning-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid #e8ebef; }
+.manning-col   { padding: 18px 24px; border-right: 1px solid #e8ebef; }
+.manning-col:last-child { border-right: none; }
+.manning-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #014782; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid #FFEE02; display: inline-block; }
+.manning-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 11.5px; }
+.manning-row:last-child { border-bottom: none; }
+.mr-label { color: #4a5568; }
+.mr-val   { font-weight: 700; color: #1a1a1a; }
+.mr-val.ok   { color: #1a6e3a; }
+.mr-val.warn { color: #a05000; }
+.mr-val.crit { color: #8b0000; }
+.verdict-band { padding: 10px 24px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; border-top: 1px solid rgba(0,0,0,0.06); }
+.verdict-ok   { background: #1a6e3a; color: #fff; }
+.verdict-warn { background: #a05000; color: #FFEE02; }
+.verdict-crit { background: #8b0000; color: #fff; }
+.tab-bar { display: flex; border-bottom: 2px solid #FFEE02; background: #014782; border-left: 1px solid #013560; border-right: 1px solid #013560; }
+.tab-btn { padding: 11px 22px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); background: transparent; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 0.15s; }
+.tab-btn:hover  { color: rgba(255,255,255,0.85); }
+.tab-btn.active { color: #FFEE02; border-bottom-color: #FFEE02; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.compare-header { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #014782; border-left: 1px solid #013560; border-right: 1px solid #013560; border-top: 1px solid rgba(255,255,255,0.08); }
+.ch-cell { padding: 16px 24px; border-right: 1px solid rgba(255,255,255,0.08); }
+.ch-cell:last-child { border-right: none; }
+.ch-title { font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #FFEE02; margin-bottom: 5px; }
+.ch-sub   { font-size: 11.5px; color: rgba(255,255,255,0.70); line-height: 1.5; }
+.rot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.rot-half { padding: 20px 24px; border-right: 1px solid #e8ebef; }
+.rot-half:last-child { border-right: none; }
+table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+thead th { background: #f0f2f5; color: #4a5568; font-weight: 700; font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; padding: 7px 9px; text-align: left; border-bottom: 2px solid #d8dde4; }
+tbody tr { border-bottom: 1px solid #e8ebef; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f8f9fb; }
+tbody td { padding: 6px 9px; color: #2d3748; }
+tbody td:first-child { font-weight: 700; color: #1a1a1a; }
+tbody tr.div-row td { padding: 0; height: 3px; background: #FFEE02; border: none; }
+.team-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: middle; position: relative; top: -1px; }
+.slot-badge    { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; }
+.reduced-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700; background: #fff3e0; color: #a05000; margin-left: 4px; border: 1px solid #ffd080; }
+.full-badge    { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700; background: #e8f5e9; color: #1a6e3a; margin-left: 4px; border: 1px solid #a5d6a7; }
+.warn-val { color: #a05000; font-weight: 700; }
+.ok-val   { color: #1a6e3a; font-weight: 700; }
+.gantt-wrap { padding: 20px 24px; overflow-x: auto; }
+.gantt-sec  { margin-bottom: 22px; }
+.gantt-sec:last-child { margin-bottom: 0; }
+.gantt-sec-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #014782; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.gantt-sec-label::after { content: ''; flex: 1; height: 1px; background: #FFEE02; }
+.gantt-legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid #e8ebef; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #4a5568; }
+.legend-swatch { width: 14px; height: 9px; border-radius: 2px; }
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #013560; }
+.sum-half { background: #014782; padding: 20px 24px; }
+.sum-half-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FFEE02; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.result-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
+.result-row:last-child { border-bottom: none; }
+.result-name  { font-size: 12px; color: rgba(255,255,255,0.80); font-weight: 500; }
+.result-value { font-size: 20px; font-weight: 700; color: #FFEE02; letter-spacing: -0.01em; }
+.result-row.sub       .result-value { font-size: 13px; color: rgba(255,255,255,0.85); }
+.result-row.warn-row  .result-value { color: #ff8c42; }
+.result-row.crit-row  .result-value { color: #ff6b6b; }
+.efficiency-band { background: #013560; border-left: 1px solid #013560; border-right: 1px solid #013560; border-top: 1px solid rgba(255,255,255,0.06); padding: 18px 24px; display: flex; align-items: center; gap: 20px; }
+.eff-number { font-size: 48px; font-weight: 700; color: #FFEE02; letter-spacing: -0.03em; line-height: 1; flex-shrink: 0; }
+.eff-label  { font-size: 13px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px; }
+.eff-detail { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.7; }
+.info-band { padding: 10px 24px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; border-left: 1px solid #013560; border-right: 1px solid #013560; border-top: 1px solid rgba(255,255,255,0.06); }
+.info-band.warn { background: #a05000; color: #FFEE02; }
+.info-band.crit { background: #8b0000; color: #fff; }
+.note-band { background: #f0f2f5; border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; border-top: 1px solid #e8ebef; padding: 10px 24px; font-size: 10px; color: #6a7585; line-height: 1.6; }
+.note-band strong { color: #014782; }
+
+.reentry-card { border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; border-top: 3px solid #FFEE02; background: #fff; }
+.reentry-header { background: #014782; color: #FFEE02; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 10px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.reentry-body { padding: 20px 24px; }
+.reentry-rule { font-size: 13px; color: #1a1a1a; line-height: 1.6; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #e8ebef; }
+.reentry-rule strong { color: #014782; }
+.reentry-formula { font-size: 13px; font-weight: 600; color: #014782; background: #e3f0fb; border-left: 4px solid #014782; padding: 10px 16px; border-radius: 0 4px 4px 0; margin-bottom: 16px; line-height: 1.5; }
+.reentry-results { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.reentry-result { background: #f8f9fb; border: 1px solid #d8dde4; border-radius: 4px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+.rr-label   { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8a9299; }
+.rr-calc    { font-size: 18px; font-weight: 700; color: #a05000; line-height: 1.2; }
+.rr-verdict { font-size: 13px; font-weight: 700; color: #014782; }
+.reentry-depth-note { font-size: 12px; color: #4a5568; line-height: 1.6; background: #fff8e1; border: 1px solid #ffd080; border-radius: 4px; padding: 10px 14px; }
+
+/* ══════════════════════════════════════════════════════════
+   DSV EFFICIENCY PANEL STYLES
+══════════════════════════════════════════════════════════ */
+.eff-panel-card { background: #FFFFFF; border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; padding: 24px; }
+.eff-panel-card + .eff-panel-card { border-top: 1px solid #e8ebef; }
+
+/* Wet handshake steps */
+.wh-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 16px; }
+.wh-step { background: #f8f9fb; border: 1px solid #d8dde4; border-radius: 4px; padding: 14px; position: relative; }
+.wh-step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #014782; color: #FFEE02; font-size: 11px; font-weight: 700; border-radius: 50%; margin-bottom: 8px; }
+.wh-step-title { font-size: 11px; font-weight: 700; color: #014782; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.wh-step-text  { font-size: 11.5px; color: #2d3748; line-height: 1.6; }
+.wh-step.highlight { background: #e3f0fb; border-color: #014782; border-left: 3px solid #FFEE02; }
+.wh-step.highlight .wh-step-num { background: #FFEE02; color: #014782; }
+
+/* DSV efficiency matrix */
+.eff-matrix-wrap { overflow-x: auto; margin-top: 16px; }
+.eff-matrix { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.eff-matrix thead th { background: #014782; color: #FFEE02; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 10px; text-align: center; border-bottom: 3px solid #FFEE02; border-right: 1px solid rgba(255,255,255,0.12); }
+.eff-matrix thead th:first-child { text-align: left; }
+.eff-matrix thead tr.sub-header th { background: #f0f2f5; color: #4a5568; font-size: 8.5px; border-bottom: 2px solid #d8dde4; }
+.eff-matrix tbody tr { border-bottom: 1px solid #e8ebef; }
+.eff-matrix tbody tr:hover { background: #f8f9fb; }
+.eff-matrix tbody td { padding: 8px 10px; color: #2d3748; text-align: center; border-right: 1px solid #e8ebef; }
+.eff-matrix tbody td:first-child { font-weight: 700; color: #014782; text-align: left; font-size: 13px; }
+.eff-matrix .col-divider { border-right: 2px solid #FFEE02 !important; }
+.cell-ok   { color: #1a6e3a; font-weight: 700; }
+.cell-warn { color: #a05000; font-weight: 700; }
+.cell-crit { color: #8b0000; font-weight: 700; }
+.cell-na   { color: #aab0b8; font-style: italic; }
+.cell-gain { font-size: 15px; font-weight: 700; color: #FFEE02; background: #013560; border-radius: 3px; padding: 2px 7px; }
+.cell-gain-na { font-size: 12px; color: #aab0b8; }
+
+/* Live efficiency block */
+.live-eff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+.live-eff-half { background: #014782; border-radius: 4px; padding: 18px 20px; }
+.le-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FFEE02; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.le-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px; }
+.le-row:last-child { border-bottom: none; }
+.le-key { color: rgba(255,255,255,0.75); }
+.le-val { font-weight: 700; color: #FFEE02; font-size: 16px; }
+.le-val.small { font-size: 13px; }
+
+/* ══════════════════════════════════════════════════════════
+   DIVE PLANNER SECTION — scoped to .planner-section
+══════════════════════════════════════════════════════════ */
+.planner-section {
+    --bg1:#eaf1f7; --bg2:#f6f9fc; --panel:#fff; --ink:#1f2d3d; --muted:#5f6e7d;
+    --blue:#4f81bd; --blue2:#dbe8f6; --hold:#ffe699; --deco:#c6e0b4; --done:#d9d9d9;
+    --good:#6aa84f; --warn-p:#f6b26b; --bad:#e06666; --line:#c7d3df; --today:#d63384;
+    --shadow:0 10px 30px rgba(0,0,0,.08); --radius:16px;
+    background: #f0f2f5; padding: 0;
+    border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4;
+}
+.planner-section .pcard {
+    background: var(--panel); border-radius: 0; padding: 24px; margin-bottom: 0;
+    border-left: none; border-right: none; border-bottom: 1px solid #e8ebef;
+}
+.planner-section h2 { margin: 0 0 14px; font-size: 14px; font-weight: 700; color: #014782; letter-spacing: 0.01em; }
+.planner-section .field-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.planner-section .field-grid .field { min-width: 0; }
+.planner-section .pfield { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.planner-section .pfield label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.planner-section .pfield input { width: 100%; padding: 9px 11px; border: 1.5px solid var(--line); border-radius: 4px; font-size: 14px; background: #fff; color: var(--ink); }
+.planner-section .pfield input:focus { outline: none; border-color: var(--blue); }
+/* field inputs inside planner need override since .field is defined globally */
+.planner-section .field input,
+.planner-section .field select { border-radius: 8px; border: 1.5px solid var(--line); background: #fff; }
+.planner-section .field input:focus { border-color: var(--blue); background: #fff; }
+.planner-section .field label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.planner-section .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.planner-section button.action {
+    border: 0; border-radius: 8px; padding: 9px 14px; font-family: inherit;
+    font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; background: var(--blue);
+}
+.planner-section button.secondary { background: #8aa6c6; }
+.planner-section button.success { background: var(--good); }
+.planner-section button.danger { background: #c0504d; }
+.planner-section .note { color: var(--muted); font-size: 13px; line-height: 1.45; margin-top: 10px; }
+.planner-section .small { font-size: 12px; color: var(--muted); }
+.planner-section .ptabs { display: flex; gap: 0; border-bottom: 2px solid #FFEE02; background: #014782; }
+.planner-section .ptab-btn { padding: 11px 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); background: transparent; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.planner-section .ptab-btn:hover { color: rgba(255,255,255,0.85); }
+.planner-section .ptab-btn.active { color: #FFEE02; border-bottom-color: #FFEE02; }
+.planner-section .ptab-panel { display: none; }
+.planner-section .ptab-panel.active { display: block; }
+.planner-section .teams { display: grid; gap: 14px; }
+.planner-section .team-card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+.planner-section .team-head { background: var(--blue); color: #fff; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.planner-section .team-head strong { font-size: 15px; }
+.planner-section .team-body { padding: 14px; }
+.planner-section .team-names { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 2px 0 12px; }
+.planner-section .stats { display: grid; grid-template-columns: repeat(4,minmax(150px,1fr)); gap: 10px; margin-top: 12px; }
+.planner-section .stat { border-radius: 8px; padding: 10px 12px; background: #f7fafc; border: 1px solid #e1e8f0; }
+.planner-section .stat .k { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: .04em; margin-bottom: 4px; }
+.planner-section .stat .v { font-size: 13px; font-weight: 700; }
+.planner-section .status-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 96px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.planner-section .ok  { background: rgba(106,168,79,.16); color: #2f6a19; }
+.planner-section .amber { background: rgba(246,178,107,.22); color: #9b4f00; }
+.planner-section .red { background: rgba(224,102,102,.18); color: #a61c1c; }
+.planner-section .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0 16px; }
+.planner-section .legend span { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.planner-section .swatch { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(0,0,0,.08); }
+.planner-section .timeline-wrap { overflow-x: auto; overflow-y: auto; max-height: 72vh; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.planner-section .timeline { min-width: 2600px; padding: 12px; }
+.planner-section .scale { position: sticky; top: 0; background: #fff; z-index: 3; display: grid; grid-template-columns: 220px 1fr; border-bottom: 1px solid var(--line); margin-bottom: 8px; padding-bottom: 8px; }
+.planner-section .scale-days { position: relative; height: 58px; background-image: linear-gradient(to right, rgba(70,110,160,.12) 1px, transparent 1px); background-size: calc(100% / var(--days)) 100%; }
+.planner-section .month-label { position: absolute; top: 2px; transform: translateX(-50%); font-size: 13px; font-weight: 700; color: var(--ink); background: rgba(255,255,255,.9); padding: 0 4px; border-radius: 4px; white-space: nowrap; }
+.planner-section .day-label { position: absolute; top: 24px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.planner-section .t-row { display: grid; grid-template-columns: 220px 1fr; min-height: 66px; border-bottom: 1px solid #edf2f7; }
+.planner-section .t-label { padding: 8px 10px; font-size: 13px; }
+.planner-section .t-label strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.planner-section .t-bar-area { position: relative; height: 50px; border-left: 1px solid var(--line); background-image: linear-gradient(to right, rgba(70,110,160,.12) 1px, transparent 1px); background-size: calc(100% / var(--days)) 100%; }
+.planner-section .seg { position: absolute; top: 10px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 6px; }
+.planner-section .seg.sat  { background: var(--blue2); }
+.planner-section .seg.hold { background: var(--hold); }
+.planner-section .seg.deco { background: var(--deco); }
+.planner-section .seg.done { background: var(--done); }
+.planner-section .today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--today); z-index: 2; }
+.planner-section .today-tag { position: absolute; top: -20px; transform: translateX(-50%); background: var(--today); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 999px; z-index: 4; white-space: nowrap; }
+.planner-section .compliance-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.planner-section table.compliance { width: 100%; border-collapse: collapse; min-width: 900px; }
+.planner-section table.compliance th,
+.planner-section table.compliance td { padding: 9px 11px; border-bottom: 1px solid #e8eef5; text-align: left; font-size: 13px; }
+.planner-section table.compliance th { background: #f0f2f5; position: sticky; top: 0; z-index: 1; color: #4a5568; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
+.planner-section table.compliance tbody td:first-child { font-weight: 700; color: #1a1a1a; }
+.planner-section table.compliance tbody tr:hover { background: #f8f9fb; }
+@media (max-width: 900px) {
+    .planner-section .field-grid { grid-template-columns: repeat(2,1fr); }
+    .planner-section .stats { grid-template-columns: repeat(2,minmax(150px,1fr)); }
+    .planner-section .team-names { grid-template-columns: 1fr; }
+    .wh-steps { grid-template-columns: 1fr 1fr; }
+    .grid-8 { grid-template-columns: repeat(4,1fr); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+footer { background: #e8ebef; border: 1px solid #d8dde4; border-top: none; border-radius: 0 0 6px 6px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
+footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
+
+.home-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    background: #FFEE02;
+    color: #014782;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 9999;
+}
+.home-btn:hover {
+    background: #e6d800;
+}
+
+</style>
+</head>
+<body>
+
+<a href="../index.html" class="home-btn">⬅ Back to Library</a>
+<div class="page">
+
+<!-- HEADER -->
+<header style="background:var(--fam-navy);border-radius:6px 6px 0 0;padding:16px 24px;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--fam-yellow)">
+  <div style="flex-shrink:0;width:28px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39 53" fill="none"><path d="M19.3197 0C29.9897 0 38.4697 7.23999 38.4697 18.27V52.47H28.3097V18.69C28.3097 12.69 24.7997 9.11002 19.3097 9.11002C13.8197 9.11002 10.2497 12.69 10.2497 18.69V52.52H0.179688V18.32C0.179688 7.32001 8.6497 0.0499878 19.3197 0.0499878" fill="#FFEE02"/></svg></div>
+  <div>
+    <div style="font-family:var(--fam-head,'Oswald',Arial);font-size:.75rem;font-weight:700;letter-spacing:3px;color:var(--fam-yellow);text-transform:uppercase">N-SEA</div>
+    <div style="font-size:14px;font-weight:700;color:#FFEE02;letter-spacing:0.02em;line-height:1.3;font-family:var(--fam-head,'Oswald',Arial)">SAT Operations Planner — Bell Rotation, DSV Efficiency &amp; Dive Planning</div>
+    <div style="font-size:11.5px;color:rgba(255,255,255,0.80);margin-top:2px">Single-bell and twin-bell operational models with rotation scheduling</div>
+  </div>
+</header>
+
+<div class="notice">
+    <strong>MODEL BASIS:</strong>&nbsp; Bell rotation: staggered decompression, 28-day cycle, 24 hr re-entry reserve is the governing manning factor.
+    &nbsp;·&nbsp; <strong>Wet handshake:</strong> Bell B arrives on seabed, divers exchange job underwater — Bell A surfaces with zero dead time between work periods.
+    &nbsp;·&nbsp; <strong>Dive planner:</strong> dynamic hold-cycle decompression, live saturation tracking, compliance table, Excel and PDF export.
+</div>
+
+<!-- MAIN TAB BAR -->
+<div class="main-tab-bar">
+    <button class="main-tab-btn active" data-main-tab="planner" onclick="setMainTab('planner',this)">&#9632; Dive Planner</button>
+    <button class="main-tab-btn" data-main-tab="rotation" onclick="setMainTab('rotation',this)">&#9654; Bell Rotation</button>
+    <button class="main-tab-btn" data-main-tab="efficiency" onclick="setMainTab('efficiency',this)">&#9650; DSV Efficiency</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PANEL 1 — BELL ROTATION
+════════════════════════════════════════════════════ -->
+<div id="main-panel-rotation" class="main-panel">
+
+<!-- SETUP CARD -->
+<div class="card" style="padding:24px;">
+    <input type="hidden" id="inp_depth" value="120">
+    <input type="hidden" id="inp_Td" value="128">
+    <input type="hidden" id="inp_Nt" value="3">
+    <input type="hidden" id="inp_D" value="28">
+    <input type="hidden" id="inp_Tr" value="8">
+    <input type="hidden" id="inp_Ti" value="6">
+    <input type="hidden" id="inp_camp" value="180">
+    <span id="syncStatus" style="display:none;"></span>
+</div>
+
+<!-- SINGLE BELL 3-TEAM -->
+<div class="card" style="padding:20px 24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span class="section-label" style="margin-bottom:0;">&#9675; Single Bell &#x2014; 3 Teams &#xB7; 8 hr Bell Run &#xB7; 3 Runs/Day</span>
+        <span style="font-size:11px;color:#1a6e3a;font-weight:700;">3&#xD7;8 = 24 hrs &#xB7; Stable &#xB7; No ratchet</span>
+    </div>
+    <p style="font-size:11.5px;color:#4a5568;line-height:1.7;margin-bottom:10px;">
+        Three teams on staggered 12-hour shifts, each with an 8-hour bell run. Three runs of 8 hours fills the 24-hour cycle exactly &#x2014; no team is skipped and no drift occurs. Ideally the work period falls in the middle of the 12-hour shift. If diving cannot proceed for any reason, teams remain in their eating and sleeping patterns until diving recommences. The team at the beginning of its shift will be the one to restart operations.
+    </p>
+    <p style="font-size:11.5px;color:#4a5568;line-height:1.7;margin-bottom:12px;padding:10px 14px;background:#f8f9fb;border-left:3px solid #014782;border-radius:0 4px 4px 0;">
+        <strong style="color:#014782;">Staggered lockout technique:</strong> To extend the working window without breaching individual lockout limits, Diver 1 exits the bell first. One hour later, Diver 2 locks out. When Diver 1 completes his 6-hour lockout he returns to the bell &#x2014; Diver 2 continues working alone for one further hour, then also returns. The bell is then recovered. This produces a 7-hour in-water window from a 6-hour individual limit. However the two solo hours (one at each end of the lockout window) carry reduced productivity &#x2014; only one diver is on the job. The diagram below shows this split for each team.
+    </p>
+    <div id="shiftDiagram3Team"></div>
+</div>
+
+<!-- TWIN BELL 4-TEAM -->
+<div class="card" style="padding:20px 24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span class="section-label" style="margin-bottom:0;">&#9679; Twin Bell &#x2014; 4 Teams &#xB7; On-Bottom Turnaround &#xB7; 4 Runs/Day</span>
+        <span style="font-size:11px;color:#1a6e3a;font-weight:700;">No team skipped &#xB7; 48 diver-hrs/day &#xB7; +33%</span>
+    </div>
+    <p style="font-size:11.5px;color:#4a5568;line-height:1.7;margin-bottom:12px;">
+        Four teams on the same 12-hour shift pattern. With a single bell, four teams &#xD7; 8-hour runs = 32 hours &#x2014; only 3 runs fit in a 24-hour day, so one team must be skipped each day and divers ratchet forward. Twin bell eliminates this entirely: team 1 (Bell 1) is on the worksite while team 2 (Bell 2) is being deployed to seabed. The on-bottom turnaround maximises time at the worksite and achieves all 4 runs in 24 hours. No team is ever required to skip a dive.
+    </p>
+    <div id="shiftDiagramTwin"></div>
+</div>
+
+<!-- Hidden IDs still needed by c() for DSV Efficiency tab calculations -->
+<div style="display:none">
+    <span id="m_depth"></span><span id="m_Td"></span><span id="m_SI"></span><span id="m_Tw"></span>
+    <span id="m_sRpd"></span><span id="m_tRpd"></span><span id="m_sDvhr"></span><span id="m_tDvhr"></span>
+    <span id="m_sPeak"></span><span id="m_tPeak"></span><span id="mu_sPeak"></span><span id="mu_tPeak"></span>
+    <div id="mc_sPeak"></div><div id="mc_tPeak"></div>
+    <span id="s_noRe"></span><span id="s_reVal"></span><span id="s_satMin"></span>
+    <span id="t_noRe"></span><span id="t_reVal"></span><span id="t_satMin"></span>
+    <div id="s_verdict"></div><div id="t_verdict"></div>
+    <div id="effPct"></div><div id="effDetail"></div>
+    <div id="reentryBand"></div>
+    <span id="rr_single_peak"></span><span id="rr_single_sat"></span>
+    <span id="rr_twin_peak"></span><span id="rr_twin_sat"></span>
+    <span id="reentry-depth-note-text"></span>
+    <span id="footerCalc"></span>
+</div>
+
+</div>
+<!-- END PANEL 1 -->
+
+<!-- ════════════════════════════════════════════════════
+     PANEL 2 — DSV EFFICIENCY ANALYSIS
+════════════════════════════════════════════════════ -->
+<div id="main-panel-efficiency" class="main-panel">
+
+<!-- OPERATIONAL POLICY & CRITERIA -->
+<div class="eff-panel-card">
+    <span class="section-label">Saturation Shift Patterns — Operational Policy &amp; Criteria</span>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-left:4px solid #014782;border-radius:0 4px 4px 0;padding:14px 16px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#014782;margin-bottom:10px;">General Criteria</div>
+            <div style="font-size:12px;color:#2d3748;line-height:1.85;">
+                &#8227; The shift plan must provide a <strong>minimum 12-hour rest period</strong> between work periods.<br>
+                &#8227; The 12-hour rest does not include diving or pre/post-dive checks.<br>
+                &#8227; For 3-man operations, no diver shall take part in <strong>more than one 6-hour lockout</strong> within a pre-planned 24-hour period.<br>
+                &#8227; For 2-man operations, no diver shall take part in more than one 4-hour lockout within a pre-planned 24-hour period.<br>
+                &#8227; <strong>No ratcheting</strong> of the whole dive team — i.e. cycling the entire team in less than 24 hours in order to gain work time.<br>
+                &#8227; On completion of the first dive during a saturation period, the dive team will be given their shift plan. Ideally the work period will be in the middle of the 12-hour shift.<br>
+                &#8227; If the dive team are unable to dive, teams shall remain in their sleeping and eating patterns until diving recommences. It will be the team at the beginning of their shift who will recommence diving operations.
+            </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:#fff8e1;border:1px solid #ffd080;border-left:4px solid #e8a000;border-radius:0 4px 4px 0;padding:14px 16px;flex:1;">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#7b4000;margin-bottom:10px;">&#9888; 4-Team Single Bell — Ratchet</div>
+                <div style="font-size:12px;color:#2d3748;line-height:1.85;">
+                    4 teams &#xD7; 8 hr runs = <strong>32 hr cycle</strong> in a 24-hr day. Only 3 full runs fit — one team must be skipped each day.<br>
+                    The team to be missed is decided by the <strong>Dive Supervisor and LSS</strong>, per IMCA guidance, depending on expected dive duration and work scope.<br>
+                    Divers will be given notice if expected to start a dive at the beginning of their 12-hour shift.
+                </div>
+            </div>
+            <div style="background:#f8f9fb;border:1px solid #d8dde4;border-left:4px solid #8a9299;border-radius:0 4px 4px 0;padding:14px 16px;flex:1;">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4a5568;margin-bottom:10px;">Prolonged Operations</div>
+                <div style="font-size:12px;color:#2d3748;line-height:1.85;">
+                    Over prolonged diving activities, it may be necessary to decompress some divers to bring in replacement teams. As this can take several days, <strong>a four-team rota may need to revert temporarily to three teams</strong>. Teams must still have a 12-hour rest period. The Dive Supervisor and LSS agree the new pattern to minimise disruption.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background:#e3f0fb;border:1px solid #90c4f0;border-left:4px solid #014782;border-radius:0 4px 4px 0;padding:14px 16px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#014782;margin-bottom:10px;">&#9679; Twin Bell Philosophy</div>
+        <div style="font-size:12px;color:#1a1a1a;line-height:1.85;">
+            General shift patterns remain as above. With two bells, added flexibility and time savings are permitted as team rotation may be undertaken using <strong>"on-bottom turnarounds"</strong>.<br>
+            This is where Team 1 (Bell 1) may be at the worksite whilst Team 2 (Bell 2) is being deployed to seabed — maximising diver time at the worksite.<br>
+            <strong>During twin bell operations there will be no requirement for teams to skip a dive</strong> as is often found when diving on a single bell system.
+        </div>
+    </div>
+</div>
+
+<!-- DSV EFFICIENCY MATRIX -->
+<div class="eff-panel-card">
+    <span class="section-label">What Can Each SAT System Support?</span>
+
+    <!-- Plain-language intro -->
+    <p style="font-size:13px;color:#2d3748;line-height:1.75;margin-bottom:18px;">
+        The table below answers a simple question for each vessel class: <strong>can it run twin bell, and what does that get you?</strong>
+        Single bell always gives 3 runs per day. Twin bell always gives 4. The +33% gain is fixed — it does not depend on depth or system size.
+        What changes with a bigger SAT system is how many <strong>teams you can rotate</strong>, which determines how long you can sustain operations without resurfacing divers.
+    </p>
+
+    <!-- Simplified 5-row card layout -->
+    <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+
+        <!-- 9-man -->
+        <div style="border:1px solid #e8ebef;border-radius:6px;overflow:hidden;">
+            <div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;background:#f0f2f5;border-bottom:1px solid #e8ebef;">
+                <div style="padding:10px 14px;font-size:14px;font-weight:700;color:#4a5568;display:flex;align-items:center;">9-man SAT</div>
+                <div style="padding:10px 14px;border-left:1px solid #e8ebef;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Single Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 1 team in rotation</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">3 runs/day · 36 diver-hrs/day</div>
+                </div>
+                <div style="padding:10px 14px;border-left:1px solid #e8ebef;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Twin Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#8b0000;">✗ Not viable</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">Not enough berths for 2 active teams + re-entry reserve</div>
+                </div>
+                <div style="padding:10px 14px;border-left:2px solid #FFEE02;text-align:center;display:flex;flex-direction:column;justify-content:center;background:#fff;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Gain</div>
+                    <div style="font-size:18px;font-weight:700;color:#aab0b8;">N/A</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12-man -->
+        <div style="border:1px solid #e8ebef;border-radius:6px;overflow:hidden;">
+            <div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;border-bottom:1px solid #e8ebef;">
+                <div style="padding:10px 14px;font-size:14px;font-weight:700;color:#4a5568;display:flex;align-items:center;background:#f0f2f5;">12-man SAT</div>
+                <div style="padding:10px 14px;border-left:1px solid #e8ebef;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Single Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 2 teams in rotation</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">3 runs/day · 36 diver-hrs/day · fits exactly</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#e8f5e9;color:#1a6e3a;">Needs: 12-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:1px solid #e8ebef;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Twin Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#a05000;">⚠ Marginal — 2 teams, no spare</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">4 runs/day · 48 diver-hrs/day · zero contingency margin</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#fff3e0;color:#a05000;">Needs: 12-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:2px solid #FFEE02;text-align:center;display:flex;flex-direction:column;justify-content:center;background:#fff;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Gain</div>
+                    <div style="font-size:18px;font-weight:700;color:#FFEE02;background:#013560;border-radius:4px;padding:2px 8px;display:inline-block;">+33%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15-man -->
+        <div style="border:1px solid #e8ebef;border-radius:6px;overflow:hidden;">
+            <div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;border-bottom:1px solid #e8ebef;">
+                <div style="padding:10px 14px;font-size:14px;font-weight:700;color:#4a5568;display:flex;align-items:center;background:#f0f2f5;">15-man SAT</div>
+                <div style="padding:10px 14px;border-left:1px solid #e8ebef;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Single Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 3 teams in rotation</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">3 runs/day · 36 diver-hrs/day · fills system exactly</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#e8f5e9;color:#1a6e3a;">Needs: 15-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:1px solid #e8ebef;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Twin Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 3 teams, fills system</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">4 runs/day · 48 diver-hrs/day · standard twin configuration viable</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#e8f5e9;color:#1a6e3a;">Needs: 15-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:2px solid #FFEE02;text-align:center;display:flex;flex-direction:column;justify-content:center;background:#fff;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Gain</div>
+                    <div style="font-size:18px;font-weight:700;color:#FFEE02;background:#013560;border-radius:4px;padding:2px 8px;display:inline-block;">+33%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 18-man — highlighted optimal -->
+        <div style="border:2px solid #1a6e3a;border-radius:6px;overflow:hidden;box-shadow:0 2px 10px rgba(26,110,58,0.12);">
+            <div style="background:#1a6e3a;padding:5px 14px;font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#fff;">
+                ★ Optimal Configuration for Twin Bell
+            </div>
+            <div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;border-bottom:1px solid #a5d6a7;">
+                <div style="padding:10px 14px;font-size:14px;font-weight:700;color:#1a6e3a;display:flex;align-items:center;background:#e8f5e9;">18-man SAT</div>
+                <div style="padding:10px 14px;border-left:1px solid #a5d6a7;background:#f8fdf9;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Single Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 3 teams, 3 spare berths</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">3 runs/day · 36 diver-hrs/day · room to spare</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#e8f5e9;color:#1a6e3a;">Needs: 15-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:1px solid #a5d6a7;background:#f8fdf9;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Twin Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 4 teams, fills system exactly</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">4 runs/day · 48 diver-hrs/day · wet handshake fully viable</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#dbe8f6;color:#014782;">Needs: 18-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:2px solid #FFEE02;text-align:center;display:flex;flex-direction:column;justify-content:center;background:#e8f5e9;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Gain</div>
+                    <div style="font-size:18px;font-weight:700;color:#FFEE02;background:#013560;border-radius:4px;padding:2px 8px;display:inline-block;">+33%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 24-man -->
+        <div style="border:1px solid #90c4f0;border-radius:6px;overflow:hidden;">
+            <div style="background:#014782;padding:5px 14px;font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#FFEE02;">
+                Maximum Rotation Depth — Long-Duration Projects
+            </div>
+            <div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;border-bottom:1px solid #90c4f0;">
+                <div style="padding:10px 14px;font-size:14px;font-weight:700;color:#014782;display:flex;align-items:center;background:#e3f0fb;">24-man SAT</div>
+                <div style="padding:10px 14px;border-left:1px solid #90c4f0;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Single Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#1a6e3a;">✔ Works — 3 teams, large headroom</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">3 runs/day · 36 diver-hrs/day · 9 spare berths</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#e8f5e9;color:#1a6e3a;">Needs: 15-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:1px solid #90c4f0;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Twin Bell</div>
+                    <div style="font-size:13px;font-weight:600;color:#014782;">✔ Works — 6 teams in rotation</div>
+                    <div style="font-size:11px;color:#4a5568;margin-top:2px;">4 runs/day · 48 diver-hrs/day · nearly double the rotation depth of 18-man</div><span style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:#dbe8f6;color:#014782;">Needs: 18-man SAT</span>
+                </div>
+                <div style="padding:10px 14px;border-left:2px solid #FFEE02;text-align:center;display:flex;flex-direction:column;justify-content:center;background:#e3f0fb;">
+                    <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8a9299;margin-bottom:4px;">Gain</div>
+                    <div style="font-size:18px;font-weight:700;color:#FFEE02;background:#013560;border-radius:4px;padding:2px 8px;display:inline-block;">+33%</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Key takeaway -->
+    <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-radius:4px;padding:12px 14px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:#014782;">+33%</div>
+            <div style="font-size:11px;color:#4a5568;margin-top:3px;">diver-hours per day<br>twin vs single bell</div>
+        </div>
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-radius:4px;padding:12px 14px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:#014782;">18-man</div>
+            <div style="font-size:11px;color:#4a5568;margin-top:3px;">minimum SAT for<br>optimal twin bell</div>
+        </div>
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-radius:4px;padding:12px 14px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:#014782;">36 → 48</div>
+            <div style="font-size:11px;color:#4a5568;margin-top:3px;">diver-hrs/day<br>single → twin</div>
+        </div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:#013560;border-radius:4px;font-size:11.5px;color:rgba(255,255,255,0.80);line-height:1.7;">
+        <strong style="color:#FFEE02;">Why the gain is always +33%:</strong> Single bell cycles every 8 hrs (3 runs/day). Twin bell cycles every 6 hrs (4 runs/day). The ratio is fixed by bell run time, not system size. The 24-man SAT advantage is not more runs — it is <strong style="color:#FFEE02;">more teams</strong>, which sustains operations longer between personnel rotations.
+    </div>
+</div>
+
+<!-- LIVE EFFICIENCY SUMMARY -->
+<div class="eff-panel-card">
+    <span class="section-label">Live Efficiency — Current Bell Rotation Parameters</span>
+    <p style="font-size:12px;color:#4a5568;margin-bottom:14px;">Values reflect depth and parameters set in the Bell Rotation tab.</p>
+    <div class="live-eff-grid">
+        <div class="live-eff-half">
+            <div class="le-label">&#9675; Single Bell — Live</div>
+            <div class="le-row"><span class="le-key">Depth</span><span class="le-val small" id="le_depth">120 msw</span></div>
+            <div class="le-row"><span class="le-key">Decompression time (Td)</span><span class="le-val small" id="le_td">128:00 hrs</span></div>
+            <div class="le-row"><span class="le-key">Stagger interval</span><span class="le-val small" id="le_si">5.3 days</span></div>
+            <div class="le-row"><span class="le-key">Runs per day</span><span class="le-val" id="le_srpd">3.0</span></div>
+            <div class="le-row"><span class="le-key">Diver-hours per day</span><span class="le-val" id="le_sdvhr">36.0</span></div>
+            <div class="le-row"><span class="le-key">Peak manning (with RE)</span><span class="le-val small" id="le_speak">15 men</span></div>
+            <div class="le-row"><span class="le-key">SAT system required</span><span class="le-val small" id="le_ssat">18-man</span></div>
+        </div>
+        <div class="live-eff-half">
+            <div class="le-label">&#9679; Twin Bell — Live + Efficiency</div>
+            <div class="le-row"><span class="le-key">Depth</span><span class="le-val small" id="le_depth2">120 msw</span></div>
+            <div class="le-row"><span class="le-key">Decompression time (Td)</span><span class="le-val small" id="le_td2">128:00 hrs</span></div>
+            <div class="le-row"><span class="le-key">Stagger interval</span><span class="le-val small" id="le_si2">5.3 days</span></div>
+            <div class="le-row"><span class="le-key">Runs per day</span><span class="le-val" id="le_trpd">4.0</span></div>
+            <div class="le-row"><span class="le-key">Diver-hours per day</span><span class="le-val" id="le_tdvhr">48.0</span></div>
+            <div class="le-row"><span class="le-key">Peak manning (with RE)</span><span class="le-val small" id="le_tpeak">18 men</span></div>
+            <div class="le-row"><span class="le-key">SAT system required</span><span class="le-val small" id="le_tsat">18-man</span></div>
+            <div class="le-row" style="border-top:2px solid #FFEE02;margin-top:6px;padding-top:10px"><span class="le-key">Efficiency gain vs Single</span><span class="le-val" id="le_gain" style="font-size:22px">+33.3%</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SINGLE vs TWIN BELL COMPARISON -->
+<div class="eff-panel-card">
+    <span class="section-label">Single Bell vs Twin Bell — Configuration Comparison</span>
+    <p style="font-size:12px;color:#4a5568;line-height:1.7;margin-bottom:16px;">
+        Twin bell systems increase output not by working longer, but by <strong>removing non-productive time and downtime risk</strong>. The tables below provide a structured comparison for planning and justification purposes.
+    </p>
+
+    <!-- 4-column comparison grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+        <!-- Operational Setup -->
+        <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #FFEE02;display:inline-block;">Operational Setup</div>
+            <table class="eff-matrix" style="margin-top:6px;">
+                <thead><tr>
+                    <th style="text-align:left">Factor</th>
+                    <th>Single Bell</th>
+                    <th>Twin Bell</th>
+                </tr></thead>
+                <tbody>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">System</td><td>1 Bell</td><td class="cell-ok">2 Bells</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Operation</td><td>Sequential</td><td class="cell-ok">Parallel / Staggered</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Timeline</td><td>Single</td><td class="cell-ok">Dual</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Daily Diving Output -->
+        <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #FFEE02;display:inline-block;">Daily Diving Output</div>
+            <table class="eff-matrix" style="margin-top:6px;">
+                <thead><tr>
+                    <th style="text-align:left">Factor</th>
+                    <th>Single Bell</th>
+                    <th>Twin Bell</th>
+                </tr></thead>
+                <tbody>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Bell Runs / Day</td><td>3 × 8 hrs</td><td class="cell-ok">4 × 6 hrs</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">In-Water / Run</td><td>~6 hrs</td><td>~6 hrs</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Effective Diving</td><td>~16–18 hrs/day</td><td class="cell-ok">~22–24 hrs/day</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a;border-top:2px solid #FFEE02;padding-top:8px">Productivity Gain</td><td colspan="2" style="text-align:center;font-weight:700;color:#014782;border-top:2px solid #FFEE02;padding-top:8px">Twin Bell ≈ +30–40% more productive diving time</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Operational Efficiency -->
+        <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #FFEE02;display:inline-block;">Operational Efficiency</div>
+            <table class="eff-matrix" style="margin-top:6px;">
+                <thead><tr>
+                    <th style="text-align:left">Factor</th>
+                    <th>Single Bell</th>
+                    <th>Twin Bell</th>
+                </tr></thead>
+                <tbody>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Transition Losses</td><td class="cell-warn">Present</td><td class="cell-ok">Eliminated (overlap)</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Continuous Diving</td><td class="cell-crit">No</td><td class="cell-ok">Yes</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Work Flexibility</td><td class="cell-warn">Limited</td><td class="cell-ok">High</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Downtime & Maintenance -->
+        <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #FFEE02;display:inline-block;">Downtime &amp; Maintenance</div>
+            <table class="eff-matrix" style="margin-top:6px;">
+                <thead><tr>
+                    <th style="text-align:left">Factor</th>
+                    <th>Single Bell</th>
+                    <th>Twin Bell</th>
+                </tr></thead>
+                <tbody>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Equipment Failure</td><td class="cell-crit">Full Stop</td><td class="cell-ok">Partial Impact</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Planned Maintenance</td><td class="cell-crit">Stops Diving</td><td class="cell-ok">Work Continues</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Redundancy</td><td class="cell-crit">None</td><td class="cell-ok">High</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Schedule Stability -->
+        <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #FFEE02;display:inline-block;">Schedule Stability</div>
+            <table class="eff-matrix" style="margin-top:6px;">
+                <thead><tr>
+                    <th style="text-align:left">Factor</th>
+                    <th>Single Bell</th>
+                    <th>Twin Bell</th>
+                </tr></thead>
+                <tbody>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Ratcheting (Drift)</td><td class="cell-warn">Common</td><td class="cell-ok">Reduced</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Shift Stability</td><td class="cell-warn">Variable</td><td class="cell-ok">Stable</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Cost & Complexity -->
+        <div>
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #FFEE02;display:inline-block;">Cost &amp; Complexity</div>
+            <table class="eff-matrix" style="margin-top:6px;">
+                <thead><tr>
+                    <th style="text-align:left">Factor</th>
+                    <th>Single Bell</th>
+                    <th>Twin Bell</th>
+                </tr></thead>
+                <tbody>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Capital Cost</td><td class="cell-ok">Lower</td><td class="cell-warn">Higher</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">Operating Cost</td><td class="cell-ok">Lower</td><td class="cell-warn">Higher</td></tr>
+                    <tr><td style="text-align:left;font-weight:600;color:#1a1a1a">System Complexity</td><td class="cell-ok">Low</td><td class="cell-warn">High</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Typical Application -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-left:4px solid #8a9299;border-radius:4px;padding:14px 16px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4a5568;margin-bottom:8px;">Single Bell — Suitable For</div>
+            <div style="font-size:12px;color:#2d3748;line-height:1.8;">
+                &#8227; Short duration projects<br>
+                &#8227; Low critical path impact<br>
+                &#8227; Budget-driven operations<br>
+                &#8227; Schedule flexibility exists<br>
+                &#8227; Simple work scope<br>
+                &#8227; Acceptable downtime risk
+            </div>
+        </div>
+        <div style="background:#e3f0fb;border:1px solid #90c4f0;border-left:4px solid #014782;border-radius:4px;padding:14px 16px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#014782;margin-bottom:8px;">Twin Bell — Recommended For</div>
+            <div style="font-size:12px;color:#1a1a1a;line-height:1.8;">
+                &#8227; Schedule-critical projects<br>
+                &#8227; High vessel day-rate operations<br>
+                &#8227; Continuous production requirements<br>
+                &#8227; Complex or multi-worksite scopes<br>
+                &#8227; Downtime would cause significant cost impact<br>
+                &#8227; Multiple work fronts must be supported
+            </div>
+        </div>
+    </div>
+
+    <!-- Final principle -->
+    <div style="background:#013560;border-radius:4px;padding:12px 18px;font-size:12px;color:rgba(255,255,255,0.85);line-height:1.7;text-align:center;">
+        <strong style="color:#FFEE02;font-size:13px;">Final Decision Principle:</strong>&nbsp;
+        If the cost of lost time exceeds the cost of a second bell, twin bell is the correct choice.
+    </div>
+</div>
+
+<!-- DECISION FRAMEWORK -->
+<div class="eff-panel-card">
+    <span class="section-label">Decision Framework — Single Bell vs Twin Bell</span>
+    <p style="font-size:12px;color:#4a5568;line-height:1.7;margin-bottom:16px;">
+        Score each criterion and sum the result. Use the interpretation table to determine the appropriate configuration. This tool is for planning and justification purposes — it does not replace engineering or project management judgment.
+    </p>
+
+    <!-- Criteria scoring table -->
+    <div style="overflow-x:auto;">
+    <table class="eff-matrix" id="decisionTable">
+        <thead>
+            <tr>
+                <th style="text-align:left;width:30%">Decision Criteria</th>
+                <th style="width:12%;text-align:center">Low (1)</th>
+                <th style="width:12%;text-align:center">Medium (2)</th>
+                <th style="width:12%;text-align:center">High (3)</th>
+                <th style="width:10%;text-align:center">Weight</th>
+                <th style="width:10%;text-align:center">Score</th>
+                <th style="width:14%;text-align:center">Weighted</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:left;font-weight:600;color:#1a1a1a">Project Schedule Criticality</td>
+                <td style="text-align:center"><input type="radio" name="crit1" value="1" onchange="calcDecision()"> 1</td>
+                <td style="text-align:center"><input type="radio" name="crit1" value="2" onchange="calcDecision()"> 2</td>
+                <td style="text-align:center"><input type="radio" name="crit1" value="3" onchange="calcDecision()"> 3</td>
+                <td style="text-align:center;font-weight:700;color:#014782">×3</td>
+                <td style="text-align:center" id="s1_raw">—</td>
+                <td style="text-align:center;font-weight:700" id="s1_wtd">—</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;color:#1a1a1a">Vessel Day Rate</td>
+                <td style="text-align:center"><input type="radio" name="crit2" value="1" onchange="calcDecision()"> 1</td>
+                <td style="text-align:center"><input type="radio" name="crit2" value="2" onchange="calcDecision()"> 2</td>
+                <td style="text-align:center"><input type="radio" name="crit2" value="3" onchange="calcDecision()"> 3</td>
+                <td style="text-align:center;font-weight:700;color:#014782">×3</td>
+                <td style="text-align:center" id="s2_raw">—</td>
+                <td style="text-align:center;font-weight:700" id="s2_wtd">—</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;color:#1a1a1a">Downtime Risk Impact</td>
+                <td style="text-align:center"><input type="radio" name="crit3" value="1" onchange="calcDecision()"> 1</td>
+                <td style="text-align:center"><input type="radio" name="crit3" value="2" onchange="calcDecision()"> 2</td>
+                <td style="text-align:center"><input type="radio" name="crit3" value="3" onchange="calcDecision()"> 3</td>
+                <td style="text-align:center;font-weight:700;color:#014782">×3</td>
+                <td style="text-align:center" id="s3_raw">—</td>
+                <td style="text-align:center;font-weight:700" id="s3_wtd">—</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;color:#1a1a1a">Work Complexity</td>
+                <td style="text-align:center"><input type="radio" name="crit4" value="1" onchange="calcDecision()"> 1</td>
+                <td style="text-align:center"><input type="radio" name="crit4" value="2" onchange="calcDecision()"> 2</td>
+                <td style="text-align:center"><input type="radio" name="crit4" value="3" onchange="calcDecision()"> 3</td>
+                <td style="text-align:center;font-weight:700;color:#8a9299">×2</td>
+                <td style="text-align:center" id="s4_raw">—</td>
+                <td style="text-align:center;font-weight:700" id="s4_wtd">—</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;color:#1a1a1a">Number of Work Fronts</td>
+                <td style="text-align:center"><input type="radio" name="crit5" value="1" onchange="calcDecision()"> 1</td>
+                <td style="text-align:center"><input type="radio" name="crit5" value="2" onchange="calcDecision()"> 2</td>
+                <td style="text-align:center"><input type="radio" name="crit5" value="3" onchange="calcDecision()"> 3</td>
+                <td style="text-align:center;font-weight:700;color:#8a9299">×2</td>
+                <td style="text-align:center" id="s5_raw">—</td>
+                <td style="text-align:center;font-weight:700" id="s5_wtd">—</td>
+            </tr>
+            <tr>
+                <td style="text-align:left;font-weight:600;color:#1a1a1a">Tolerance for Delays</td>
+                <td style="text-align:center"><input type="radio" name="crit6" value="1" onchange="calcDecision()"> 1</td>
+                <td style="text-align:center"><input type="radio" name="crit6" value="2" onchange="calcDecision()"> 2</td>
+                <td style="text-align:center"><input type="radio" name="crit6" value="3" onchange="calcDecision()"> 3</td>
+                <td style="text-align:center;font-weight:700;color:#014782">×3</td>
+                <td style="text-align:center" id="s6_raw">—</td>
+                <td style="text-align:center;font-weight:700" id="s6_wtd">—</td>
+            </tr>
+            <tr style="background:#f0f2f5;border-top:2px solid #FFEE02;">
+                <td style="text-align:left;font-weight:700;color:#014782;font-size:12px">Total Weighted Score</td>
+                <td colspan="4" style="text-align:right;font-size:11px;color:#4a5568;padding-right:12px">Max possible: 48</td>
+                <td colspan="2" style="text-align:center;font-size:22px;font-weight:700;color:#014782" id="totalScore">—</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <!-- Scoring note -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;">
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-radius:4px;padding:12px 16px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4a5568;margin-bottom:8px;">Scoring Logic</div>
+            <div style="font-size:12px;color:#2d3748;line-height:1.8;">
+                Score each criterion: <strong>Low = 1 &nbsp;·&nbsp; Medium = 2 &nbsp;·&nbsp; High = 3</strong><br>
+                Multiply by weighting factor (×2 = Medium priority, ×3 = High priority)<br>
+                Maximum possible weighted score: <strong>48</strong>
+            </div>
+        </div>
+        <div style="background:#f8f9fb;border:1px solid #d8dde4;border-radius:4px;padding:12px 16px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4a5568;margin-bottom:8px;">Score Interpretation</div>
+            <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
+                <tr><td style="padding:3px 6px;border-bottom:1px solid #e8ebef;font-weight:700;color:#1a6e3a">≤ 20</td><td style="padding:3px 6px;border-bottom:1px solid #e8ebef;color:#1a6e3a">&#10004; Single Bell Appropriate</td></tr>
+                <tr><td style="padding:3px 6px;border-bottom:1px solid #e8ebef;font-weight:700;color:#a05000">21–32</td><td style="padding:3px 6px;border-bottom:1px solid #e8ebef;color:#a05000">&#9888; Borderline — Evaluate Cost vs Schedule</td></tr>
+                <tr><td style="padding:3px 6px;font-weight:700;color:#014782">33 – 48</td><td style="padding:3px 6px;color:#014782">&#10004; Twin Bell Recommended</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Live verdict -->
+    <div id="decisionVerdict" style="margin-top:14px;padding:14px 18px;border-radius:4px;background:#f0f2f5;border:1px solid #d8dde4;font-size:13px;color:#4a5568;text-align:center;">
+        Complete the scoring above to generate a recommendation.
+    </div>
+
+    <!-- Quick Go/No-Go -->
+    <div style="margin-top:14px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#014782;margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid #FFEE02;display:inline-block;">Simple Go / No-Go Rule</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;">
+            <div style="background:#e3f0fb;border:1px solid #90c4f0;border-left:4px solid #014782;border-radius:4px;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#014782;margin-bottom:8px;">Go Twin Bell if ANY of the following are TRUE</div>
+                <div style="font-size:12px;color:#1a1a1a;line-height:1.9;">
+                    &#9654; Project is on critical path<br>
+                    &#9654; Vessel day rate is high<br>
+                    &#9654; Downtime would cause significant cost impact<br>
+                    &#9654; Continuous diving is required<br>
+                    &#9654; Multiple work fronts must be supported
+                </div>
+            </div>
+            <div style="background:#f8f9fb;border:1px solid #d8dde4;border-left:4px solid #8a9299;border-radius:4px;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#4a5568;margin-bottom:8px;">Use Single Bell if ALL of the following are TRUE</div>
+                <div style="font-size:12px;color:#2d3748;line-height:1.9;">
+                    &#9654; Schedule flexibility exists<br>
+                    &#9654; Work scope is simple<br>
+                    &#9654; Budget is primary constraint<br>
+                    &#9654; Downtime risk is acceptable
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- END PANEL 2 -->
+
+<!-- ════════════════════════════════════════════════════
+     PANEL 3 — DIVE PLANNER
+════════════════════════════════════════════════════ -->
+<div id="main-panel-planner" class="main-panel active planner-section">
+
+    <!-- PLANNER INNER TAB BAR -->
+    <div class="ptabs">
+        <button id="ptabPlannerBtn" class="ptab-btn active" type="button" onclick="activatePlannerTab('planner')">Planner</button>
+        <button id="ptabTimelineBtn" class="ptab-btn" type="button" onclick="activatePlannerTab('timeline')">Timeline</button>
+        <button id="ptabComplianceBtn" class="ptab-btn" type="button" onclick="activatePlannerTab('compliance')">Compliance</button>
+    </div>
+
+    <!-- PLANNER TAB PANEL -->
+    <div id="ptabPlannerPanel" class="ptab-panel active">
+        <div class="pcard">
+            <h2>Project Setup</h2>
+            <div class="field-grid">
+                <div class="field"><label>Project Name</label><input id="projectName" value="QWERTY"></div>
+                <div class="field"><label>Project Number</label><input id="projectNumber" value="10101"></div>
+                <div class="field"><label>Vessel</label><input id="vesselName" value="GRANT"></div>
+                <div class="field"><label>Project Start</label><input id="projectStart" type="datetime-local"></div>
+                <div class="field"><label>Project Duration (days)</label><input id="projectDurationDays" type="number" min="1" step="1" value="60"></div>
+                <div class="field"><label>Amber Warning Threshold (hours)</label><input id="amberHours" type="number" min="1" step="1" value="48"></div>
+                <div class="field"><label>Max Sat Duration (days)</label><input id="maxSatDays" type="number" min="1" step="1" value="28"></div>
+                <div class="field"><label>Initial Teams Blown In Together</label><input id="initialWaveCount" type="number" min="1" step="1" value="3"></div>
+            </div>
+            <div class="btn-row">
+                <button id="addTeamBtn" class="action">Add Team</button>
+                <button id="syncInitialTeamsBtn" class="action secondary">Set Initial Team Count</button>
+                <button id="generateTeamsBtn" class="action success">Generate Teams for Project</button>
+                <button id="loadDemoBtn" class="action secondary">Load Demo</button>
+                <button id="resetBtn" class="action danger">Reset</button>
+                <button id="printPdfBtn" class="action secondary">Print / Save PDF</button>
+                <button id="exportExcelBtn" class="action success">Export to Excel</button>
+                <button id="emailBtn" class="action secondary">Prepare Email</button>
+            </div>
+            <p class="note">
+                <strong>Decompression Profile:</strong> Dynamic Hold Cycle (Project Standard).<br>
+                Project generation uses the first visible starting teams as the base slots. Each replacement team blows down when the previous team in that slot reaches its pre-deco hold start.<br>
+                <span class="small">Print / Save PDF opens a clean landscape print report. Export to Excel creates a formatted workbook with Project, Compliance, Teams and Timeline sheets. Prepare Email opens your default email client with a summary.</span>
+            </p>
+        </div>
+
+        <div class="pcard">
+            <h2>How to Fill In This Planner</h2>
+            <div class="field-grid">
+                <div class="stat"><div class="k">1. Project Setup</div><div class="v">Enter Project Name, Project Number, Vessel, Project Start, Project Duration, Max Sat Days, and Initial Teams Blown In Together.</div></div>
+                <div class="stat"><div class="k">2. Starting Teams</div><div class="v">Use <strong>Set Initial Team Count</strong> first. This creates the starting teams blown in together at the beginning of the project.</div></div>
+                <div class="stat"><div class="k">3. Team Composition</div><div class="v">Each team is a 3-man bell team: <strong>Bellman · Diver 1 · Diver 2</strong>. Names are entered per team card below.</div></div>
+                <div class="stat"><div class="k">4. Team Inputs</div><div class="v">For each team: enter <strong>Team Label, Storage Depth, Blowdown Date/Time, Required Surface Date/Time</strong>. Then enter diver names.</div></div>
+                <div class="stat"><div class="k">5. Surface Date</div><div class="v">Required Surface is the target time by which that team must be back on surface. Planner works back to calculate pre-deco hold start and decompression start.</div></div>
+                <div class="stat"><div class="k">6. Rotation Generation</div><div class="v">When starting teams are complete, press <strong>Generate Teams for Project</strong>. New teams are generated in waves using starting teams as rotation slots.</div></div>
+                <div class="stat"><div class="k">7. What the Tool Checks</div><div class="v">Tracks time in saturation, time left before hold, time left before surface, and whether required surface time is inside the maximum saturation limit.</div></div>
+                <div class="stat"><div class="k">8. Notes</div><div class="v">Bell run and in-water limits are not entered here. This tool is for saturation exposure, decompression timing, and rotation planning. Use Bell Rotation tab for bell efficiency.</div></div>
+            </div>
+        </div>
+
+        <div class="pcard">
+            <h2>Teams</h2>
+            <div id="teams" class="teams"></div>
+        </div>
+    </div>
+
+    <!-- TIMELINE TAB PANEL -->
+    <div id="ptabTimelinePanel" class="ptab-panel">
+        <div class="pcard">
+            <h2>Timeline</h2>
+            <div class="legend">
+                <span><i class="swatch" style="background:var(--blue2)"></i> In Saturation</span>
+                <span><i class="swatch" style="background:var(--hold)"></i> Pre-Deco Hold</span>
+                <span><i class="swatch" style="background:var(--deco)"></i> Decompression</span>
+                <span><i class="swatch" style="background:var(--done)"></i> Surfaced</span>
+                <span><i class="swatch" style="background:var(--today)"></i> Today</span>
+            </div>
+            <div class="timeline-wrap"><div id="timeline" class="timeline"></div></div>
+        </div>
+    </div>
+
+    <!-- COMPLIANCE TAB PANEL -->
+    <div id="ptabCompliancePanel" class="ptab-panel">
+        <div class="pcard">
+            <h2>Compliance View</h2>
+            <div class="compliance-table-wrap">
+                <table class="compliance">
+                    <thead>
+                        <tr>
+                            <th>Team</th><th>Storage Depth</th><th>Blowdown</th>
+                            <th>Pre-Deco Hold Start</th><th>Deco Start</th><th>Actual Deco Time</th>
+                            <th>Required Surface</th><th>Max Surface By</th><th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complianceBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- END PANEL 3 -->
+
+<!-- FOOTER -->
+<footer>
+    <span id="footerCalc">SAT Operations Planner — Bell Rotation · DSV Efficiency · Dive Planning</span>
+    <span>N-Sea</span>
+</footer>
+
+</div><!-- end .page -->
+
+<!-- DEPTH OVERLAY -->
+
+
+<!-- TEAM TEMPLATE -->
+<template id="teamTemplate">
+  <div class="team-card">
+    <div class="team-head">
+      <strong class="team-title">Team 1</strong>
+      <div class="btn-row">
+        <button class="action secondary duplicate-team" type="button">Duplicate</button>
+        <button class="action danger remove-team" type="button">Remove</button>
+      </div>
+    </div>
+    <div class="team-body">
+      <div class="field-grid">
+        <div class="field"><label>Team Label</label><input class="team-label" value="Team 1"></div>
+        <div class="field"><label>Storage Depth (msw)</label><input class="storage-depth" type="number" min="0" step="0.1" value="70"></div>
+        <div class="field"><label>Blowdown Date / Time</label><input class="blowdown" type="datetime-local"></div>
+        <div class="field"><label>Required Surface Date / Time</label><input class="required-surface" type="datetime-local"></div>
+      </div>
+      <div class="team-names">
+        <div class="field"><label>Bellman</label><input class="name1" value="A"></div>
+        <div class="field"><label>Diver 1</label><input class="name2" value="B"></div>
+        <div class="field"><label>Diver 2</label><input class="name3" value="C"></div>
+      </div>
+      <div class="stats"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+/* ════════════════════════════════════════════════════
+   MAIN TAB SWITCHER
+════════════════════════════════════════════════════ */
+function setMainTab(name,btn){
+    document.querySelectorAll('.main-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('main-panel-'+name).classList.add('active');
+    if(btn) btn.classList.add('active');
+    else { const b=document.querySelector('[data-main-tab="'+name+'"]'); if(b) b.classList.add('active'); }
+    if(name==='rotation') c();
+    if(name==='efficiency') updateEfficiencyPanel();
+}
+
+/* ════════════════════════════════════════════════════
+   BELL ROTATION — DECOMPRESSION TABLE
+════════════════════════════════════════════════════ */
+function toHHMM(h){ if(h===0)return'0:00'; const hh=Math.floor(h),mm=Math.round((h-hh)*60); return `${hh}:${mm.toString().padStart(2,'0')}`; }
+
+function onDepthChange(){
+    c();
+}
+
+/* ── SLOT COLOURS ── */
+function gv(id){ return parseFloat(document.getElementById('inp_'+id).value)||0; }
+function sv(id,v){ const e=document.getElementById(id); if(e) e.innerHTML=v; }
+function d1(n){ return (isNaN(n)||!isFinite(n))?'—':n.toFixed(1); }
+function d0(n){ return (isNaN(n)||!isFinite(n))?'—':Math.round(n).toString(); }
+
+function satReq(men){ if(men<=12)return{sz:12,cls:'ok'}; if(men<=15)return{sz:15,cls:'ok'}; if(men<=18)return{sz:18,cls:'warn'}; return{sz:24,cls:'crit'}; }
+
+/* ── EFFICIENCY PANEL UPDATER ── */
+/* ── EFFICIENCY PANEL UPDATER ── */
+function updateEfficiencyPanel(){
+    const depth=parseInt(document.getElementById('inp_depth').value)||0;
+    const Td=parseFloat(document.getElementById('inp_Td').value)||128;
+    const Tr=gv('Tr'),Ti=gv('Ti'),Nt=gv('Nt');
+    const sRpd=24/Tr,tRpd=24/Ti;
+    const sDvhr=sRpd*2*Ti,tDvhr=tRpd*2*Ti;
+    const SI=Td/24;
+    const sN=3,tN=4;
+    const sPeakRe=(sN+2)*Nt,tPeakRe=(tN+2)*Nt;
+    const sSat=satReq(sPeakRe),tSat=satReq(tPeakRe);
+    const gPct=(tDvhr-sDvhr)/sDvhr*100;
+    const tdStr=toHHMM(Td);
+    sv('le_depth',depth+' msw');
+    sv('le_td',tdStr+' hrs');
+    sv('le_si',d1(SI)+' days');
+    sv('le_srpd',d1(sRpd));
+    sv('le_sdvhr',d1(sDvhr));
+    sv('le_speak',sPeakRe+' men');
+    sv('le_ssat',sSat.sz+'-man SAT');
+    sv('le_depth2',depth+' msw');
+    sv('le_td2',tdStr+' hrs');
+    sv('le_si2',d1(SI)+' days');
+    sv('le_trpd',d1(tRpd));
+    sv('le_tdvhr',d1(tDvhr));
+    sv('le_tpeak',tPeakRe+' men');
+    sv('le_tsat',tSat.sz+'-man SAT');
+    sv('le_gain','+'+d1(gPct)+'%');
+}
+
+/* ════════════════════════════════════════════════════
+   BELL ROTATION — MAIN CALC
+════════════════════════════════════════════════════ */
+function c(){
+    const D=gv('D'), Td=parseFloat(document.getElementById('inp_Td').value)||128;
+    const Tr=gv('Tr'), Ti=gv('Ti'), Nt=gv('Nt'), camp=gv('camp');
+    const depth=parseInt(document.getElementById('inp_depth').value)||0;
+    const SI=Td/24, Tw=D-SI;
+    const sRpd=24/Tr, tRpd=24/Ti;
+    const sDvhr=sRpd*2*Ti, tDvhr=tRpd*2*Ti;
+    const gPct=(tDvhr-sDvhr)/sDvhr*100;
+    const sN=3, tN=4;
+    const sPeakNoRe=(sN+1)*Nt, sPeakRe=(sN+2)*Nt;
+    const tPeakNoRe=(tN+1)*Nt, tPeakRe=(tN+2)*Nt;
+    const sSat=satReq(sPeakRe), tSat=satReq(tPeakRe);
+
+    sv('m_depth',depth);
+    sv('m_Td',toHHMM(Td));
+    sv('m_SI',d1(SI));
+    sv('m_Tw',d1(Tw));
+    sv('m_sRpd',d0(sRpd));
+    sv('m_tRpd',d0(tRpd));
+    sv('m_sPeak',sPeakRe+' men');
+    sv('m_tPeak',tPeakRe+' men');
+    sv('mu_sPeak','→ '+sSat.sz+'-man SAT');
+    sv('mu_tPeak','→ '+tSat.sz+'-man SAT');
+    document.getElementById('mc_sPeak').className='metric-cell '+sSat.cls;
+    document.getElementById('mc_tPeak').className='metric-cell '+tSat.cls;
+
+    sv('s_noRe',sPeakNoRe+' men');
+    sv('s_reVal',sPeakRe+' men');
+    sv('t_noRe',tPeakNoRe+' men');
+    sv('t_reVal',tPeakRe+' men');
+
+    const sMinEl=document.getElementById('s_satMin');
+    sMinEl.textContent=sSat.sz+'-man SAT';
+    sMinEl.className='mr-val '+(sSat.cls==='ok'?'ok':sSat.cls==='warn'?'warn':'crit');
+    const tMinEl=document.getElementById('t_satMin');
+    tMinEl.textContent=tSat.sz+'-man SAT';
+    tMinEl.className='mr-val '+(tSat.cls==='ok'?'ok':tSat.cls==='warn'?'warn':'crit');
+
+    // Re-entry card
+    sv('rr_single_peak',sPeakRe+' men');
+    sv('rr_single_sat','→ '+sSat.sz+'-man SAT minimum');
+    sv('rr_twin_peak',tPeakRe+' men');
+    sv('rr_twin_sat','→ '+tSat.sz+'-man SAT minimum');
+    sv('reentry-depth-note-text',`At ${depth} msw (Td = ${toHHMM(Td)}): with stagger interval ${d1(SI)} days, teams surface at ${d1(SI)}-day intervals. The 24-hr re-entry window means one berth-set is always blocked after each team surfaces. This is the governing factor when selecting SAT system size — not the number of working divers.`);
+
+    function verdict(N,sat,peakRe){
+        const lbl=N===3?'Single bell':'Twin bell';
+        if(sat.cls==='ok')   return {cls:'verdict-ok',   txt:`✔  ${lbl}: Peak ${peakRe} men (with re-entry rule) → ${sat.sz}-man SAT system sufficient.`};
+        if(sat.cls==='warn') return {cls:'verdict-warn', txt:`⚠  ${lbl}: Peak ${peakRe} men (with re-entry rule) → ${sat.sz}-man SAT system required.`};
+        return                      {cls:'verdict-crit', txt:`⛔  ${lbl}: Peak ${peakRe} men (with re-entry rule) → ${sat.sz}-man SAT system required. Verify vessel availability.`};
+    }
+    const sv2=verdict(sN,sSat,sPeakRe), tv2=verdict(tN,tSat,tPeakRe);
+    const svEl=document.getElementById('s_verdict'); svEl.className='verdict-band '+sv2.cls; svEl.textContent=sv2.txt;
+    const tvEl=document.getElementById('t_verdict'); tvEl.className='verdict-band '+tv2.cls; tvEl.textContent=tv2.txt;
+
+    sv('m_sDvhr',d1(sDvhr));
+    sv('m_tDvhr',d1(tDvhr));
+
+    sv('effPct','+'+d1(gPct)+'%');
+    sv('effDetail',
+        `Single bell: ${d1(sDvhr)} diver-hrs/day (${d0(sRpd)} runs × ${Ti} hrs × 2 divers) — requires ${sSat.sz}-man SAT with re-entry rule<br>`+
+        `Twin bell:   ${d1(tDvhr)} diver-hrs/day (${d0(tRpd)} runs × ${Ti} hrs × 2 divers) — requires ${tSat.sz}-man SAT with re-entry rule<br>`+
+        `Stagger = ${d1(SI)} days · Replacement cycle = ${d1(Tw)} days · Project duration ${d1(gPct/(100+gPct)*100)}% shorter with twin bell.`
+    );
+
+    const rb=document.getElementById('reentryBand');
+    rb.className='info-band '+(tSat.cls==='crit'?'crit':'warn');
+    rb.innerHTML=`⚠  At ${depth} msw (Td = ${toHHMM(Td)}): `+
+        `Single bell → ${sSat.sz}-man SAT minimum · Twin bell → ${tSat.sz}-man SAT minimum. `+
+        `Both systems must hold ${Nt} reserved berths for 24 hrs after each team surfaces. `+
+        `At greater depth, longer Td increases the stagger interval — verify system capacity per operating depth before mobilisation.`;
+
+    sv('footerCalc',`Depth: ${depth} msw · Td: ${toHHMM(Td)} · Single: ${d1(sDvhr)} diver-hrs/day → ${sSat.sz}-man SAT · Twin: ${d1(tDvhr)} diver-hrs/day → ${tSat.sz}-man SAT`);
+
+    buildShiftDiagram();
+}
+
+/* ════════════════════════════════════════════════════
+   DIVE PLANNER — ALL FUNCTIONS
+════════════════════════════════════════════════════ */
+const MS_HOUR = 3600000;
+const MS_DAY = 24 * MS_HOUR;
+const teamsEl = document.getElementById('teams');
+const timelineEl = document.getElementById('timeline');
+const complianceBody = document.getElementById('complianceBody');
+const tpl = document.getElementById('teamTemplate');
+
+function pad(n){ return String(n).padStart(2,'0'); }
+function toLocalInputValue(date){ const d=new Date(date); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function parseInputDate(v){ return v?new Date(v):null; }
+function fmtDate(dt){ return (!dt||isNaN(dt))?'—':dt.toLocaleString([],{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function fmtSpan(ms){ if(!isFinite(ms))return'—'; const sign=ms<0?'-':''; ms=Math.abs(ms); const d=Math.floor(ms/MS_DAY); ms-=d*MS_DAY; const h=Math.floor(ms/MS_HOUR); ms-=h*MS_HOUR; const m=Math.floor(ms/60000); return `${sign}${d}d ${h}h ${m}m`; }
+function clamp(v,mn,mx){ return Math.min(mx,Math.max(mn,v)); }
+
+function activatePlannerTab(name){
+    const tabs={
+        planner:[document.getElementById('ptabPlannerBtn'),document.getElementById('ptabPlannerPanel')],
+        timeline:[document.getElementById('ptabTimelineBtn'),document.getElementById('ptabTimelinePanel')],
+        compliance:[document.getElementById('ptabComplianceBtn'),document.getElementById('ptabCompliancePanel')]
+    };
+    Object.values(tabs).forEach(([btn,panel])=>{btn.classList.remove('active');panel.classList.remove('active');});
+    tabs[name][0].classList.add('active');
+    tabs[name][1].classList.add('active');
+}
+
+function getRate(depth){ if(depth>61)return 1.8; if(depth>30)return 1.5; if(depth>15)return 1.25; if(depth>1.2)return 1.0; return 0; }
+function minutesToDrop(depth,mins){ let d=Number(depth)||0,rem=mins; while(rem>0&&d>1.2){ const rate=getRate(d); const lower=d>61?61:d>30?30:d>15?15:1.2; const minsToBoundary=((d-lower)/rate)*60; if(rem>=minsToBoundary){d=lower;rem-=minsToBoundary;}else{d-=(rate*rem/60);rem=0;} } return Math.max(1.2,d); }
+function computeTravelHoursTo1p2(depth){ let d=Number(depth); if(!isFinite(d)||d<=1.2)return 0; let h=0; const bands=[{from:487,to:61,rate:1.8},{from:61,to:30,rate:1.5},{from:30,to:15,rate:1.25},{from:15,to:1.2,rate:1.0}]; for(const b of bands){ const upper=Math.min(d,b.from),lower=Math.max(b.to,1.2); if(upper>lower)h+=(upper-lower)/b.rate; } return h; }
+
+function buildDecoProfile(depth){
+    const startDepth=Number(depth)||0;
+    const totalTravelMins=Math.round(computeTravelHoursTo1p2(startDepth)*60);
+    let remainingTravel=totalTravelMins,travelDone=0,holdIndex=0;
+    const holdPattern=[120,360];
+    const holds=[];
+    let shiftedFinal=false;
+    while(remainingTravel>0){
+        const nextTravelBlock=480;
+        if(remainingTravel>nextTravelBlock){
+            travelDone+=nextTravelBlock; remainingTravel-=nextTravelBlock;
+            const holdDepth=minutesToDrop(startDepth,travelDone);
+            holds.push({depth:holdDepth,durationMin:holdPattern[holdIndex%2],shiftedToMin:false});
+            holdIndex++;
+        } else {
+            travelDone+=remainingTravel; remainingTravel=0;
+            if(totalTravelMins>0){ holds.push({depth:1.2,durationMin:holdPattern[holdIndex%2],shiftedToMin:true}); shiftedFinal=true; }
+        }
+    }
+    const travelHours=totalTravelMins/60;
+    const holdMinutes=holds.reduce((a,h)=>a+h.durationMin,0);
+    const finalStopMinutes=shiftedFinal?0:80;
+    const finalAscentMinutes=Math.round(1.2/0.3);
+    const totalMinutes=totalTravelMins+holdMinutes+finalStopMinutes+finalAscentMinutes;
+    return{travelHours,travelMinutes:totalTravelMins,holds,holdMinutes,finalStopMinutes,finalAscentMinutes,totalMinutes,shiftedFinal};
+}
+
+function calcCardData(team){
+    const maxSatDays=Number(document.getElementById('maxSatDays').value||28);
+    const amberHours=Number(document.getElementById('amberHours').value||48);
+    const now=new Date();
+    const blowdown=parseInputDate(team.querySelector('.blowdown').value);
+    const reqSurface=parseInputDate(team.querySelector('.required-surface').value);
+    const depth=Number(team.querySelector('.storage-depth').value||0);
+    const label=team.querySelector('.team-label').value||'Team';
+    const deco=buildDecoProfile(depth);
+    const decoStart=reqSurface?new Date(reqSurface.getTime()-deco.totalMinutes*60000):null;
+    const holdStart=decoStart?new Date(decoStart.getTime()-8*MS_HOUR):null;
+    const maxSurface=blowdown?new Date(blowdown.getTime()+maxSatDays*MS_DAY):null;
+    let status='red',statusText='Input needed',compliant=false;
+    if(blowdown&&reqSurface){
+        compliant=reqSurface<=maxSurface;
+        if(!compliant){status='red';statusText='28-day breach';}
+        else if(now>reqSurface){status='red';statusText='Surface time passed';}
+        else if(now>holdStart){status='red';statusText='Hold/deco overdue';}
+        else if((holdStart-now)<=amberHours*MS_HOUR){status='amber';statusText='Approaching hold';}
+        else{status='ok';statusText='On schedule';}
+    }
+    return{label,blowdown,reqSurface,depth,deco,decoStart,holdStart,maxSurface,status,statusText,compliant};
+}
+
+function calcTeam(team){
+    const data=calcCardData(team);
+    const now=new Date();
+    const statsEl=team.querySelector('.stats');
+    statsEl.innerHTML=`
+        <div class="stat"><div class="k">Status</div><div class="v"><span class="status-pill ${data.status}">${data.statusText}</span></div></div>
+        <div class="stat"><div class="k">Max Surface By</div><div class="v">${fmtDate(data.maxSurface)}</div></div>
+        <div class="stat"><div class="k">Pre-Deco Hold Start</div><div class="v">${fmtDate(data.holdStart)}</div></div>
+        <div class="stat"><div class="k">Decompression Start</div><div class="v">${fmtDate(data.decoStart)}</div></div>
+        <div class="stat"><div class="k">Required Surface</div><div class="v">${fmtDate(data.reqSurface)}</div></div>
+        <div class="stat"><div class="k">Days / Hours in Sat</div><div class="v">${fmtSpan(data.blowdown?now-data.blowdown:NaN)}</div></div>
+        <div class="stat"><div class="k">Time Left Before Hold</div><div class="v">${fmtSpan(data.holdStart?data.holdStart-now:NaN)}</div></div>
+        <div class="stat"><div class="k">Time Left Before Surface</div><div class="v">${fmtSpan(data.reqSurface?data.reqSurface-now:NaN)}</div></div>
+    `;
+    return data;
+}
+
+function renderTimeline(results){
+    const validDates=[];
+    results.forEach(r=>[r.blowdown,r.holdStart,r.decoStart,r.reqSurface,r.maxSurface].forEach(d=>{if(d&&!isNaN(d))validDates.push(d);}));
+    const projectStart=parseInputDate(document.getElementById('projectStart').value);
+    const now=new Date();
+    if(projectStart)validDates.push(projectStart);
+    validDates.push(now);
+    if(!validDates.length){timelineEl.innerHTML='<div class="note">Add team dates to render the timeline.</div>';return;}
+    let min=new Date(Math.min(...validDates.map(d=>d.getTime())));
+    let max=new Date(Math.max(...validDates.map(d=>d.getTime())));
+    min=new Date(min.getFullYear(),min.getMonth(),min.getDate()-1,0,0,0,0);
+    max=new Date(max.getFullYear(),max.getMonth(),max.getDate()+2,0,0,0,0);
+    const totalMs=max-min,totalDays=Math.max(1,Math.ceil(totalMs/MS_DAY));
+    timelineEl.style.setProperty('--days',totalDays);
+    let dayLabels='';
+    for(let i=0;i<=totalDays;i++){
+        const d=new Date(min.getTime()+i*MS_DAY);
+        const left=(i/totalDays)*100;
+        dayLabels+=`<div class="day-label" style="left:${left}%">${d.toLocaleDateString([],{day:'2-digit'})}</div>`;
+    }
+    let monthLabels='';
+    const firstMonth=new Date(min.getFullYear(),min.getMonth(),1);
+    let cursor=new Date(firstMonth);
+    while(cursor<=max){
+        const monthStart=new Date(Math.max(cursor.getTime(),min.getTime()));
+        const left=((monthStart-min)/totalMs)*100;
+        monthLabels+=`<div class="month-label" style="left:${left}%">${cursor.toLocaleDateString([],{month:'short',year:'numeric'})}</div>`;
+        cursor=new Date(cursor.getFullYear(),cursor.getMonth()+1,1);
+    }
+    let rows=`<div class="scale"><div class="t-label"><strong>Project</strong>${document.getElementById('projectName').value||'—'}<br><span class="small">Scroll horizontally for full timeline</span></div><div class="scale-days">${monthLabels}${dayLabels}</div></div>`;
+    const todayLeft=clamp(((now-min)/totalMs)*100,0,100);
+    results.forEach(r=>{
+        const pieces=[];
+        function seg(start,end,cls,text){
+            if(!start||!end||end<=start)return;
+            const left=clamp(((start-min)/totalMs)*100,0,100);
+            const width=clamp(((end-start)/totalMs)*100,0,100-left);
+            if(width<=0)return;
+            pieces.push(`<div class="seg ${cls}" style="left:${left}%;width:${width}%">${text}</div>`);
+        }
+        seg(r.blowdown,r.holdStart,'sat','Sat');
+        seg(r.holdStart,r.decoStart,'hold','Hold');
+        seg(r.decoStart,r.reqSurface,'deco','Deco');
+        seg(r.reqSurface,r.maxSurface,'done','Surface Window');
+        rows+=`<div class="t-row"><div class="t-label"><strong>${r.label}</strong><span class="status-pill ${r.status}">${r.statusText}</span></div><div class="t-bar-area"><div class="today-line" style="left:${todayLeft}%"></div><div class="today-tag" style="left:${todayLeft}%">Today</div>${pieces.join('')}</div></div>`;
+    });
+    timelineEl.innerHTML=rows;
+}
+
+function renderCompliance(results){
+    if(!results.length){complianceBody.innerHTML=`<tr><td colspan="9" style="font-size:12px;color:#5f6e7d">Add teams to populate compliance view.</td></tr>`;return;}
+    complianceBody.innerHTML=results.map(r=>`
+        <tr>
+            <td><strong>${r.label}</strong></td>
+            <td>${Number.isFinite(r.depth)?`${r.depth} msw`:'—'}</td>
+            <td>${fmtDate(r.blowdown)}</td>
+            <td>${fmtDate(r.holdStart)}</td>
+            <td>${fmtDate(r.decoStart)}</td>
+            <td>${fmtSpan(r.deco?r.deco.totalMinutes*60000:NaN)}</td>
+            <td>${fmtDate(r.reqSurface)}</td>
+            <td>${fmtDate(r.maxSurface)}</td>
+            <td><span class="status-pill ${r.status}">${r.statusText}</span></td>
+        </tr>
+    `).join('');
+}
+
+function updateAll(){
+    const cards=[...teamsEl.querySelectorAll('.team-card')];
+    const results=cards.map(calcTeam);
+    results.sort((a,b)=>(a.blowdown?.getTime()||0)-(b.blowdown?.getTime()||0));
+    renderTimeline(results);
+    renderCompliance(results);
+}
+
+function syncHeaderTitle(card){
+    const fallback=`Team ${[...teamsEl.querySelectorAll('.team-card')].indexOf(card)+1}`;
+    card.querySelector('.team-title').textContent=card.querySelector('.team-label').value||fallback;
+}
+
+function wireTeam(card){
+    card.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{syncHeaderTitle(card);updateAll();}));
+    card.querySelector('.remove-team').addEventListener('click',()=>{if(teamsEl.children.length>1)card.remove();renumberVisibleTeamsIfBlank();updateAll();});
+    card.querySelector('.duplicate-team').addEventListener('click',()=>{const clone=card.cloneNode(true);teamsEl.appendChild(clone);wireTeam(clone);renumberVisibleTeamsIfBlank();updateAll();});
+    syncHeaderTitle(card);
+}
+
+function addTeam(data={}){
+    const node=tpl.content.firstElementChild.cloneNode(true);
+    teamsEl.appendChild(node);
+    if(data.label)node.querySelector('.team-label').value=data.label;
+    if(data.name1)node.querySelector('.name1').value=data.name1;
+    if(data.name2)node.querySelector('.name2').value=data.name2;
+    if(data.name3)node.querySelector('.name3').value=data.name3;
+    if(data.depth!=null)node.querySelector('.storage-depth').value=data.depth;
+    if(data.blowdown)node.querySelector('.blowdown').value=toLocalInputValue(data.blowdown);
+    if(data.surface)node.querySelector('.required-surface').value=toLocalInputValue(data.surface);
+    wireTeam(node);
+    syncHeaderTitle(node);
+    updateAll();
+}
+
+function clearTeams(){teamsEl.innerHTML='';}
+
+function renumberVisibleTeamsIfBlank(){
+    [...teamsEl.querySelectorAll('.team-card')].forEach((card,i)=>{
+        const current=card.querySelector('.team-label').value.trim();
+        if(!current||/^Team \d+$/i.test(current)){card.querySelector('.team-label').value=`Team ${i+1}`;}
+        syncHeaderTitle(card);
+    });
+}
+
+function syncInitialTeamCount(){
+    const wanted=Number(document.getElementById('initialWaveCount').value||0);
+    if(!wanted||wanted<1)return;
+    const current=teamsEl.children.length;
+    if(current<wanted){for(let i=current+1;i<=wanted;i++)addTeam({label:`Team ${i}`});}
+    else if(current>wanted){const cards=[...teamsEl.querySelectorAll('.team-card')];for(let i=current-1;i>=wanted;i--)cards[i].remove();}
+    renumberVisibleTeamsIfBlank();
+    updateAll();
+}
+
+function projectEndDate(){
+    const start=parseInputDate(document.getElementById('projectStart').value);
+    const days=Number(document.getElementById('projectDurationDays').value||0);
+    if(!start||!days||days<=0)return null;
+    return new Date(start.getTime()+days*MS_DAY);
+}
+
+function generateTeamsForProject(){
+    const end=projectEndDate();
+    if(!end){alert('Enter Project Start and Project Duration Days first.');return;}
+    const initialWaveCount=Number(document.getElementById('initialWaveCount').value||0);
+    const seedCardsAll=[...teamsEl.querySelectorAll('.team-card')];
+    if(!seedCardsAll.length){alert('Add at least one base team first.');return;}
+    if(!initialWaveCount||initialWaveCount<1){alert('Enter Initial Teams Blown In Together first.');return;}
+    if(seedCardsAll.length<initialWaveCount){alert('Use Set Initial Team Count or add enough starting teams first.');return;}
+    const seedCards=seedCardsAll.slice(0,initialWaveCount);
+    const seeds=seedCards.map((card,idx)=>{
+        const d=calcCardData(card);
+        return{slot:idx+1,label:d.label||`Team ${idx+1}`,depth:d.depth,name1:card.querySelector('.name1').value,name2:card.querySelector('.name2').value,name3:card.querySelector('.name3').value,blowdown:d.blowdown,reqSurface:d.reqSurface,holdStart:d.holdStart};
+    }).filter(s=>s.blowdown&&s.reqSurface&&s.holdStart);
+    if(!seeds.length){alert('Each starting team needs Blowdown and Required Surface values before generation.');return;}
+    while(teamsEl.children.length>initialWaveCount){teamsEl.lastElementChild.remove();}
+    const existingCount=seedCards.length;
+    let generated=0;
+    const newTeams=[];
+    seeds.forEach((seed,seedIndex)=>{
+        const cycleMs=seed.reqSurface-seed.blowdown;
+        if(cycleMs<=0)return;
+        let lastSurface=new Date(seed.reqSurface);
+        let lastHoldStart=new Date(seed.holdStart);
+        let wave=1;
+        while(lastSurface<end){
+            const newBlowdown=new Date(lastHoldStart);
+            const newSurface=new Date(newBlowdown.getTime()+cycleMs);
+            newTeams.push({slotIndex:seedIndex,wave,depth:seed.depth,name1:seed.name1,name2:seed.name2,name3:seed.name3,blowdown:newBlowdown,surface:newSurface});
+            const nextDeco=buildDecoProfile(seed.depth);
+            const nextDecoStart=new Date(newSurface.getTime()-nextDeco.totalMinutes*60000);
+            lastHoldStart=new Date(nextDecoStart.getTime()-8*MS_HOUR);
+            lastSurface=newSurface;
+            wave++;
+            generated++;
+        }
+    });
+    newTeams.sort((a,b)=>{if(a.wave!==b.wave)return a.wave-b.wave;if((a.blowdown-b.blowdown)!==0)return a.blowdown-b.blowdown;return a.slotIndex-b.slotIndex;});
+    newTeams.forEach((t,idx)=>{t.label=`Team ${existingCount+idx+1}`;addTeam(t);});
+    updateAll();
+    if(!generated)alert('Current starting teams already cover the project duration.');
+}
+
+function getAllTeamResults(){
+    const cards=[...teamsEl.querySelectorAll('.team-card')];
+    return cards.map(calcCardData).sort((a,b)=>(a.blowdown?.getTime()||0)-(b.blowdown?.getTime()||0));
+}
+
+function escapeHtml(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function xmlEscape(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');}
+
+function collectTimelineRange(results){
+    const validDates=[];
+    results.forEach(r=>[r.blowdown,r.holdStart,r.decoStart,r.reqSurface,r.maxSurface].forEach(d=>{if(d&&!isNaN(d))validDates.push(d);}));
+    const projectStart=parseInputDate(document.getElementById('projectStart').value);
+    const now=new Date();
+    if(projectStart)validDates.push(projectStart);
+    validDates.push(now);
+    if(!validDates.length)return null;
+    let min=new Date(Math.min(...validDates.map(d=>d.getTime())));
+    let max=new Date(Math.max(...validDates.map(d=>d.getTime())));
+    min=new Date(min.getFullYear(),min.getMonth(),min.getDate()-1,0,0,0,0);
+    max=new Date(max.getFullYear(),max.getMonth(),max.getDate()+2,0,0,0,0);
+    return{min,max};
+}
+
+function buildTimelineRows(results){
+    const range=collectTimelineRange(results);
+    if(!range)return[['Team','Status']];
+    const rows=[],dates=[];
+    for(let d=new Date(range.min);d<=range.max;d=new Date(d.getTime()+MS_DAY))dates.push(new Date(d));
+    rows.push(['Team','Status',...dates.map(d=>d.toLocaleDateString([],{day:'2-digit',month:'short',year:'numeric'}))]);
+    results.forEach(r=>{
+        const row=[r.label,r.statusText];
+        dates.forEach(d=>{
+            const dayStart=d.getTime(),dayEnd=dayStart+MS_DAY;
+            let state='';
+            if(r.blowdown&&r.holdStart&&dayEnd>r.blowdown.getTime()&&dayStart<r.holdStart.getTime())state='Sat';
+            if(r.holdStart&&r.decoStart&&dayEnd>r.holdStart.getTime()&&dayStart<r.decoStart.getTime())state=state?state+'/Hold':'Hold';
+            if(r.decoStart&&r.reqSurface&&dayEnd>r.decoStart.getTime()&&dayStart<r.reqSurface.getTime())state=state?state+'/Deco':'Deco';
+            if(r.reqSurface&&r.maxSurface&&dayEnd>r.reqSurface.getTime()&&dayStart<r.maxSurface.getTime())state=state?state+'/Surfaced':'Surfaced';
+            row.push(state);
+        });
+        rows.push(row);
+    });
+    return rows;
+}
+
+function detectCellStyle(sheetName,value,rowIndex,colIndex){
+    if(rowIndex===0)return'Header';
+    if(sheetName==='Timeline'&&colIndex>=2){
+        if(value==='Sat')return'Sat'; if(value==='Hold')return'Hold'; if(value==='Deco')return'Deco'; if(value==='Surfaced')return'Surfaced';
+        if(value.includes('/'))return'WrapCenter'; return'Center';
+    }
+    if(sheetName==='Project'&&colIndex===0)return'Label';
+    return'Normal';
+}
+
+function sheetXml(name,rows,colWidths){
+    const colXml=(colWidths||[]).map(w=>`<Column ss:Width="${w}"/>`).join('');
+    const rowXml=rows.map((row,rIdx)=>{
+        const cells=row.map((cell,cIdx)=>{
+            const style=detectCellStyle(name,String(cell??''),rIdx,cIdx);
+            return `<Cell ss:StyleID="${style}"><Data ss:Type="String">${xmlEscape(cell??'')}</Data></Cell>`;
+        }).join('');
+        return `<Row>${cells}</Row>`;
+    }).join('');
+    return `<Worksheet ss:Name="${xmlEscape(name)}"><Table>${colXml}${rowXml}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><Selected/><FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane><ActivePane>2</ActivePane><DisplayGridlines/></WorksheetOptions></Worksheet>`;
+}
+
+function buildExcelWorkbookXml(){
+    const results=getAllTeamResults();
+    const teamCards=[...teamsEl.querySelectorAll('.team-card')];
+    const projectRows=[
+        ['Project Name',document.getElementById('projectName').value],
+        ['Project Number',document.getElementById('projectNumber').value],
+        ['Vessel',document.getElementById('vesselName').value],
+        ['Project Start',document.getElementById('projectStart').value],
+        ['Project Duration (days)',document.getElementById('projectDurationDays').value],
+        ['Amber Warning Threshold (hours)',document.getElementById('amberHours').value],
+        ['Max Sat Duration (days)',document.getElementById('maxSatDays').value],
+        ['Initial Teams Blown In Together',document.getElementById('initialWaveCount').value]
+    ];
+    const complianceRows=[['Team','Storage Depth','Blowdown','Pre-Deco Hold Start','Deco Start','Actual Deco Time','Required Surface','Max Surface By','Status']];
+    results.forEach(r=>{complianceRows.push([r.label,Number.isFinite(r.depth)?`${r.depth} msw`:'—',fmtDate(r.blowdown),fmtDate(r.holdStart),fmtDate(r.decoStart),fmtSpan(r.deco?r.deco.totalMinutes*60000:NaN),fmtDate(r.reqSurface),fmtDate(r.maxSurface),r.statusText]);});
+    const teamRows=[['Team','Bellman','Diver 1','Diver 2','Storage Depth','Blowdown','Required Surface','Status']];
+    teamCards.forEach((card,i)=>{const r=calcCardData(card);teamRows.push([card.querySelector('.team-label').value||`Team ${i+1}`,card.querySelector('.name1').value,card.querySelector('.name2').value,card.querySelector('.name3').value,card.querySelector('.storage-depth').value,card.querySelector('.blowdown').value,card.querySelector('.required-surface').value,r.statusText]);});
+    const timelineRows=buildTimelineRows(results);
+    const timelineWidths=[100,110,...new Array(Math.max(0,(timelineRows[0]?.length||2)-2)).fill(55)];
+    return `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40"><DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>N-Sea SAT Planner</Author><Created>${new Date().toISOString()}</Created></DocumentProperties><ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel"><ProtectStructure>False</ProtectStructure><ProtectWindows>False</ProtectWindows></ExcelWorkbook><Styles><Style ss:ID="Normal"><Alignment ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#DBE8F6" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Label"><Font ss:Bold="1"/><Interior ss:Color="#F6F9FC" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Center"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="WrapCenter"><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Sat"><Interior ss:Color="#DBE8F6" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Hold"><Interior ss:Color="#FFE699" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Deco"><Interior ss:Color="#C6E0B4" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style><Style ss:ID="Surfaced"><Interior ss:Color="#D9D9D9" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style></Styles>${sheetXml('Project',projectRows,[180,220])}${sheetXml('Compliance',complianceRows,[95,95,130,145,130,110,130,130,90])}${sheetXml('Teams',teamRows,[90,120,120,120,95,145,145,95])}${sheetXml('Timeline',timelineRows,timelineWidths)}</Workbook>`;
+}
+
+function exportToExcel(){
+    const content=buildExcelWorkbookXml();
+    const blob=new Blob([content],{type:'application/vnd.ms-excel'});
+    const a=document.createElement('a');
+    const project=(document.getElementById('projectName').value||'sat_planner').replace(/[^\w\-]+/g,'_');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${project}_planner_export.xls`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+}
+
+function prepareEmail(){
+    const results=getAllTeamResults();
+    const project=document.getElementById('projectName').value||'Saturation Planner';
+    const vessel=document.getElementById('vesselName').value||'';
+    const lines=[`Project: ${project}`,vessel?`Vessel: ${vessel}`:'','','Compliance summary:'].filter(Boolean);
+    results.forEach(r=>{lines.push(`${r.label} | Depth: ${Number.isFinite(r.depth)?r.depth+' msw':'—'} | Hold: ${fmtDate(r.holdStart)} | Deco: ${fmtDate(r.decoStart)} | Deco Time: ${fmtSpan(r.deco?r.deco.totalMinutes*60000:NaN)} | Surface: ${fmtDate(r.reqSurface)} | Status: ${r.statusText}`);});
+    lines.push('','Attach the exported Excel or PDF manually.');
+    const subject=encodeURIComponent(`${project} - Saturation Planning Summary`);
+    const body=encodeURIComponent(lines.join('\n'));
+    window.location.href=`mailto:?subject=${subject}&body=${body}`;
+}
+
+function printLandscapePdf(){
+    const results=getAllTeamResults();
+    const teamCards=[...teamsEl.querySelectorAll('.team-card')];
+    const projectRows=[
+        ['Project Name',document.getElementById('projectName').value],
+        ['Project Number',document.getElementById('projectNumber').value],
+        ['Vessel',document.getElementById('vesselName').value],
+        ['Project Start',document.getElementById('projectStart').value],
+        ['Project Duration (days)',document.getElementById('projectDurationDays').value],
+        ['Amber Warning Threshold (hours)',document.getElementById('amberHours').value],
+        ['Max Sat Duration (days)',document.getElementById('maxSatDays').value],
+        ['Initial Teams Blown In Together',document.getElementById('initialWaveCount').value]
+    ];
+    const projectTable=`<table class="print-table project-table"><tr><th colspan="4">Project Setup</th></tr>${(()=>{const rows=[];for(let i=0;i<projectRows.length;i+=2){const left=projectRows[i]||['',''];const right=projectRows[i+1]||['',''];rows.push(`<tr><td class="label">${escapeHtml(left[0])}</td><td class="value">${escapeHtml(left[1])}</td><td class="label">${escapeHtml(right[0])}</td><td class="value">${escapeHtml(right[1])}</td></tr>`);}return rows.join('');})()}</table>`;
+    const complianceTable=`<table class="print-table"><tr><th>Team</th><th>Storage Depth</th><th>Blowdown</th><th>Pre-Deco Hold Start</th><th>Deco Start</th><th>Actual Deco Time</th><th>Required Surface</th><th>Max Surface By</th><th>Status</th></tr>${results.map(r=>`<tr><td>${escapeHtml(r.label)}</td><td>${escapeHtml(Number.isFinite(r.depth)?`${r.depth} msw`:'—')}</td><td>${escapeHtml(fmtDate(r.blowdown))}</td><td>${escapeHtml(fmtDate(r.holdStart))}</td><td>${escapeHtml(fmtDate(r.decoStart))}</td><td>${escapeHtml(fmtSpan(r.deco?r.deco.totalMinutes*60000:NaN))}</td><td>${escapeHtml(fmtDate(r.reqSurface))}</td><td>${escapeHtml(fmtDate(r.maxSurface))}</td><td>${escapeHtml(r.statusText)}</td></tr>`).join('')}</table>`;
+    const teamBlocks=teamCards.map((card,i)=>{const r=calcCardData(card);return`<div class="team-block"><h3>${escapeHtml(card.querySelector('.team-label').value||`Team ${i+1}`)}</h3><table class="print-table compact"><tr><th>Bellman</th><th>Diver 1</th><th>Diver 2</th><th>Storage Depth</th><th>Blowdown</th><th>Required Surface</th></tr><tr><td>${escapeHtml(card.querySelector('.name1').value)}</td><td>${escapeHtml(card.querySelector('.name2').value)}</td><td>${escapeHtml(card.querySelector('.name3').value)}</td><td>${escapeHtml(card.querySelector('.storage-depth').value)} msw</td><td>${escapeHtml(fmtDate(r.blowdown))}</td><td>${escapeHtml(fmtDate(r.reqSurface))}</td></tr></table><table class="print-table compact"><tr><th>Status</th><th>Max Surface By</th><th>Pre-Deco Hold Start</th><th>Deco Start</th></tr><tr><td>${escapeHtml(r.statusText)}</td><td>${escapeHtml(fmtDate(r.maxSurface))}</td><td>${escapeHtml(fmtDate(r.holdStart))}</td><td>${escapeHtml(fmtDate(r.decoStart))}</td></tr></table></div>`;}).join('');
+    const timelineRows=buildTimelineRows(results);
+    const timelineTable=timelineRows.length?`<table class="print-table timeline-table">${timelineRows.map((row,idx)=>`<tr>${row.map(cell=>idx===0?`<th>${escapeHtml(cell)}</th>`:`<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</table>`:'<p>No timeline data available.</p>';
+    const printHtml=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAT Operations Planner Print Report</title><style>@page{size:A4 landscape;margin:10mm}body{font-family:Arial,sans-serif;font-size:11px;color:#1a1a1a}h1{font-size:16px;margin-bottom:12px;color:#014782}h2{font-size:13px;margin:16px 0 8px;color:#014782;border-bottom:2px solid #FFEE02;padding-bottom:4px}h3{font-size:12px;margin:12px 0 6px}.section{margin-bottom:20px}.print-table{width:100%;border-collapse:collapse;margin-bottom:8px}.print-table th,.print-table td{padding:5px 7px;border:1px solid #c7d3df;text-align:left;font-size:10px}.print-table th{background:#f0f2f5;font-weight:700}.print-table.project-table .label{background:#e3f0fb;font-weight:700;width:20%}.print-table.project-table .value{width:30%}.team-block{margin-bottom:12px;padding:8px;border:1px solid #c7d3df;border-radius:4px}.page-break{page-break-before:always}
+.home-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    background: #FFEE02;
+    color: #014782;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 9999;
+}
+.home-btn:hover {
+    background: #e6d800;
+}
+
+</style></head><body><div class="section"><h1>Saturation Planning &amp; Decompression Tracker — N-Sea SAT Operations Planner</h1>${projectTable}</div><div class="section"><h2>Compliance View</h2>${complianceTable}</div><div class="section page-break"><h2>Team Detail</h2>${teamBlocks}</div><div class="section page-break"><h2>Timeline Grid</h2>${timelineTable}</div></body></html>`;
+    const w=window.open('','_blank');
+    if(!w){alert('Pop-up blocked. Allow pop-ups to print the PDF report.');return;}
+    w.document.open();w.document.write(printHtml);w.document.close();w.focus();
+    setTimeout(()=>{w.print();},300);
+}
+
+function loadDemo(){
+    clearTeams();
+    const start=new Date();
+    start.setHours(21,0,0,0);
+    start.setDate(start.getDate()-8);
+    document.getElementById('projectStart').value=toLocalInputValue(new Date(start.getTime()-3*MS_DAY));
+    document.getElementById('projectDurationDays').value=60;
+    document.getElementById('initialWaveCount').value=4;
+    document.getElementById('projectName').value='QWERTY';
+    document.getElementById('projectNumber').value='10101';
+    document.getElementById('vesselName').value='GRANT';
+    addTeam({label:'Team 1',name1:'A',name2:'B',name3:'C',depth:70,blowdown:start,surface:new Date(start.getTime()+28*MS_DAY)});
+    addTeam({label:'Team 2',name1:'D',name2:'E',name3:'F',depth:70,blowdown:start,surface:new Date(start.getTime()+27*MS_DAY)});
+    addTeam({label:'Team 3',name1:'G',name2:'H',name3:'I',depth:70,blowdown:start,surface:new Date(start.getTime()+26*MS_DAY)});
+    addTeam({label:'Team 4',name1:'J',name2:'K',name3:'L',depth:70,blowdown:start,surface:new Date(start.getTime()+25*MS_DAY)});
+    updateAll();
+}
+
+document.getElementById('addTeamBtn').addEventListener('click',()=>addTeam({label:`Team ${teamsEl.children.length+1}`}));
+document.getElementById('syncInitialTeamsBtn').addEventListener('click',syncInitialTeamCount);
+document.getElementById('generateTeamsBtn').addEventListener('click',generateTeamsForProject);
+document.getElementById('loadDemoBtn').addEventListener('click',loadDemo);
+document.getElementById('printPdfBtn').addEventListener('click',printLandscapePdf);
+document.getElementById('exportExcelBtn').addEventListener('click',exportToExcel);
+document.getElementById('emailBtn').addEventListener('click',prepareEmail);
+document.getElementById('resetBtn').addEventListener('click',()=>{
+    document.getElementById('projectName').value='';document.getElementById('projectNumber').value='';
+    document.getElementById('vesselName').value='';document.getElementById('projectStart').value='';
+    document.getElementById('projectDurationDays').value='60';document.getElementById('initialWaveCount').value='3';
+    clearTeams();addTeam({label:'Team 1'});
+});
+document.querySelectorAll('#projectName,#projectNumber,#vesselName,#projectStart,#projectDurationDays,#amberHours,#maxSatDays,#initialWaveCount')
+    .forEach(el=>el.addEventListener('input',updateAll));
+
+/* ════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════ */
+document.getElementById('projectStart').value=toLocalInputValue(new Date());
+loadDemo();
+buildShiftDiagram();
+
+/* ════════════════════════════════════════════════════
+   BELL ROTATION — SHIFT PATTERN DIAGRAMS
+════════════════════════════════════════════════════ */
+function hfmt(h){
+    const hh=Math.floor(((h%24)+24)%24), mm=Math.round((Math.abs(h)%1)*60);
+    return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+}
+
+function buildShiftDiagram(){
+
+    // Single bell arrays built below before render calls
+
+    // ── TWIN BELL: 4 teams, clock-locked 6-hr in-water slots ──────────
+    // In-water: 00–06 / 06–12 / 12–18 / 18–24  (fixed to clock)
+    // Shift = 3 hrs pre (prep/transit) + 6 hrs in-water + 3 hrs post (recovery) = 12 hrs
+    // The 3-hr overlap either side is where adjacent teams are simultaneously
+    // present: one finishing post-dive, one in pre-dive prep → wet handshake window
+    // Bell A (orange) = Teams 1 & 3  |  Bell B (blue) = Teams 2 & 4
+    const twin = [
+        { label:'Team 1', shiftStart:21, shiftDur:12, inStart:0,  inDur:6, ch:'Chamber 1', bell:'Bell A', cShift:'#e8892a', cIn:'#ffe07a', cText:'#7b4000' },
+        { label:'Team 2', shiftStart:3,  shiftDur:12, inStart:6,  inDur:6, ch:'Chamber 2', bell:'Bell B', cShift:'#4f81bd', cIn:'#b8d4f0', cText:'#1a3a6c' },
+        { label:'Team 3', shiftStart:9,  shiftDur:12, inStart:12, inDur:6, ch:'Chamber 1', bell:'Bell A', cShift:'#e8892a', cIn:'#ffe07a', cText:'#7b4000' },
+        { label:'Team 4', shiftStart:15, shiftDur:12, inStart:18, inDur:6, ch:'Chamber 2', bell:'Bell B', cShift:'#4f81bd', cIn:'#b8d4f0', cText:'#1a3a6c' },
+    ];
+
+    // 3-team single bell: stagger 8hrs, 8hr runs, 3×8=24 clean
+    const s3team = [
+        { label:'Team 1', shiftStart:0,  shiftDur:12, runStart:0,  runDur:8, inStart:1,  inDur:6, ch:'Chamber 1', cShift:'#e8892a', cRun:'#f5b872', cIn:'#ffe07a', cText:'#7b4000' },
+        { label:'Team 2', shiftStart:8,  shiftDur:12, runStart:8,  runDur:8, inStart:9,  inDur:6, ch:'Chamber 2', cShift:'#4f81bd', cRun:'#8ab4d8', cIn:'#b8d4f0', cText:'#1a3a6c' },
+        { label:'Team 3', shiftStart:16, shiftDur:12, runStart:16, runDur:8, inStart:17, inDur:6, ch:'Chamber 3', cShift:'#6aa84f', cRun:'#9ec87e', cIn:'#c6e0b4', cText:'#1e5c10' },
+    ];
+
+    document.getElementById('shiftDiagram3Team').innerHTML = drawSingleBell(s3team, false);
+    document.getElementById('shiftDiagramTwin').innerHTML  = drawTwinBell(twin);
+}
+
+/* ── helper: draw a bar, handling midnight wrap ── */
+function barSVG(fill, op, x0, yb, hb, W, LW, hpx, dur){
+    const rem24 = 24 - x0;
+    if(dur <= rem24){
+        return `<rect x="${LW+x0*hpx}" y="${yb}" width="${dur*hpx}" height="${hb}" fill="${fill}" opacity="${op}" rx="3"/>`;
+    }
+    return `<rect x="${LW+x0*hpx}" y="${yb}" width="${rem24*hpx}" height="${hb}" fill="${fill}" opacity="${op}" rx="3"/>` +
+           `<rect x="${LW}" y="${yb}" width="${(dur-rem24)*hpx}" height="${hb}" fill="${fill}" opacity="${op}" rx="3"/>`;
+}
+
+/* ── SINGLE BELL DIAGRAM ── */
+function drawSingleBell(teams, showRatchet){
+    const W=920, LW=150, TW=W-LW, hpx=TW/24;
+    // Taller rows to fit D1 + D2 sub-rows
+    const rowH=88, rowGap=4, hdrH=54, ftrH=44;
+    const totalH = hdrH + teams.length*(rowH+rowGap) + ftrH;
+    let s = `<svg viewBox="0 0 ${W} ${totalH}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif">`;
+
+    s += svgHeader(W, LW, hdrH);
+    s += svgHourGrid(W, LW, hdrH, totalH-ftrH, hpx, 2);
+
+    teams.forEach((t,i)=>{
+        const y = hdrH + i*(rowH+rowGap);
+        const shiftY=y+5, shiftH=rowH-10;
+        const runY=y+14, runH=rowH-28;
+        // D1 and D2 sub-rows within the bell run area
+        const d1Y=y+18, d1H=28;
+        const d2Y=y+50, d2H=28;
+        const x0=t.shiftStart%24;
+        const r0=t.runStart%24;
+        const i1=t.inStart%24;   // D1 lockout start (1 hr after bell arrives)
+        const i2=(t.inStart+1)%24; // D2 lockout start (1 hr after D1)
+        const soloColor='rgba(139,0,0,0.12)';
+
+        // Row background
+        s += `<rect x="0" y="${y}" width="${LW}" height="${rowH}" fill="${i%2===0?'#f4f6f8':'#eceef0'}"/>`;
+        s += `<rect x="${LW}" y="${y}" width="${TW}" height="${rowH}" fill="${i%2===0?'#fff':'#f8f9fb'}"/>`;
+        s += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="#e0e4ea" stroke-width="0.6"/>`;
+
+        // Team label
+        s += `<text x="${LW-10}" y="${y+rowH/2-12}" text-anchor="end" fill="#1a1a1a" font-size="13" font-weight="700">${t.label}</text>`;
+        s += `<text x="${LW-10}" y="${y+rowH/2+3}" text-anchor="end" fill="#4a5568" font-size="9">${t.ch}</text>`;
+        s += `<text x="${LW-10}" y="${y+rowH/2+16}" text-anchor="end" fill="#8a9299" font-size="8">D1 / D2</text>`;
+
+        // 12-hr shift window (very light tint)
+        s += barSVG(t.cShift,'0.12',x0,shiftY,shiftH,W,LW,hpx,t.shiftDur);
+        // Shift label: top-right corner of shift window, right-aligned, tucked just inside
+        const slabelX = LW+Math.min((x0+t.shiftDur)*hpx - 3, TW - 3);
+        s += `<text x="${slabelX}" y="${shiftY+10}" text-anchor="end" fill="${t.cShift}" font-size="8" font-weight="700" opacity="0.85">On Shift ${hfmt(t.shiftStart)}–${hfmt(t.shiftStart+t.shiftDur)}</text>`;
+
+        // 8-hr bell run outline
+        s += barSVG(t.cRun,'0.3',r0,runY,runH,W,LW,hpx,t.runDur);
+
+        // ── D1 bar: inStart → inStart+6 (top sub-row) ──────────────────
+        s += barSVG(t.cIn,'1',i1,d1Y,d1H,W,LW,hpx,6);
+        const d1Mid = LW+(i1+3)*hpx;
+        s += `<text x="${LW+(i1+0.2)*hpx}" y="${d1Y-2}" fill="${t.cShift}" font-size="8" font-weight="700">D1</text>`;
+        s += `<text x="${d1Mid}" y="${d1Y+d1H/2+4}" text-anchor="middle" fill="${t.cText}" font-size="8.5" font-weight="700">${hfmt(t.inStart)}–${hfmt(t.inStart+6)}</text>`;
+
+        // ── D2 bar: inStart+1 → inStart+7 (bottom sub-row) ─────────────
+        s += barSVG(t.cIn,'0.7',i2,d2Y,d2H,W,LW,hpx,6);
+        const d2Mid = LW+(i2+3)*hpx;
+        s += `<text x="${LW+(i2+0.2)*hpx}" y="${d2Y-2}" fill="${t.cShift}" font-size="8" font-weight="700">D2</text>`;
+        s += `<text x="${d2Mid}" y="${d2Y+d2H/2+4}" text-anchor="middle" fill="${t.cText}" font-size="8.5" font-weight="700">${hfmt(t.inStart+1)}–${hfmt(t.inStart+7)}</text>`;
+
+        // ── Solo period shading: D1 alone (first 1 hr) ──────────────────
+        const soloW = 1*hpx;
+        s += `<rect x="${LW+i1*hpx}" y="${d1Y}" width="${soloW}" height="${d1H}" fill="${soloColor}" rx="2"/>`;
+        s += `<rect x="${LW+i1*hpx}" y="${d1Y}" width="${soloW}" height="${d1H}" fill="none" stroke="#8b0000" stroke-width="0.8" stroke-dasharray="3 2" rx="2"/>`;
+        const solo1X = LW+(i1+0.5)*hpx;
+        s += `<text x="${solo1X}" y="${d1Y+d1H/2-3}" text-anchor="middle" fill="#8b0000" font-size="7.5" font-weight="700">D1</text>`;
+        s += `<text x="${solo1X}" y="${d1Y+d1H/2+6}" text-anchor="middle" fill="#8b0000" font-size="7">solo</text>`;
+
+        // ── Solo period shading: D2 alone (last 1 hr, D2 bottom row) ────
+        const solo2X0 = (i1+6)%24; // = i2 + 5 = hour when D1 leaves
+        s += `<rect x="${LW+solo2X0*hpx}" y="${d2Y}" width="${soloW}" height="${d2H}" fill="${soloColor}" rx="2"/>`;
+        s += `<rect x="${LW+solo2X0*hpx}" y="${d2Y}" width="${soloW}" height="${d2H}" fill="none" stroke="#8b0000" stroke-width="0.8" stroke-dasharray="3 2" rx="2"/>`;
+        const solo2X = LW+(solo2X0+0.5)*hpx;
+        s += `<text x="${solo2X}" y="${d2Y+d2H/2-3}" text-anchor="middle" fill="#8b0000" font-size="7.5" font-weight="700">D2</text>`;
+        s += `<text x="${solo2X}" y="${d2Y+d2H/2+6}" text-anchor="middle" fill="#8b0000" font-size="7">solo</text>`;
+
+        // ── "Both in water" brace between the two bars ──────────────────
+        const bothX0 = LW+i2*hpx, bothX1 = LW+(i1+6)*hpx, bothMid = (bothX0+bothX1)/2;
+        const braceY = d1Y+d1H+1;
+        s += `<line x1="${bothX0}" y1="${braceY}" x2="${bothX1}" y2="${braceY}" stroke="#1a6e3a" stroke-width="1" opacity="0.6"/>`;
+        s += `<text x="${bothMid}" y="${braceY+9}" text-anchor="middle" fill="#1a6e3a" font-size="8" font-weight="700">Both in water — 5 hrs</text>`;
+
+        // ── 4hr buffer hatching (after bell run ends) ────────────────────
+        const bufX=LW+((r0+t.runDur)%24)*hpx, bufW=2*hpx; // 2hr transit buffer each side shown as 1 combined
+        for(let k=0;k<5;k++){
+            const dx=k*5;
+            s+=`<line x1="${bufX+dx}" y1="${y+14}" x2="${bufX+dx+4}" y2="${y+rowH-6}" stroke="#ffd080" stroke-width="1.5" opacity="0.5"/>`;
+        }
+        s+=`<rect x="${bufX}" y="${y+14}" width="${bufW}" height="${rowH-20}" fill="none" stroke="#e8a000" stroke-width="0.8" rx="2" stroke-dasharray="3 2"/>`;
+    });
+
+    // Footer legend
+    const ly = totalH-ftrH+8;
+    s += `<rect x="${LW}" y="${totalH-ftrH}" width="${TW}" height="${ftrH}" fill="#f0f2f5"/>`;
+    // Row 1
+    s += `<rect x="${LW+8}" y="${ly+2}" width="16" height="10" fill="#e8892a" opacity="0.12" rx="2" stroke="#e8892a" stroke-width="0.8"/>`;
+    s += `<text x="${LW+28}" y="${ly+11}" fill="#4a5568" font-size="9">12 hr shift slot</text>`;
+    s += `<rect x="${LW+155}" y="${ly+2}" width="16" height="10" fill="#f5b872" opacity="0.3" rx="2"/>`;
+    s += `<text x="${LW+175}" y="${ly+11}" fill="#4a5568" font-size="9">8 hr bell run</text>`;
+    s += `<rect x="${LW+280}" y="${ly+2}" width="16" height="10" fill="#ffe07a" rx="2"/>`;
+    s += `<text x="${LW+300}" y="${ly+11}" fill="#4a5568" font-size="9">D1 in water (6 hrs)</text>`;
+    s += `<rect x="${LW+430}" y="${ly+2}" width="16" height="10" fill="#ffe07a" opacity="0.7" rx="2"/>`;
+    s += `<text x="${LW+450}" y="${ly+11}" fill="#4a5568" font-size="9">D2 in water (6 hrs, +1 hr stagger)</text>`;
+    // Row 2
+    s += `<rect x="${LW+8}" y="${ly+20}" width="16" height="10" fill="rgba(139,0,0,0.12)" stroke="#8b0000" stroke-dasharray="3 2" stroke-width="0.8" rx="2"/>`;
+    s += `<text x="${LW+28}" y="${ly+29}" fill="#8b0000" font-size="9">Solo working period (1 hr each end — D1 first, D2 last)</text>`;
+    s += `<line x1="${LW+400}" y1="${ly+20}" x2="${LW+416}" y2="${ly+30}" stroke="#1a6e3a" stroke-width="1"/>`;
+    s += `<text x="${LW+420}" y="${ly+29}" fill="#1a6e3a" font-size="9">Both divers in water — 5 hrs productive overlap</text>`;
+
+    s += '</svg>';
+    return s;
+}
+
+/* ── TWIN BELL DIAGRAM ── */
+function drawTwinBell(teams){
+    const W=920, LW=150, TW=W-LW, hpx=TW/24;
+    const rowH=68, rowGap=4, hdrH=54, ftrH=32;
+    const totalH = hdrH + teams.length*(rowH+rowGap) + ftrH;
+    let s = `<svg viewBox="0 0 ${W} ${totalH}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif">`;
+
+    s += svgHeader(W, LW, hdrH);
+
+    // Fixed 6-hr in-water slot backgrounds
+    const slotColors = ['rgba(232,137,42,0.07)','rgba(79,129,189,0.07)','rgba(232,137,42,0.07)','rgba(79,129,189,0.07)'];
+    [0,6,12,18].forEach((h,i)=>{
+        s += `<rect x="${LW+h*hpx}" y="${hdrH}" width="${6*hpx}" height="${totalH-hdrH-ftrH}" fill="${slotColors[i]}"/>`;
+        s += `<text x="${LW+(h+3)*hpx}" y="${hdrH+12}" text-anchor="middle" fill="#8a9299" font-size="9" font-weight="700">${hfmt(h)}–${hfmt(h+6)}</text>`;
+    });
+
+    // 3-hr overlap zones either side of each slot boundary — both teams present
+    // Overlap at 03:00, 09:00, 15:00, 21:00 (3hrs before each WH point)
+    const overlapH = [21,3,9,15]; // 3hrs before 00,06,12,18 WH points
+    overlapH.forEach(h=>{
+        const x0=(h%24)*hpx;
+        s += `<rect x="${LW+x0}" y="${hdrH}" width="${3*hpx}" height="${totalH-hdrH-ftrH}" fill="rgba(26,110,58,0.08)"/>`;
+    });
+
+    s += svgHourGrid(W, LW, hdrH, totalH-ftrH, hpx, 2);
+
+    // WH markers at slot boundaries (the handover moment)
+    [0,6,12,18].forEach(h=>{
+        const x=LW+h*hpx;
+        s += `<line x1="${x}" y1="${hdrH+16}" x2="${x}" y2="${totalH-ftrH}" stroke="#1a6e3a" stroke-width="2" stroke-dasharray="5 3" opacity="0.8"/>`;
+        s += `<rect x="${x-18}" y="${hdrH+18}" width="36" height="14" rx="3" fill="#1a6e3a" opacity="0.9"/>`;
+        s += `<text x="${x}" y="${hdrH+29}" text-anchor="middle" fill="#fff" font-size="8" font-weight="700">WH ${hfmt(h)}</text>`;
+        // Overlap zone label
+        const overlapX = LW+((h-3+24)%24)*hpx;
+        s += `<text x="${overlapX+3*hpx/2}" y="${hdrH+46}" text-anchor="middle" fill="#1a6e3a" font-size="8">← 3hr overlap →</text>`;
+    });
+
+    teams.forEach((t,i)=>{
+        const y = hdrH + i*(rowH+rowGap);
+        const shiftY=y+6, shiftH=rowH-12;
+        const inY=y+16, inH=rowH-32;
+        const x0=t.shiftStart%24;
+
+        s += `<rect x="0" y="${y}" width="${LW}" height="${rowH}" fill="${i%2===0?'#f4f6f8':'#eceef0'}"/>`;
+        s += `<rect x="${LW}" y="${y}" width="${TW}" height="${rowH}" fill="${i%2===0?'#fff':'#f8f9fb'}"/>`;
+        s += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="#e0e4ea" stroke-width="0.6"/>`;
+        s += `<text x="${LW-10}" y="${y+rowH/2-8}" text-anchor="end" fill="#1a1a1a" font-size="13" font-weight="700">${t.label}</text>`;
+        s += `<text x="${LW-10}" y="${y+rowH/2+6}" text-anchor="end" fill="#4a5568" font-size="9">${t.bell}</text>`;
+        s += `<text x="${LW-10}" y="${y+rowH/2+18}" text-anchor="end" fill="#8a9299" font-size="8">${t.ch}</text>`;
+
+        // 12-hr shift window
+        s += barSVG(t.cShift,'0.15',x0,shiftY,shiftH,W,LW,hpx,t.shiftDur);
+        const slabelX2 = LW+Math.min((x0+t.shiftDur)*hpx - 3, TW - 3);
+        s += `<text x="${slabelX2}" y="${shiftY+10}" text-anchor="end" fill="${t.cShift}" font-size="8" font-weight="700" opacity="0.85">On Shift ${hfmt(t.shiftStart)}–${hfmt(t.shiftStart+t.shiftDur)}</text>`;
+
+        // Fixed 6-hr in-water (solid, locked to slot)
+        const iw0=t.inStart%24;
+        s += `<rect x="${LW+iw0*hpx}" y="${inY}" width="${t.inDur*hpx}" height="${inH}" fill="${t.cIn}" rx="3"/>`;
+        // Lock icon text
+        s += `<text x="${LW+(iw0+t.inDur/2)*hpx}" y="${inY+inH/2-2}" text-anchor="middle" fill="${t.cText}" font-size="9" font-weight="700">${hfmt(t.inStart)}–${hfmt(t.inStart+t.inDur)}</text>`;
+        s += `<text x="${LW+(iw0+t.inDur/2)*hpx}" y="${inY+inH/2+10}" text-anchor="middle" fill="${t.cText}" font-size="8.5">IN WATER  🔒 LOCKED</text>`;
+    });
+
+    // Footer legend
+    const ly = totalH-ftrH+7;
+    s += `<rect x="${LW}" y="${totalH-ftrH}" width="${TW}" height="${ftrH}" fill="#f0f2f5"/>`;
+    s += `<rect x="${LW+8}" y="${ly+3}" width="18" height="11" fill="#e8892a" opacity="0.15" rx="2" stroke="#e8892a" stroke-width="0.8"/>`;
+    s += `<text x="${LW+30}" y="${ly+12}" fill="#4a5568" font-size="9">Bell A 12 hr shift (Teams 1&amp;3)</text>`;
+    s += `<rect x="${LW+205}" y="${ly+3}" width="18" height="11" fill="#4f81bd" opacity="0.15" rx="2" stroke="#4f81bd" stroke-width="0.8"/>`;
+    s += `<text x="${LW+227}" y="${ly+12}" fill="#4a5568" font-size="9">Bell B 12 hr shift (Teams 2&amp;4)</text>`;
+    s += `<rect x="${LW+400}" y="${ly+3}" width="18" height="11" fill="#ffe07a" rx="2"/>`;
+    s += `<text x="${LW+422}" y="${ly+12}" fill="#4a5568" font-size="9">Bell A in water (6 hrs, locked)</text>`;
+    s += `<rect x="${LW+590}" y="${ly+3}" width="18" height="11" fill="#b8d4f0" rx="2"/>`;
+    s += `<text x="${LW+612}" y="${ly+12}" fill="#4a5568" font-size="9">Bell B in water (6 hrs, locked)</text>`;
+    s += `<line x1="${LW+760}" y1="${ly+3}" x2="${LW+760}" y2="${ly+14}" stroke="#1a6e3a" stroke-width="1.5" stroke-dasharray="4 2"/>`;
+    s += `<rect x="${LW+755}" y="${ly+3}" width="10" height="11" rx="2" fill="#1a6e3a" opacity="0.85"/>`;
+    s += `<text x="${LW+770}" y="${ly+12}" fill="#1a6e3a" font-size="9" font-weight="700">WH = Wet Handshake (clock-locked)</text>`;
+    s += '</svg>';
+    return s;
+}
+
+/* ── Shared header ── */
+function svgHeader(W, LW, hdrH){
+    let s='';
+    s += `<rect width="${W}" height="${hdrH}" fill="#014782"/>`;
+    s += `<rect width="${LW}" height="${hdrH}" fill="#013560"/>`;
+    s += `<text x="${LW/2}" y="${hdrH/2+4}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10" font-weight="700">TEAM / NAMES</text>`;
+    return s;
+}
+
+/* ── Shared hour grid ── */
+function svgHourGrid(W, LW, hdrH, bottomY, hpx, step){
+    let s='';
+    for(let h=0;h<=24;h+=step){
+        const x=LW+h*hpx;
+        s += `<line x1="${x}" y1="${hdrH-8}" x2="${x}" y2="${bottomY}" stroke="${h%6===0?'#b0b8c8':'#dde1e8'}" stroke-width="${h%6===0?1.2:0.5}"/>`;
+        if(h<24) s += `<text x="${x}" y="${hdrH-12}" text-anchor="middle" fill="#FFEE02" font-size="9" opacity="0.75">${String(h).padStart(2,'0')}:00</text>`;
+    }
+    return s;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SYNC FROM COMPLIANCE DATA
+══════════════════════════════════════════════════════════ */
+function syncFromDivePlanner(){
+    const statusEl = document.getElementById('syncStatus');
+    const results = getAllTeamResults();
+
+    const valid = results.filter(r => Number.isFinite(r.depth) && r.depth > 0 && r.deco && r.deco.totalMinutes > 0);
+
+    if(!valid.length){
+        statusEl.textContent = '⚠ No valid team data in Compliance — enter storage depth and surface dates in the Dive Planner first.';
+        statusEl.style.color = '#a05000';
+        return;
+    }
+
+    // Use deepest team — conservative planning case (longest Td)
+    const best = valid.reduce((a, b) => b.depth > a.depth ? b : a);
+    const tdHrs = (best.deco.totalMinutes / 60).toFixed(1);
+
+    document.getElementById('inp_depth').value = best.depth;
+    document.getElementById('inp_Td').value = tdHrs;
+    c();
+
+    statusEl.textContent = `✔ Synced from Compliance — ${best.depth} msw · Actual Deco Time ${tdHrs} hrs (${best.label})`;
+    statusEl.style.color = '#1a6e3a';
+}
+
+
+const DECISION_WEIGHTS = [3, 3, 3, 2, 2, 3]; // crit1–6
+
+function calcDecision() {
+    const names = ['crit1','crit2','crit3','crit4','crit5','crit6'];
+    let totalWeighted = 0;
+    let allScored = true;
+
+    names.forEach((name, i) => {
+        const sel = document.querySelector(`input[name="${name}"]:checked`);
+        const raw = sel ? parseInt(sel.value) : null;
+        const wt  = DECISION_WEIGHTS[i];
+        const wtd = raw !== null ? raw * wt : null;
+
+        const rawEl = document.getElementById(`s${i+1}_raw`);
+        const wtdEl = document.getElementById(`s${i+1}_wtd`);
+        if (rawEl) rawEl.textContent = raw !== null ? raw : '—';
+        if (wtdEl) {
+            wtdEl.textContent = wtd !== null ? wtd : '—';
+            wtdEl.style.color = wtd !== null ? (wtd >= wt*2.5 ? '#014782' : wtd >= wt*1.5 ? '#a05000' : '#1a6e3a') : '#aab0b8';
+        }
+
+        if (raw === null) allScored = false;
+        else totalWeighted += wtd;
+    });
+
+    const scoreEl = document.getElementById('totalScore');
+    const verdictEl = document.getElementById('decisionVerdict');
+
+    if (!allScored) {
+        scoreEl.textContent = '—';
+        scoreEl.style.color = '#aab0b8';
+        verdictEl.style.cssText = 'margin-top:14px;padding:14px 18px;border-radius:4px;background:#f0f2f5;border:1px solid #d8dde4;font-size:13px;color:#4a5568;text-align:center;';
+        verdictEl.textContent = 'Complete all six criteria above to generate a recommendation.';
+        return;
+    }
+
+    scoreEl.textContent = totalWeighted;
+
+    let bg, border, color, icon, text;
+    if (totalWeighted <= 20) {
+        bg='#e8f5e9'; border='#a5d6a7'; color='#1a6e3a';
+        icon='✔'; text=`Score ${totalWeighted} / 48 — Single Bell Appropriate. Schedule flexibility and budget constraints support a single bell configuration for this project.`;
+    } else if (totalWeighted <= 32) {
+        bg='#fff8e1'; border='#ffd080'; color='#7b4000';
+        icon='⚠'; text=`Score ${totalWeighted} / 48 — Borderline. Conduct a cost vs schedule analysis. The cost of potential lost time should be compared directly against the incremental cost of a second bell.`;
+    } else {
+        bg='#e3f0fb'; border='#90c4f0'; color='#014782';
+        icon='✔✔'; text=`Score ${totalWeighted} / 48 — Twin Bell Recommended. Project criticality, day rate exposure, or downtime risk justify the additional investment in a twin bell configuration.`;
+    }
+
+    scoreEl.style.color = color;
+    verdictEl.style.cssText = `margin-top:14px;padding:14px 18px;border-radius:4px;background:${bg};border:1px solid ${border};font-size:13px;color:${color};text-align:center;font-weight:700;`;
+    verdictEl.textContent = `${icon}  ${text}`;
+}
+</script>
+</body>
+</html>

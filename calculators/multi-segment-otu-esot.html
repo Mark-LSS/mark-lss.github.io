@@ -1,179 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diving Toolkit | Multi-Segment OTU / ESOT</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Sea | Accumulated ESOT</title>
 
-<link rel="stylesheet" href="../assets/css/site.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 30px 16px;
+        }
 
-body {
-    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial;
-    background:#f0f2f5;
-}
+        .page { width: 100%; max-width: 560px; }
 
-.page { max-width:560px; margin:auto; }
+        /* ── HEADER ── */
+        header {
+            background: #014782;
+            border-radius: 6px 6px 0 0;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
 
-.local-header {
-    background:#014782;
-    padding:18px;
-    display:flex;
-    gap:16px;
-}
+        .nsea-logo { flex-shrink: 0; }
+        .header-text { color: #FFFFFF; }
 
-.header-text h1 { color:#FFEE02; font-size:15px; }
-.header-text p { color:white; font-size:11px; }
+        .header-text h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+            color: #FFEE02;
+        }
 
-.notice {
-    background:#014782;
-    border-bottom:3px solid #FFEE02;
-    padding:10px;
-    color:white;
-    font-size:11px;
-}
+        .header-text p {
+            font-size: 11.5px;
+            color: rgba(255,255,255,0.80);
+            margin-top: 2px;
+            letter-spacing: 0.01em;
+        }
 
-.results-card {
-    background:#014782;
-    padding:15px;
-}
+        /* ── NOTICE BAND ── */
+        .notice {
+            background: #014782;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 3px solid #FFEE02;
+            padding: 9px 24px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 0.015em;
+        }
 
-.result-row {
-    display:flex;
-    justify-content:space-between;
-    padding:8px 0;
-}
+        .notice strong { color: #FFEE02; font-weight: 700; }
+        .notice p + p  { margin-top: 5px; }
 
-.result-value {
-    color:#FFEE02;
-    font-weight:700;
-}
+        /* ── RESULTS CARD — always visible at top ── */
+        .results-card {
+            background: #014782;
+            border-left: 1px solid #013560;
+            border-right: 1px solid #013560;
+            padding: 20px 24px;
+        }
 
-.card {
-    background:white;
-    padding:20px;
-    border:1px solid #d8dde4;
-}
+        .results-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #FFEE02;
+            margin-bottom: 14px;
+        }
 
-.seg-row {
-    display:grid;
-    grid-template-columns:1fr 1fr auto;
-    gap:10px;
-    margin-bottom:10px;
-}
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+        }
 
-.seg-row input { padding:8px; }
+        .result-row:last-child { border-bottom: none; }
 
-.btn-add {
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-}
+        .result-name {
+            font-size: 12px;
+            color: rgba(255,255,255,0.80);
+            font-weight: 500;
+        }
 
-.local-footer {
-    background:#e8ebef;
-    padding:10px;
-    border:1px solid #d8dde4;
-    border-top:none;
-}
+        .result-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FFEE02;
+            letter-spacing: -0.01em;
+        }
 
-@media(max-width:700px){
-.seg-row{grid-template-columns:1fr;}
-}
-</style>
+        .result-row.sub .result-value {
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: #FFFFFF;
+            border-left: 1px solid #d8dde4;
+            border-right: 1px solid #d8dde4;
+            padding: 24px;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #014782;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #FFEE02;
+            display: inline-block;
+        }
+
+        /* ── SEGMENT HEADER ── */
+        .seg-header {
+            display: grid;
+            grid-template-columns: 2fr 2fr 2fr auto;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .seg-header span {
+            font-size: 10px;
+            font-weight: 700;
+            color: #8a9299;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* ── SEGMENT ROW ── */
+        .seg-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 2fr auto;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .seg-row input {
+            padding: 9px 10px;
+            border: 1.5px solid #c8cdd5;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            background: #f8f9fb;
+            width: 100%;
+            transition: border-color 0.15s;
+        }
+
+        .seg-row input:focus { outline: none; border-color: #014782; background: #fff; }
+
+        .seg-label {
+            font-size: 11px;
+            color: #8a9299;
+            font-weight: 500;
+        }
+
+        .btn-remove {
+            padding: 9px 12px;
+            background: #e8ebef;
+            color: #8a9299;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .btn-remove:hover { background: #f5c0b0; color: #cc2200; }
+
+        /* ── ADD SEGMENT ── */
+        .btn-add {
+            width: 100%;
+            padding: 10px;
+            background: #f0f2f5;
+            color: #014782;
+            border: 1.5px dashed #c8cdd5;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .btn-add:hover { background: #e8f0fb; border-color: #014782; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #e8ebef;
+            border: 1px solid #d8dde4;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 10px 24px;
+        }
+
+        footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
+    </style>
 </head>
-
 <body>
-
-<header class="site-header">
-<div class="container header-inner">
-<div class="brand">
-<div class="brand-mark">∩</div>
-<div>
-<h1>Diving Toolkit</h1>
-<p class="tagline">Operational calculators and support tools</p>
-</div>
-</div>
-
-<nav class="top-nav">
-<a href="../index.html">Home</a>
-<a href="../index.html#calculators" class="active">Calculators</a>
-<a href="../index.html#emergency">Emergency</a>
-<a href="../documents/index.html">Documents</a>
-</nav>
-</div>
-</header>
-
-<main class="tool-page">
-<div class="container tool-shell">
-
-<div class="tool-topbar">
-<div class="tool-breadcrumbs">
-<a href="../index.html">Home</a> /
-<a href="../index.html#calculators">Calculators</a> /
-<span>Multi-Segment OTU / ESOT</span>
-</div>
-<a class="back-home" href="../index.html">← Back</a>
-</div>
-
 <div class="page">
 
-<header class="local-header">
-<div class="header-text">
-<h1>MULTI-SEGMENT TRACKER</h1>
-<p>Accumulated OTU & ESOT</p>
+    <header>
+        <div class="nsea-logo">
+            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
+                <rect width="50" height="58" rx="3" fill="#014782"/>
+                <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
+                      fill="none" stroke="#FFEE02" stroke-width="8.5"
+                      stroke-linecap="butt" stroke-linejoin="miter"/>
+            </svg>
+        </div>
+        <div class="header-text">
+            <h1>ACCUMULATED ESOT<br>MULTI-SEGMENT TRACKER</h1>
+            <p>Cumulative Oxygen Exposure Across Multiple Segments</p>
+        </div>
+    </header>
+
+    <div class="notice">
+        <p><strong>HOW TO USE:</strong>&nbsp; Calculate ESOT separately for each depth/time segment using the actual breathing gas, then sum all segments to obtain total dive ESOT.</p>
+    </div>
+
+    <!-- RESULTS — always visible, live updating -->
+    <div class="results-card">
+        <div class="results-label">ACCUMULATED TOTALS</div>
+        <div class="result-row">
+            <span class="result-name">Accumulated ESOT</span>
+            <span class="result-value" id="out_esot_acc">—</span>
+        </div>
+        <div class="result-row">
+            <span class="result-name">Accumulated OTU</span>
+            <span class="result-value" id="out_otu_acc">—</span>
+        </div>
+        <div class="result-row sub">
+            <span class="result-name">Total Exposure Time</span>
+            <span class="result-value" id="out_t_total">—</span>
+        </div>
+    </div>
+
+    <!-- SEGMENTS -->
+    <div class="card">
+        <span class="section-label">Exposure Segments</span>
+
+        <div class="seg-header">
+            <span>Time (min)</span>
+            <span>pO₂ (ATA)</span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div id="segContainer"></div>
+
+        <button class="btn-add" onclick="tracker.addSegment()">+ ADD SEGMENT</button>
+    </div>
+
+    <footer>
+        <span>N-Sea Group | Calculator Reference Rev. 1</span>
+    </footer>
+
 </div>
-</header>
-
-<div class="notice">
-Enter multiple exposure segments to calculate totals.
-</div>
-
-<div class="results-card">
-<div class="result-row">
-<span>ESOT</span>
-<span class="result-value" id="out_esot_acc">—</span>
-</div>
-
-<div class="result-row">
-<span>OTU</span>
-<span class="result-value" id="out_otu_acc">—</span>
-</div>
-
-<div class="result-row">
-<span>Total Time</span>
-<span class="result-value" id="out_t_total">—</span>
-</div>
-</div>
-
-<div class="card">
-
-<div id="segContainer"></div>
-
-<button class="btn-add" onclick="tracker.addSegment()">+ ADD SEGMENT</button>
-
-</div>
-
-<footer class="local-footer">
-<span>N-Sea Calculator</span>
-</footer>
-
-</div>
-</div>
-</main>
-
-<footer class="site-footer">
-<div class="container footer-inner">
-<span>Diving Toolkit</span>
-<span>Operational calculator</span>
-</div>
-</footer>
 
 <script>
-// KEEP YOUR ORIGINAL SCRIPT FROM YOUR FILE HERE
-</script>
+    const tracker = {
 
+        segCount: 0,
+
+        init() {
+            this.addSegment();
+        },
+
+        addSegment() {
+            this.segCount++;
+            const id  = this.segCount;
+            const div = document.createElement('div');
+            div.className = 'seg-row';
+            div.id = 'seg_' + id;
+            div.innerHTML = `
+                <input type="number" id="t_${id}"   placeholder="min"  min="0"    step="1"    value=""
+                       oninput="tracker.recalculate()">
+                <input type="number" id="po2_${id}" placeholder="ATA"  min="0.51" step="0.01" value=""
+                       oninput="tracker.recalculate()">
+                <span class="seg-label">Seg ${id}</span>
+                <button class="btn-remove" onclick="tracker.removeSegment(${id})" title="Remove">✕</button>
+            `;
+            document.getElementById('segContainer').appendChild(div);
+            this.recalculate();
+        },
+
+        removeSegment(id) {
+            const el = document.getElementById('seg_' + id);
+            if (el) el.remove();
+            this.recalculate();
+        },
+
+        recalculate() {
+            const container = document.getElementById('segContainer');
+            const rows = container.querySelectorAll('.seg-row');
+
+            let esot_acc = 0;
+            let otu_acc  = 0;
+            let t_total  = 0;
+            let hasValid = false;
+
+            rows.forEach(row => {
+                const id    = row.id.replace('seg_', '');
+                const t     = parseFloat(document.getElementById('t_'   + id).value);
+                const po2   = parseFloat(document.getElementById('po2_' + id).value);
+
+                // Only include fully populated valid rows
+                if (isNaN(t) || t <= 0 || isNaN(po2) || po2 <= 0.5) return;
+
+                // ESOT_n = t × pO₂ ^ 2.285
+                esot_acc += t * Math.pow(po2, 2.285);
+
+                // OTU_n = t × (2 × pO₂ − 1) ^ 0.833
+                otu_acc  += t * Math.pow((2 * po2 - 1), 0.833);
+
+                t_total  += t;
+                hasValid  = true;
+            });
+
+            if (hasValid) {
+                document.getElementById('out_esot_acc').textContent = esot_acc.toFixed(2);
+                document.getElementById('out_otu_acc').textContent  = otu_acc.toFixed(2);
+                document.getElementById('out_t_total').textContent  = t_total.toFixed(0) + ' min';
+            } else {
+                document.getElementById('out_esot_acc').textContent = '—';
+                document.getElementById('out_otu_acc').textContent  = '—';
+                document.getElementById('out_t_total').textContent  = '—';
+            }
+        }
+    };
+
+    window.addEventListener('load', () => tracker.init());
+</script>
 </body>
 </html>

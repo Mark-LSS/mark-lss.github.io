@@ -1,238 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diving Toolkit | EAD & Table Depth</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-Sea | EAD &amp; Table Selection</title>
 
-<link rel="stylesheet" href="../assets/css/site.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 30px 16px;
+        }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-    background: #f0f2f5;
-    color: #1a1a1a;
-}
+        .page { width: 100%; max-width: 560px; }
 
-.page { width: 100%; max-width: 560px; margin: auto; }
+        /* ── HEADER ── */
+        header {
+            background: #014782;
+            border-radius: 6px 6px 0 0;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
 
-.local-header {
-    background: #014782;
-    border-radius: 6px 6px 0 0;
-    padding: 18px 24px;
-    display: flex;
-    gap: 18px;
-    align-items: center;
-}
+        .nsea-logo { flex-shrink: 0; }
+        .header-text { color: #FFFFFF; }
 
-.nsea-logo { flex-shrink: 0; }
+        .header-text h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+            color: #FFEE02;
+        }
 
-.header-text h1 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #FFEE02;
-}
+        .header-text p {
+            font-size: 11.5px;
+            color: rgba(255,255,255,0.80);
+            margin-top: 2px;
+            letter-spacing: 0.01em;
+        }
 
-.header-text p {
-    font-size: 11px;
-    color: rgba(255,255,255,0.8);
-}
+        /* ── NOTICE BAND ── */
+        .notice {
+            background: #014782;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 3px solid #FFEE02;
+            padding: 9px 24px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 0.015em;
+        }
 
-.notice {
-    background: #014782;
-    border-bottom: 3px solid #FFEE02;
-    padding: 10px 24px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.8);
-}
+        .notice strong { color: #FFEE02; font-weight: 700; }
 
-.card {
-    background: white;
-    border: 1px solid #d8dde4;
-    border-top: none;
-    padding: 22px;
-}
+        /* ── CARD ── */
+        .card {
+            background: #FFFFFF;
+            border-left: 1px solid #d8dde4;
+            border-right: 1px solid #d8dde4;
+            padding: 24px;
+        }
 
-.section-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #014782;
-    border-bottom: 2px solid #FFEE02;
-    margin-bottom: 12px;
-    display: inline-block;
-}
+        .card + .card { border-top: 1px solid #e8ebef; }
 
-.grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-}
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #014782;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #FFEE02;
+            display: inline-block;
+        }
 
-.field input {
-    padding: 10px;
-    border: 1px solid #c8cdd5;
-    border-radius: 4px;
-    background: #f8f9fb;
-    width: 100%;
-}
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-.btn-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-}
+        /* ── FIELD ── */
+        .field { display: flex; flex-direction: column; gap: 5px; }
 
-.btn-calc {
-    flex: 1;
-    background: #014782;
-    color: #FFEE02;
-    border: none;
-    padding: 12px;
-    cursor: pointer;
-}
+        .field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+            letter-spacing: 0.01em;
+        }
 
-.btn-reset {
-    background: #e8ebef;
-    border: none;
-    padding: 12px;
-}
+        .field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
 
-.results-card {
-    display: none;
-    background: #014782;
-    padding: 18px;
-}
+        .field input, .field select {
+            padding: 9px 11px;
+            border: 1.5px solid #c8cdd5;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            background: #f8f9fb;
+            transition: border-color 0.15s, background 0.15s;
+            width: 100%;
+        }
 
-.results-card.visible { display: block; }
+        .field input:focus, .field select:focus {
+            outline: none;
+            border-color: #014782;
+            background: #fff;
+        }
 
-.result-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-}
+        .field input.err { border-color: #cc2200; background: #fff5f3; }
 
-.result-value {
-    color: #FFEE02;
-    font-weight: 700;
-}
+        /* ── BUTTONS ── */
+        .btn-row { display: flex; gap: 10px; margin-top: 22px; }
 
-.status-band { display:none; padding:10px; }
-.status-band.visible { display:block; }
+        .btn-calc {
+            flex: 1;
+            padding: 12px 20px;
+            background: #014782;
+            color: #FFEE02;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
 
-.local-footer {
-    background:#e8ebef;
-    padding:10px;
-    border:1px solid #d8dde4;
-    border-top:none;
-}
+        .btn-calc:hover { background: #013560; }
 
-@media(max-width:700px){
-.grid-2{grid-template-columns:1fr;}
-}
-</style>
+        .btn-reset {
+            padding: 12px 20px;
+            background: #e8ebef;
+            color: #4a5568;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-reset:hover { background: #d8dde4; }
+
+        /* ── RESULTS CARD ── */
+        .results-card {
+            background: #014782;
+            border-left: 1px solid #013560;
+            border-right: 1px solid #013560;
+            padding: 20px 24px;
+            display: none;
+        }
+
+        .results-card.visible { display: block; }
+
+        .results-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #FFEE02;
+            margin-bottom: 14px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+        }
+
+        .result-row:last-child { border-bottom: none; }
+
+        .result-name {
+            font-size: 12px;
+            color: rgba(255,255,255,0.80);
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FFEE02;
+            letter-spacing: -0.01em;
+        }
+
+        .result-row.sub .result-value {
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* Air table depth gets special highlight */
+        .result-row.highlight .result-value {
+            font-size: 28px;
+            color: #FFEE02;
+        }
+
+        /* ── STATUS BAND ── */
+        .status-band {
+            padding: 10px 24px;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            display: none;
+            border-left: 1px solid #013560;
+            border-right: 1px solid #013560;
+        }
+
+        .status-band.visible { display: block; }
+        .status-ok   { background: #1a6e3a; color: #FFFFFF; }
+        .status-warn { background: #a05000; color: #FFEE02; }
+        .status-crit { background: #8b0000; color: #FFFFFF; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #e8ebef;
+            border: 1px solid #d8dde4;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 10px 24px;
+        }
+
+        footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
+    </style>
 </head>
-
 <body>
-
-<header class="site-header">
-<div class="container header-inner">
-<div class="brand">
-<div class="brand-mark">∩</div>
-<div>
-<h1>Diving Toolkit</h1>
-<p class="tagline">Operational calculators and support tools</p>
-</div>
-</div>
-
-<nav class="top-nav">
-<a href="../index.html">Home</a>
-<a href="../index.html#calculators" class="active">Calculators</a>
-<a href="../index.html#emergency">Emergency</a>
-<a href="../documents/index.html">Documents</a>
-</nav>
-</div>
-</header>
-
-<main class="tool-page">
-<div class="container tool-shell">
-
-<div class="tool-topbar">
-<div class="tool-breadcrumbs">
-<a href="../index.html">Home</a> /
-<a href="../index.html#calculators">Calculators</a> /
-<span>EAD & Table Depth</span>
-</div>
-<a class="back-home" href="../index.html">← Back</a>
-</div>
-
 <div class="page">
 
-<header class="local-header">
-<div class="nsea-logo">
-<svg width="50" height="58">
-<rect width="50" height="58" fill="#014782"/>
-</svg>
-</div>
-<div class="header-text">
-<h1>NITROX EAD</h1>
-<p>Equivalent Air Depth & Table Selection</p>
-</div>
-</header>
+    <header>
+        <div class="nsea-logo">
+            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
+                <rect width="50" height="58" rx="3" fill="#014782"/>
+                <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
+                      fill="none" stroke="#FFEE02" stroke-width="8.5"
+                      stroke-linecap="butt" stroke-linejoin="miter"/>
+            </svg>
+        </div>
+        <div class="header-text">
+            <h1>NITROX EAD<br>TABLE SELECTION</h1>
+            <p>Equivalent Air Depth &amp; Air Table Depth Lookup</p>
+        </div>
+    </header>
 
-<div class="notice">
-Use approved tables for final verification.
-</div>
+    <div class="notice">
+        <p><strong>NOTE:</strong>&nbsp; Actual EAD and Safety EAD are calculated algorithmically. Safety EAD applies a conservative −1% O₂ tolerance to account for mix variability.</p>
+        <p style="margin-top:7px;"><strong style="color:#FFEE02;">Air Table Depth</strong> is not calculated or rounded — it is referenced directly from the DadCoDat &ldquo;Table Depth to Use&rdquo; as published in <strong>BMS-OP-0600-PR-001 Offshore Diving Tables</strong>. No algorithmic derivation is applied to this value.</p>
+    </div>
 
-<div class="card">
-<span class="section-label">Inputs</span>
+    <div class="card">
+        <span class="section-label">Dive Parameters</span>
+        <div class="grid-2">
+            <div class="field">
+                <label>Dive Depth <span class="unit">(msw)</span></label>
+                <input type="number" id="inp_depth" value="30" min="0" step="1">
+            </div>
+            <div class="field">
+                <label>Nitrox O₂ <span class="unit">(%)</span></label>
+                <input type="number" id="inp_o2" value="32" min="21" max="60" step="1">
+            </div>
+        </div>
 
-<div class="grid-2">
-<input id="inp_depth" placeholder="Depth">
-<input id="inp_o2" placeholder="O2 %">
-</div>
+        <div class="btn-row">
+            <button class="btn-calc" onclick="calc.run()">CALCULATE</button>
+            <button class="btn-reset" onclick="calc.reset()">RESET</button>
+        </div>
+    </div>
 
-<div class="btn-row">
-<button class="btn-calc" onclick="calc.run()">CALCULATE</button>
-<button class="btn-reset" onclick="calc.reset()">RESET</button>
-</div>
-</div>
+    <div class="results-card" id="resultsCard">
+        <div class="results-label">RESULTS</div>
 
-<div class="results-card" id="resultsCard">
-<div class="result-row">
-<span>EAD</span>
-<span class="result-value" id="out_actead">—</span>
-</div>
+        <div class="result-row highlight">
+            <span class="result-name">Air Table Depth</span>
+            <span class="result-value" id="out_airtable">—</span>
+        </div>
+        <div class="result-row">
+            <span class="result-name">Actual EAD</span>
+            <span class="result-value" id="out_actead">—</span>
+        </div>
+        <div class="result-row">
+            <span class="result-name">Safety EAD <span style="font-size:10px;font-weight:400;opacity:0.7">(O₂% − 1%)</span></span>
+            <span class="result-value" id="out_safeead">—</span>
+        </div>
+        <div class="result-row sub">
+            <span class="result-name">PO₂ at Depth</span>
+            <span class="result-value" id="out_po2">—</span>
+        </div>
+    </div>
 
-<div class="result-row">
-<span>Safety EAD</span>
-<span class="result-value" id="out_safeead">—</span>
-</div>
-</div>
+    <div class="status-band" id="statusBand">
+        <span id="statusText"></span>
+    </div>
 
-<div class="status-band" id="statusBand">
-<span id="statusText"></span>
-</div>
-
-<footer class="local-footer">
-<span>N-Sea Calculator</span>
-</footer>
+    <footer>
+        <span>N-Sea Group | Calculator Reference Rev. 1</span>
+    </footer>
 
 </div>
-</div>
-</main>
-
-<footer class="site-footer">
-<div class="container footer-inner">
-<span>Diving Toolkit</span>
-<span>Operational calculator</span>
-</div>
-</footer>
 
 <script>
-// KEEP YOUR ORIGINAL SCRIPT HERE
-</script>
+    // ── EMBEDDED LOOKUP TABLE ──
+    // Source: N-Sea EAD.csv — approved reference table
+    // Key: "depth_o2" → [actualEAD, safetyEAD, po2, airTableDepth]
+    const EAD_TABLE = {};
 
+    const RAW = [
+        [30,40,20,21,1.6,22],[29,40,20,21,1.6,21],[28,40,19,20,1.5,20],[27,40,18,19,1.5,20],
+        [26,40,17,18,1.4,19],[25,40,17,18,1.4,18],[24,40,16,17,1.4,18],[23,40,15,16,1.3,18],
+        [22,40,14,15,1.3,18],[21,40,14,14,1.2,15],[20,40,13,14,1.2,15],[19,40,12,13,1.2,15],
+        [18,40,11,12,1.1,12],[17,40,11,11,1.1,12],[16,40,10,11,1.0,12],[15,40,9,10,1.0,12],
+        [14,40,8,9,1.0,9],
+        [31,39,22,23,1.6,24],[30,39,21,22,1.6,22],[29,39,20,21,1.5,22],[28,39,19,20,1.5,21],
+        [27,39,19,20,1.5,20],[26,39,18,19,1.4,19],[25,39,17,18,1.4,18],[24,39,16,17,1.3,18],
+        [23,39,16,16,1.3,18],[22,39,15,16,1.3,18],[21,39,14,15,1.2,15],[20,39,13,14,1.2,15],
+        [19,39,12,13,1.1,15],[18,39,12,12,1.1,15],[17,39,11,12,1.1,12],[16,39,10,11,1.0,12],
+        [15,39,9,10,1.0,12],[14,39,9,9,0.9,12],[13,39,8,8,0.9,9],
+        [32,38,23,24,1.6,25],[31,38,22,23,1.6,24],[30,38,21,23,1.5,23],[29,38,21,22,1.5,22],
+        [28,38,20,21,1.5,21],[27,38,19,20,1.4,20],[26,38,18,19,1.4,20],[25,38,18,18,1.3,19],
+        [24,38,17,18,1.3,18],[23,38,16,17,1.3,18],[22,38,15,16,1.2,18],[21,38,14,15,1.2,18],
+        [20,38,14,14,1.1,15],[19,38,13,14,1.1,15],[18,38,12,13,1.1,15],[17,38,11,12,1.0,12],
+        [16,38,10,11,1.0,12],[15,38,10,10,1.0,12],[14,38,9,10,0.9,12],[13,38,8,9,0.9,9],
+        [33,37,24,25,1.6,26],[32,37,24,25,1.6,25],[31,37,23,24,1.5,24],[30,37,22,23,1.5,23],
+        [29,37,21,22,1.5,23],[28,37,20,21,1.4,22],[27,37,20,21,1.4,21],[26,37,19,20,1.3,20],
+        [25,37,18,19,1.3,19],[24,37,17,18,1.3,18],[23,37,16,17,1.2,18],[22,37,16,16,1.2,18],
+        [21,37,15,16,1.2,18],[20,37,14,15,1.1,15],[19,37,13,14,1.1,15],[18,37,12,13,1.0,15],
+        [17,37,12,12,1.0,15],[16,37,11,11,1.0,12],[15,37,10,11,0.9,12],[14,37,9,10,0.9,12],
+        [13,37,8,9,0.9,9],
+        [34,36,26,27,1.6,27],[33,36,25,26,1.6,27],[32,36,24,25,1.5,26],[31,36,23,24,1.5,25],
+        [30,36,22,24,1.5,24],[29,36,22,23,1.4,23],[28,36,21,22,1.4,22],[27,36,20,21,1.3,21],
+        [26,36,19,20,1.3,21],[25,36,18,19,1.3,20],[24,36,18,19,1.2,19],[23,36,17,18,1.2,18],
+        [22,36,16,17,1.2,18],[21,36,15,16,1.1,18],[20,36,14,15,1.1,18],[19,36,14,14,1.0,15],
+        [18,36,13,13,1.0,15],[17,36,12,13,1.0,15],[16,36,11,12,0.9,12],[15,36,10,11,0.9,12],
+        [14,36,9,10,0.9,12],[13,36,9,9,0.8,12],[12,36,8,8,0.8,9],
+        [35,35,27,28,1.6,29],[34,35,26,27,1.6,28],[33,35,25,27,1.5,27],[32,35,25,26,1.5,26],
+        [31,35,24,25,1.4,25],[30,35,23,24,1.4,24],[29,35,22,23,1.4,24],[28,35,21,22,1.3,23],
+        [27,35,20,21,1.3,22],[26,35,20,21,1.3,21],[25,35,19,20,1.2,20],[24,35,18,19,1.2,19],
+        [23,35,17,18,1.2,18],[22,35,16,17,1.1,18],[21,35,16,16,1.1,18],[20,35,15,16,1.1,18],
+        [19,35,14,15,1.0,15],[18,35,13,14,1.0,15],[17,35,12,13,1.0,15],[16,35,11,12,0.9,15],
+        [15,35,11,11,0.9,12],[14,35,10,10,0.9,12],[13,35,9,10,0.8,12],[12,35,8,9,0.8,9],
+        [36,34,28,30,1.6,30],[35,34,28,29,1.5,29],[34,34,27,28,1.5,28],[33,34,26,27,1.5,28],
+        [32,34,25,26,1.4,27],[31,34,24,25,1.4,26],[30,34,23,25,1.4,25],[29,34,23,24,1.3,24],
+        [28,34,22,23,1.3,23],[27,34,21,22,1.3,22],[26,34,20,21,1.2,21],[25,34,19,20,1.2,21],
+        [24,34,18,19,1.2,20],[23,34,18,19,1.1,19],[22,34,17,18,1.1,18],[21,34,16,17,1.1,18],
+        [20,34,15,16,1.0,18],[19,34,14,15,1.0,15],[18,34,13,14,1.0,15],[17,34,13,13,0.9,15],
+        [16,34,12,12,0.9,15],[15,34,11,12,0.9,12],[14,34,10,11,0.8,12],[13,34,9,10,0.8,12],
+        [12,34,8,9,0.8,9],
+        [38,33,31,32,1.6,33],[37,33,30,31,1.6,32],[36,33,29,30,1.5,31],[35,33,28,29,1.5,30],
+        [34,33,27,29,1.5,29],[33,33,27,28,1.4,28],[32,33,26,27,1.4,27],[31,33,25,26,1.4,26],
+        [30,33,24,25,1.3,25],[29,33,23,24,1.3,25],[28,33,22,23,1.3,24],[27,33,21,22,1.2,23],
+        [26,33,21,22,1.2,22],[25,33,20,21,1.2,21],[24,33,19,20,1.1,20],[23,33,18,19,1.1,19],
+        [22,33,17,18,1.1,18],[21,33,16,17,1.0,18],[20,33,15,16,1.0,18],[19,33,15,15,1.0,18],
+        [18,33,14,15,0.9,15],[17,33,13,14,0.9,15],[16,33,12,13,0.9,15],[15,33,11,12,0.8,12],
+        [14,33,10,11,0.8,12],[13,33,10,10,0.8,12],[12,33,9,9,0.7,12],[11,33,8,8,0.7,9],
+        [40,32,33,34,1.6,36],[39,32,32,34,1.6,36],[38,32,31,33,1.5,33],[37,32,31,32,1.5,32],
+        [36,32,30,31,1.5,31],[35,32,29,30,1.4,30],[34,32,28,29,1.4,29],[33,32,27,28,1.4,29],
+        [32,32,26,27,1.4,28],[31,32,25,26,1.3,27],[30,32,24,26,1.3,26],[29,32,24,25,1.3,25],
+        [28,32,23,24,1.2,24],[27,32,22,23,1.2,23],[26,32,21,22,1.2,22],[25,32,20,21,1.1,22],
+        [24,32,19,20,1.1,21],[23,32,18,19,1.1,20],[22,32,18,18,1.0,19],[21,32,17,18,1.0,18],
+        [20,32,16,17,1.0,18],[19,32,15,16,0.9,18],[18,32,14,15,0.9,15],[17,32,13,14,0.9,15],
+        [16,32,12,13,0.8,15],[15,32,12,12,0.8,15],[14,32,11,11,0.8,12],[13,32,10,10,0.7,12],
+        [12,32,9,10,0.7,12],[11,32,8,9,0.7,9],
+        [41,31,35,36,1.6,36],[40,31,34,35,1.6,36],[39,31,33,34,1.5,36],[38,31,32,33,1.5,36],
+        [37,31,31,32,1.5,33],[36,31,30,31,1.4,32],[35,31,29,31,1.4,31],[34,31,28,30,1.4,30],
+        [33,31,28,29,1.3,29],[32,31,27,28,1.3,28],[31,31,26,27,1.3,27],[30,31,25,26,1.3,26],
+        [29,31,24,25,1.2,26],[28,31,23,24,1.2,25],[27,31,22,23,1.2,24],[26,31,21,22,1.1,23],
+        [25,31,21,22,1.1,22],[24,31,20,21,1.1,21],[23,31,19,20,1.0,20],[22,31,18,19,1.0,19],
+        [21,31,17,18,1.0,18],[20,31,16,17,0.9,18],[19,31,15,16,0.9,18],[18,31,15,15,0.9,18],
+        [17,31,14,14,0.8,15],[16,31,13,13,0.8,15],[15,31,12,13,0.8,15],[14,31,11,12,0.8,12],
+        [13,31,10,11,0.7,12],[12,31,9,10,0.7,12],[11,31,8,9,0.7,9],
+        [43,30,37,38,1.6,39],[42,30,36,37,1.6,39],[41,30,35,37,1.5,39],[40,30,34,36,1.5,36],
+        [39,30,33,35,1.5,36],[38,30,33,34,1.5,36],[37,30,32,33,1.4,33],[36,30,31,32,1.4,32],
+        [35,30,30,31,1.4,32],[34,30,29,30,1.3,31],[33,30,28,29,1.3,30],[32,30,27,28,1.3,29],
+        [31,30,26,27,1.2,28],[30,30,25,27,1.2,27],[29,30,25,26,1.2,26],[28,30,24,25,1.2,25],
+        [27,30,23,24,1.1,24],[26,30,22,23,1.1,23],[25,30,21,22,1.1,22],[24,30,20,21,1.0,21],
+        [23,30,19,20,1.0,21],[22,30,18,19,1.0,20],[21,30,18,18,0.9,19],[20,30,17,17,0.9,18],
+        [19,30,16,17,0.9,18],[18,30,15,16,0.9,18],[17,30,14,15,0.8,15],[16,30,13,14,0.8,15],
+        [15,30,12,13,0.8,15],[14,30,11,12,0.7,12],[13,30,10,11,0.7,12],[12,30,10,10,0.7,12],
+        [11,30,9,9,0.6,12],[10,30,8,8,0.6,9]
+    ];
+
+    // Build lookup: key = "depth_o2"
+    RAW.forEach(r => {
+        EAD_TABLE[r[0] + '_' + r[1]] = {
+            actEAD:     r[2],
+            safeEAD:    r[3],
+            po2:        r[4],
+            airTable:   r[5]
+        };
+    });
+
+    const calc = {
+
+        DEFAULTS: { depth: 30, o2: 32 },
+
+        get(id)      { return parseInt(document.getElementById('inp_' + id).value); },
+        set(id, val) { document.getElementById('out_' + id).textContent = val; },
+
+        run() {
+            const depth = this.get('depth');
+            const o2    = this.get('o2');
+
+            const errors = [];
+            if (isNaN(depth) || depth < 0)               errors.push('depth');
+            if (isNaN(o2)    || o2 < 21 || o2 > 60)      errors.push('o2');
+
+            ['depth','o2'].forEach(f => {
+                document.getElementById('inp_' + f).classList.toggle('err', errors.includes(f));
+            });
+
+            if (errors.length > 0) {
+                alert('Input error — check highlighted fields.');
+                return;
+            }
+
+            const key  = depth + '_' + o2;
+            const row  = EAD_TABLE[key];
+
+            const band = document.getElementById('statusBand');
+            const txt  = document.getElementById('statusText');
+
+            if (!row) {
+                // Combination not in approved table — compute EAD values but flag air table
+                const pabs    = depth / 10 + 1;
+                const fn2act  = (100 - o2) / 100;
+                const actEAD  = Math.round(((depth + 10) * fn2act / 0.79) - 10);
+                const fn2safe = (100 - (o2 - 1)) / 100;
+                const safeEAD = Math.round(((depth + 10) * fn2safe / 0.79) - 10);
+                const po2     = (o2 / 100) * pabs;
+
+                this.set('actead',   actEAD + ' msw');
+                this.set('safeead',  safeEAD + ' msw');
+                this.set('po2',      po2.toFixed(2) + ' bar');
+                this.set('airtable', 'N/A');
+
+                band.className = 'status-band visible status-warn';
+                txt.textContent = '⚠  Depth / O₂% combination not in approved N-Sea EAD table. Air table depth cannot be confirmed. Verify with supervisor.';
+
+            } else {
+                this.set('actead',   row.actEAD  + ' msw');
+                this.set('safeead',  row.safeEAD + ' msw');
+                this.set('po2',      row.po2.toFixed(1) + ' bar');
+                this.set('airtable', row.airTable + ' msw');
+
+                band.className = 'status-band visible';
+
+                if (row.po2 > 1.50) {
+                    band.classList.add('status-crit');
+                    txt.textContent = '⛔  PO₂ ' + row.po2.toFixed(2) + ' bar — Exceeds 1.50 bar. Outside normal-use band.';
+                } else if (row.po2 > 1.40) {
+                    band.classList.add('status-warn');
+                    txt.textContent = '⚠  PO₂ ' + row.po2.toFixed(2) + ' bar — 1.41–1.50 bar amber band. Elevated exposure.';
+                } else {
+                    band.classList.add('status-ok');
+                    txt.textContent = '✔  PO₂ ' + row.po2.toFixed(2) + ' bar — Within normal-use band (≤ 1.40 bar).';
+                }
+            }
+
+            document.getElementById('resultsCard').classList.add('visible');
+        },
+
+        reset() {
+            document.getElementById('inp_depth').value = this.DEFAULTS.depth;
+            document.getElementById('inp_o2').value    = this.DEFAULTS.o2;
+            ['depth','o2'].forEach(f => {
+                document.getElementById('inp_' + f).classList.remove('err');
+            });
+            document.getElementById('resultsCard').classList.remove('visible');
+            document.getElementById('statusBand').className = 'status-band';
+        }
+    };
+</script>
 </body>
 </html>

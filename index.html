@@ -1,254 +1,494 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Diving Toolkit</title>
-<link href="assets/css/site.css" rel="stylesheet"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diving Toolkit</title>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <style>
+    .page-home-compact{padding:18px 0 28px}
+    .compact-hero{
+      background:linear-gradient(135deg,var(--navy-dark),var(--navy));
+      color:#fff;border-radius:18px;box-shadow:var(--shadow);
+      padding:20px 20px 18px;margin-bottom:18px
+    }
+    .compact-hero h2{margin:0 0 8px;font-size:22px;line-height:1.1}
+    .compact-hero p{margin:0;max-width:760px;color:rgba(255,255,255,.9);font-size:14px;line-height:1.45}
 
+    .section-heading{margin-bottom:10px}
+    .section-heading h2{margin:0 0 4px;font-size:20px;color:var(--navy-dark)}
+    .section-heading p{margin:0;color:var(--muted);font-size:13px}
+
+    .group-layout{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      align-items:start;
+    }
+
+    .group-card{
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(255,255,255,.65);
+      border-radius:16px;
+      box-shadow:0 8px 20px rgba(10,30,60,.06);
+      overflow:hidden;
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+
+    .group-card.emergency{
+      background:rgba(255,248,248,.86);
+      border-color:#e6c3c3;
+    }
+
+    .group-toggle{
+      width:100%;
+      border:none;
+      background:transparent;
+      text-align:left;
+      padding:13px 14px;
+      cursor:pointer;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .group-toggle:hover{background:rgba(11,63,120,.03)}
+    .group-card.emergency .group-toggle:hover{background:rgba(171,43,43,.03)}
+
+    .group-copy h3{
+      margin:0 0 3px;
+      font-size:16px;
+      line-height:1.15;
+      color:var(--navy);
+    }
+
+    .group-card.emergency .group-copy h3{color:#9a2020}
+
+    .group-copy p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .group-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .group-count{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:26px;
+      height:26px;
+      padding:0 8px;
+      border-radius:999px;
+      background:rgba(11,63,120,.08);
+      color:var(--navy);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .group-card.emergency .group-count{
+      background:rgba(154,32,32,.08);
+      color:#9a2020;
+    }
+
+    .group-chevron{
+      width:26px;height:26px;border-radius:999px;
+      display:grid;place-items:center;
+      color:var(--muted);
+      font-size:15px;
+      transition:transform .16s ease;
+    }
+
+    .group-card.open .group-chevron{transform:rotate(180deg)}
+
+    .group-panel{
+      display:none;
+      border-top:1px solid var(--line);
+      padding:8px 10px 10px;
+      background:rgba(255,255,255,.28);
+    }
+
+    .group-card.open .group-panel{display:block}
+
+    .tool-list{
+      display:grid;
+      gap:8px;
+    }
+
+    .tool-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 11px;
+      border-radius:12px;
+      background:rgba(255,255,255,.78);
+      border:1px solid #dbe3ec;
+      transition:transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+    }
+
+    .tool-row:hover{
+      transform:translateY(-1px);
+      border-color:#bfd0e3;
+      box-shadow:0 8px 18px rgba(10,30,60,.06);
+    }
+
+    .tool-row-copy strong{
+      display:block;
+      margin:0 0 3px;
+      font-size:14px;
+      color:var(--navy);
+      line-height:1.2;
+    }
+
+    .tool-row-copy span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.32;
+    }
+
+    .tool-open{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:30px;
+      height:30px;
+      border-radius:999px;
+      background:rgba(11,63,120,.08);
+      color:var(--navy);
+      font-size:15px;
+      font-weight:700;
+      flex-shrink:0;
+      align-self:center;
+    }
+
+    .quick-links{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .quick-card{
+      display:block;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      padding:14px 14px 12px;
+      transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease;
+    }
+
+    .quick-card:hover{
+      transform:translateY(-1px);
+      border-color:#bfd0e3;
+      box-shadow:0 8px 18px rgba(10,30,60,.08);
+    }
+
+    .quick-card h3{
+      margin:0 0 5px;
+      font-size:16px;
+      color:var(--navy);
+      line-height:1.2;
+    }
+
+    .quick-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .homepage-footer{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:16px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    @media (max-width:980px){
+      .group-layout,.quick-links{grid-template-columns:1fr}
+    }
+
+    @media (max-width:680px){
+      .page-home-compact{padding:14px 0 22px}
+      .compact-hero{padding:17px 15px 15px}
+      .compact-hero h2{font-size:20px}
+      .group-toggle{padding:12px 13px}
+      .group-copy h3{font-size:15px}
+      .tool-row{padding:9px 10px}
+      .tool-row-copy strong{font-size:13px}
+      .tool-row-copy span,.group-copy p,.section-heading p,.quick-card p{font-size:11px}
+      .homepage-footer{flex-direction:column;align-items:flex-start}
+    }
+  </style>
 </head>
 <body>
-<header class="site-header">
-<div class="container header-inner">
-<div class="brand">
-<div class="brand-mark">∩</div>
-<div>
-<h1>Diving Toolkit</h1>
-<p class="tagline">Operational calculators, emergency tools, familiarisations and reference material</p>
-</div>
-</div>
-<nav aria-label="Main navigation" class="top-nav">
-<a class="active" href="index.html">Home</a>
-<a href="tools/">Calculators</a>
-<a href="emergency/bailout-opened-while-on-nitrox.html">Emergency</a>
-<a href="familiarisations/">Familiarisations</a>
-<a href="documents/">Documents</a>
-</nav>
-</div>
-</header>
-<main class="home-compact">
-<div class="container">
-<section class="home-hero">
-<h2>Practical diving tools in one place</h2>
-<p>Compact grouped access to gas, oxygen exposure and nitrox emergency tools, with clear entry points for familiarisations, systems support tools and reference documents.</p>
-</section>
-<section>
-<div class="home-section-heading">
-<h2>Calculator Groups</h2>
-<p>Open one group at a time to keep the page tidy and quick to scan.</p>
-</div>
-<div class="home-group-layout">
-<article class="home-group-card open" data-group="">
-<button aria-expanded="true" class="home-group-toggle" type="button">
-<div class="home-group-copy">
-<h3>Gas / Nitrox</h3>
-<p>Core breathing gas calculations and table support tools.</p>
-</div>
-<div class="home-group-actions">
-<span class="home-group-count">3</span>
-<span class="home-group-chevron">⌄</span>
-</div>
-</button>
-<div class="home-group-panel">
-<div class="home-tool-list">
-<a class="home-tool-row" href="calculators/ead-and-table-depth-selection.html">
-<div class="home-tool-row-copy">
-<strong>EAD + Table Depth</strong>
-<span>Equivalent air depth with exact Safety EAD and DacDoDat table lookup.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="calculators/daltons-law-calculations.html">
-<div class="home-tool-row-copy">
-<strong>Dalton’s Law</strong>
-<span>Three-value solver for depth, partial pressure and O₂ percentage.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="calculators/bailout-endurance.html">
-<div class="home-tool-row-copy">
-<strong>Bailout Endurance</strong>
-<span>Available bailout time at depth and maximum umbilical deployment.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-</div>
-</div>
-</article>
-<article class="home-group-card" data-group="">
-<button aria-expanded="false" class="home-group-toggle" type="button">
-<div class="home-group-copy">
-<h3>Oxygen Exposure</h3>
-<p>Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
-</div>
-<div class="home-group-actions">
-<span class="home-group-count">6</span>
-<span class="home-group-chevron">⌄</span>
-</div>
-</button>
-<div class="home-group-panel">
-<div class="home-tool-list">
-<a class="home-tool-row" href="calculators/calculate-otu-and-esot.html">
-<div class="home-tool-row-copy">
-<strong>OTU / ESOT</strong>
-<span>Single page for oxygen toxicity units and equivalent surface oxygen time.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="calculators/otu-esot-converter.html">
-<div class="home-tool-row-copy">
-<strong>OTU / ESOT Converter</strong>
-<span>Convert exposure values between OTU and ESOT at selected pO₂.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="calculators/esot-recovery-calculator.html">
-<div class="home-tool-row-copy">
-<strong>ESOT Recovery</strong>
-<span>Model residual ESOT after a recovery period.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="calculators/multi-segment-otu-esot.html">
-<div class="home-tool-row-copy">
-<strong>Multi-Segment OTU / ESOT</strong>
-<span>Accumulate multiple exposure segments in one calculation.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="calculators/vital-capacity-reduction-calculator.html">
-<div class="home-tool-row-copy">
-<strong>Vital Capacity Reduction</strong>
-<span>Estimate reduction trend from accumulated oxygen exposure.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-</div>
-</div>
-</article>
-<article class="home-group-card emergency" data-group="">
-<button aria-expanded="false" class="home-group-toggle" type="button">
-<div class="home-group-copy">
-<h3>Nitrox Emergencies</h3>
-<p>Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
-</div>
-<div class="home-group-actions">
-<span class="home-group-count">2</span>
-<span class="home-group-chevron">⌄</span>
-</div>
-</button>
-<div class="home-group-panel">
-<div class="home-tool-list">
-<a class="home-tool-row" href="emergency/nitrox-failure-switch-to-air.html">
-<div class="home-tool-row-copy">
-<strong>Nitrox Failure Switch to Air</strong>
-<span>Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-<a class="home-tool-row" href="emergency/bailout-opened-while-on-nitrox.html">
-<div class="home-tool-row-copy">
-<strong>Bailout Opened While on Nitrox</strong>
-<span>Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-</div>
-</div>
-</article>
-<article class="home-group-card" data-group="">
-<button aria-expanded="false" class="home-group-toggle" type="button">
-<div class="home-group-copy">
-<h3>Familiarisations</h3>
-<p>Training material, familiarisation sheets and read-through packs.</p>
-</div>
-<div class="home-group-actions">
-<span class="home-group-count">→</span>
-<span class="home-group-chevron">⌄</span>
-</div>
-</button>
-<div class="home-group-panel">
-<div class="home-tool-list">
-<a class="home-tool-row" href="familiarisations/">
-<div class="home-tool-row-copy">
-<strong>Open Familiarisations</strong>
-<span>Access familiarisation sheets and grouped training material.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-</div>
-</div>
-</article>
-<article class="home-group-card" data-group="">
-<button aria-expanded="false" class="home-group-toggle" type="button">
-<div class="home-group-copy">
-<h3>Systems &amp; Tools</h3>
-<p>Larger programs, support tools and future processing applications.</p>
-</div>
-<div class="home-group-actions">
-<span class="home-group-count">→</span>
-<span class="home-group-chevron">⌄</span>
-</div>
-</button>
-<div class="home-group-panel">
-<div class="home-tool-list">
-<a class="home-tool-row" href="tools/">
-<div class="home-tool-row-copy">
-<strong>Open Systems &amp; Tools</strong>
-<span>Browse calculators, support tools and future processing applications.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-</div>
-</div>
-</article>
-<article class="home-group-card" data-group="">
-<button aria-expanded="false" class="home-group-toggle" type="button">
-<div class="home-group-copy">
-<h3>Documents</h3>
-<p>Reference documents, manuals, packs and supporting information.</p>
-</div>
-<div class="home-group-actions">
-<span class="home-group-count">→</span>
-<span class="home-group-chevron">⌄</span>
-</div>
-</button>
-<div class="home-group-panel">
-<div class="home-tool-list">
-<a class="home-tool-row" href="documents/">
-<div class="home-tool-row-copy">
-<strong>Open Documents</strong>
-<span>Open grouped manuals, packs and linked reference material.</span>
-</div>
-<span class="home-tool-open">→</span>
-</a>
-</div>
-</div>
-</article>
-</div>
-</section>
-<section class="home-quick-links">
-<a class="home-quick-card" href="familiarisations/">
-<h3>Familiarisations</h3>
-<p>Training sheets, grouped learning pages and read-through material.</p>
-</a>
-<a class="home-quick-card" href="tools/">
-<h3>Systems &amp; Tools</h3>
-<p>Calculator launcher, support utilities and future larger applications.</p>
-</a>
-<a class="home-quick-card" href="documents/">
-<h3>Documents</h3>
-<p>Reference packs, manuals and future linked libraries.</p>
-</a>
-</section>
-<div class="home-footer-note">
-<span>Diving Toolkit</span>
-<span>Compact grouped homepage</span>
-</div>
-</div>
-</main>
-<script>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <div class="brand-mark">∩</div>
+        <div>
+          <h1>Diving Toolkit</h1>
+          <p class="tagline">Operational calculators, emergency tools, familiarisations and reference material</p>
+        </div>
+      </div>
+
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="index.html" class="active">Home</a>
+        <a href="tools/">Calculators</a>
+        <a href="emergency/bailout-opened-while-on-nitrox.html">Emergency</a>
+        <a href="familiarisations/">Familiarisations</a>
+        <a href="documents/">Documents</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-home-compact">
+    <div class="container">
+      <section class="compact-hero">
+        <h2>Practical diving tools in one place</h2>
+        <p>Compact grouped access to gas, oxygen exposure and nitrox emergency tools, with clear entry points for familiarisations, systems support tools and reference documents.</p>
+      </section>
+
+      <section>
+        <div class="section-heading">
+          <h2>Calculator Groups</h2>
+          <p>Open one group at a time to keep the page tidy and quick to scan.</p>
+        </div>
+
+        <div class="group-layout">
+          <article class="group-card open" data-group>
+            <button class="group-toggle" type="button" aria-expanded="true">
+              <div class="group-copy">
+                <h3>Gas / Nitrox</h3>
+                <p>Core breathing gas calculations and table support tools.</p>
+              </div>
+              <div class="group-actions">
+                <span class="group-count">3</span>
+                <span class="group-chevron">⌄</span>
+              </div>
+            </button>
+            <div class="group-panel">
+              <div class="tool-list">
+                <a class="tool-row" href="calculators/ead-and-table-depth-selection.html">
+                  <div class="tool-row-copy">
+                    <strong>EAD + Table Depth</strong>
+                    <span>Equivalent air depth with exact Safety EAD and DacDoDat table lookup.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="calculators/daltons-law-calculations.html">
+                  <div class="tool-row-copy">
+                    <strong>Dalton’s Law</strong>
+                    <span>Three-value solver for depth, partial pressure and O₂ percentage.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="calculators/bailout-endurance.html">
+                  <div class="tool-row-copy">
+                    <strong>Bailout Endurance</strong>
+                    <span>Available bailout time at depth and maximum umbilical deployment.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="group-card" data-group>
+            <button class="group-toggle" type="button" aria-expanded="false">
+              <div class="group-copy">
+                <h3>Oxygen Exposure</h3>
+                <p>Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
+              </div>
+              <div class="group-actions">
+                <span class="group-count">6</span>
+                <span class="group-chevron">⌄</span>
+              </div>
+            </button>
+            <div class="group-panel">
+              <div class="tool-list">
+                <a class="tool-row" href="calculators/calculate-otu-and-esot.html">
+                  <div class="tool-row-copy">
+                    <strong>OTU / ESOT</strong>
+                    <span>Single page for oxygen toxicity units and equivalent surface oxygen time.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="calculators/otu-esot-converter.html">
+                  <div class="tool-row-copy">
+                    <strong>OTU / ESOT Converter</strong>
+                    <span>Convert exposure values between OTU and ESOT at selected pO₂.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="calculators/esot-recovery-calculator.html">
+                  <div class="tool-row-copy">
+                    <strong>ESOT Recovery</strong>
+                    <span>Model residual ESOT after a recovery period.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="calculators/multi-segment-otu-esot.html">
+                  <div class="tool-row-copy">
+                    <strong>Multi-Segment OTU / ESOT</strong>
+                    <span>Accumulate multiple exposure segments in one calculation.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="calculators/vital-capacity-reduction-calculator.html">
+                  <div class="tool-row-copy">
+                    <strong>Vital Capacity Reduction</strong>
+                    <span>Estimate reduction trend from accumulated oxygen exposure.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="group-card emergency" data-group>
+            <button class="group-toggle" type="button" aria-expanded="false">
+              <div class="group-copy">
+                <h3>Nitrox Emergencies</h3>
+                <p>Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
+              </div>
+              <div class="group-actions">
+                <span class="group-count">2</span>
+                <span class="group-chevron">⌄</span>
+              </div>
+            </button>
+            <div class="group-panel">
+              <div class="tool-list">
+                <a class="tool-row" href="emergency/nitrox-failure-switch-to-air.html">
+                  <div class="tool-row-copy">
+                    <strong>Nitrox Failure Switch to Air</strong>
+                    <span>Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+                <a class="tool-row" href="emergency/bailout-opened-while-on-nitrox.html">
+                  <div class="tool-row-copy">
+                    <strong>Bailout Opened While on Nitrox</strong>
+                    <span>Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="group-card" data-group>
+            <button class="group-toggle" type="button" aria-expanded="false">
+              <div class="group-copy">
+                <h3>Familiarisations</h3>
+                <p>Training material, familiarisation sheets and read-through packs.</p>
+              </div>
+              <div class="group-actions">
+                <span class="group-count">→</span>
+                <span class="group-chevron">⌄</span>
+              </div>
+            </button>
+            <div class="group-panel">
+              <div class="tool-list">
+                <a class="tool-row" href="familiarisations/">
+                  <div class="tool-row-copy">
+                    <strong>Open Familiarisations</strong>
+                    <span>Access familiarisation sheets and grouped training material.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="group-card" data-group>
+            <button class="group-toggle" type="button" aria-expanded="false">
+              <div class="group-copy">
+                <h3>Systems &amp; Tools</h3>
+                <p>Larger programs, support tools and future processing applications.</p>
+              </div>
+              <div class="group-actions">
+                <span class="group-count">→</span>
+                <span class="group-chevron">⌄</span>
+              </div>
+            </button>
+            <div class="group-panel">
+              <div class="tool-list">
+                <a class="tool-row" href="tools/">
+                  <div class="tool-row-copy">
+                    <strong>Open Systems &amp; Tools</strong>
+                    <span>Browse calculators, support tools and future processing applications.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="group-card" data-group>
+            <button class="group-toggle" type="button" aria-expanded="false">
+              <div class="group-copy">
+                <h3>Documents</h3>
+                <p>Reference documents, manuals, packs and supporting information.</p>
+              </div>
+              <div class="group-actions">
+                <span class="group-count">→</span>
+                <span class="group-chevron">⌄</span>
+              </div>
+            </button>
+            <div class="group-panel">
+              <div class="tool-list">
+                <a class="tool-row" href="documents/">
+                  <div class="tool-row-copy">
+                    <strong>Open Documents</strong>
+                    <span>Open grouped manuals, packs and linked reference material.</span>
+                  </div>
+                  <span class="tool-open">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="quick-links">
+        <a class="quick-card" href="familiarisations/">
+          <h3>Familiarisations</h3>
+          <p>Training sheets, grouped learning pages and read-through material.</p>
+        </a>
+        <a class="quick-card" href="tools/">
+          <h3>Systems &amp; Tools</h3>
+          <p>Calculator launcher, support utilities and future larger applications.</p>
+        </a>
+        <a class="quick-card" href="documents/">
+          <h3>Documents</h3>
+          <p>Reference packs, manuals and future linked libraries.</p>
+        </a>
+      </section>
+
+      <div class="homepage-footer">
+        <span>Diving Toolkit</span>
+        <span>Compact grouped homepage</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
     (function(){
       const groups = Array.from(document.querySelectorAll('[data-group]'));
       groups.forEach(group => {

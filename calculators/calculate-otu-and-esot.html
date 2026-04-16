@@ -1,330 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N-Sea | OTU &amp; ESOT Calculator</title>
-
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a1a;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 30px 16px;
-        }
-
-        .page { width: 100%; max-width: 560px; }
-
-        /* ── HEADER ── */
-        header {
-            background: #014782;
-            border-radius: 6px 6px 0 0;
-            padding: 18px 24px;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .nsea-logo { flex-shrink: 0; }
-        .header-text { color: #FFFFFF; }
-
-        .header-text h1 {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            line-height: 1.3;
-            color: #FFEE02;
-        }
-
-        .header-text p {
-            font-size: 11.5px;
-            color: rgba(255,255,255,0.80);
-            margin-top: 2px;
-            letter-spacing: 0.01em;
-        }
-
-        /* ── NOTICE BAND ── */
-        .notice {
-            background: #014782;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 3px solid #FFEE02;
-            padding: 9px 24px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.75);
-            letter-spacing: 0.015em;
-        }
-
-        .notice strong { color: #FFEE02; font-weight: 700; }
-
-        /* ── CARD ── */
-        .card {
-            background: #FFFFFF;
-            border-left: 1px solid #d8dde4;
-            border-right: 1px solid #d8dde4;
-            padding: 24px;
-        }
-
-        .card + .card { border-top: 1px solid #e8ebef; }
-
-        .section-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            color: #014782;
-            margin-bottom: 14px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #FFEE02;
-            display: inline-block;
-        }
-
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-        /* ── FIELD ── */
-        .field { display: flex; flex-direction: column; gap: 5px; }
-
-        .field label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #4a5568;
-            letter-spacing: 0.01em;
-        }
-
-        .field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
-
-        .field input {
-            padding: 9px 11px;
-            border: 1.5px solid #c8cdd5;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a1a1a;
-            background: #f8f9fb;
-            transition: border-color 0.15s, background 0.15s;
-            width: 100%;
-        }
-
-        .field input:focus { outline: none; border-color: #014782; background: #fff; }
-        .field input.err   { border-color: #cc2200; background: #fff5f3; }
-
-        /* ── BUTTONS ── */
-        .btn-row { display: flex; gap: 10px; margin-top: 22px; }
-
-        .btn-calc {
-            flex: 1;
-            padding: 12px 20px;
-            background: #014782;
-            color: #FFEE02;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .btn-calc:hover { background: #013560; }
-
-        .btn-reset {
-            padding: 12px 20px;
-            background: #e8ebef;
-            color: #4a5568;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .btn-reset:hover { background: #d8dde4; }
-
-        /* ── RESULTS CARD ── */
-        .results-card {
-            background: #014782;
-            border-left: 1px solid #013560;
-            border-right: 1px solid #013560;
-            padding: 20px 24px;
-            display: none;
-        }
-
-        .results-card.visible { display: block; }
-
-        .results-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            color: #FFEE02;
-            margin-bottom: 14px;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.10);
-        }
-
-        .result-row:last-child { border-bottom: none; }
-
-        .result-name {
-            font-size: 12px;
-            color: rgba(255,255,255,0.80);
-            font-weight: 500;
-        }
-
-        .result-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #FFEE02;
-            letter-spacing: -0.01em;
-        }
-
-        /* ── STATUS BAND ── */
-        .status-band {
-            padding: 10px 24px;
-            font-size: 11.5px;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            display: none;
-            border-left: 1px solid #013560;
-            border-right: 1px solid #013560;
-        }
-
-        .status-band.visible { display: block; }
-        .status-ok   { background: #1a6e3a; color: #FFFFFF; }
-        .status-warn { background: #a05000; color: #FFEE02; }
-        .status-crit { background: #8b0000; color: #FFFFFF; }
-
-        /* ── FOOTER ── */
-        footer {
-            background: #e8ebef;
-            border: 1px solid #d8dde4;
-            border-top: none;
-            border-radius: 0 0 6px 6px;
-            padding: 10px 24px;
-        }
-
-        footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OTU & ESOT Calculator</title>
+  <link rel="stylesheet" href="../assets/css/site.css" />
 </head>
 <body>
-<div class="page">
-
-    <header>
-        <div class="nsea-logo">
-            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
-                <rect width="50" height="58" rx="3" fill="#014782"/>
-                <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
-                      fill="none" stroke="#FFEE02" stroke-width="8.5"
-                      stroke-linecap="butt" stroke-linejoin="miter"/>
-            </svg>
-        </div>
-        <div class="header-text">
-            <h1>OTU &amp; ESOT CALCULATOR</h1>
-            <p>Oxygen Toxicity Units &amp; Equivalent Surface Oxygen Time</p>
-        </div>
-    </header>
-
-    <div class="notice">
-        <p><strong>OTU:</strong>&nbsp; OTU = t &times; (2 &times; pO₂ &minus; 1) ^ 0.833 &nbsp;|&nbsp; Valid for pO₂ &gt; 0.5 ATA only.</p>
-        <p style="margin-top:6px;"><strong>ESOT:</strong>&nbsp; ESOT = t &times; pO₂ ^ 2.285</p>
+  <main class="calc-page">
+    <div class="calc-crumbs">
+      <div class="calc-trail">
+        <a href="../index.html">Home</a>
+        <span class="sep">/</span>
+        <span>Calculators</span>
+        <span class="sep">/</span>
+        <span>OTU & ESOT Calculator</span>
+      </div>
+      <a class="calc-back-link" href="../index.html#calculators">← Back</a>
     </div>
 
-    <div class="card">
-        <span class="section-label">Exposure Parameters</span>
-        <div class="grid-2">
-            <div class="field">
-                <label>Exposure Time <span class="unit">(min)</span></label>
-                <input type="number" id="inp_time" value="60" min="0" step="1">
-            </div>
-            <div class="field">
-                <label>Partial Pressure O₂ <span class="unit">pO₂ (ATA)</span></label>
-                <input type="number" id="inp_po2" value="1.4" min="0.51" max="3.0" step="0.01">
-            </div>
-        </div>
+    <section class="calc-shell">
+      <header class="calc-shell-header">
+        <h1 class="calc-shell-title">OTU & ESOT Calculator</h1>
+        <p class="calc-shell-subtitle">Calculates OTU and ESOT from exposure time and oxygen partial pressure.</p>
+      </header>
 
-        <div class="btn-row">
-            <button class="btn-calc" onclick="calc.run()">CALCULATE</button>
-            <button class="btn-reset" onclick="calc.reset()">RESET</button>
-        </div>
-    </div>
+      <div class="calc-shell-body">
+        
+<section class="calc-section">
+  <h2 class="calc-section-label">Exposure Parameters</h2>
+  <div class="calc-grid cols-2">
+    <div class="calc-field"><label for="time">Exposure Time <span class="unit">(min)</span></label><input id="time" type="number" min="0" step="0.1" /></div>
+    <div class="calc-field"><label for="po2">Partial Pressure O₂ <span class="unit">(ATA)</span></label><input id="po2" type="number" min="0" step="0.01" /></div>
+  </div>
+</section>
 
-    <div class="results-card" id="resultsCard">
-        <div class="results-label">RESULTS</div>
-        <div class="result-row">
-            <span class="result-name">OTU (Oxygen Tolerance Units)</span>
-            <span class="result-value" id="out_otu">—</span>
-        </div>
-        <div class="result-row">
-            <span class="result-name">ESOT (Equivalent Surface O₂ Time)</span>
-            <span class="result-value" id="out_esot">—</span>
-        </div>
-    </div>
+        <section class="calc-section">
+          <h2 class="calc-section-label">Actions</h2>
+          <div class="calc-btn-row">
+            <button class="calc-btn calc-btn-primary" id="calcBtn" type="button">Calculate</button>
+            <button class="calc-btn calc-btn-secondary" id="clearBtn" type="button">Clear</button>
+          </div>
+        </section>
 
-
-        <span>N-Sea Group | Calculator Reference Rev. 1</span>
-    </footer>
-
+        <section class="calc-section">
+          <h2 class="calc-section-label">Results</h2>
+          <div class="calc-results">
+  <div class="calc-result-card"><div class="calc-result-name">OTU</div><p class="calc-result-value" id="otuOut">—</p><div class="calc-result-unit">OTU</div></div>
+  <div class="calc-result-card"><div class="calc-result-name">ESOT</div><p class="calc-result-value" id="esotOut">—</p><div class="calc-result-unit">ESOT</div></div>
 </div>
+        </section>
 
+        <div class="calc-notice warn" id="calcNotice">Enter the required values, then calculate.</div>
+
+        <div class="calc-notes">
+          <p><strong>Warning:</strong> OTU formula is valid only for pO₂ greater than 0.5 ATA.</p>
+        </div>
+      </div>
+
+      <div class="calc-shell-footer">Shared calculator shell · Powered by master JSON reference</div>
+    </section>
+  </main>
+  <script src="../assets/js/calculator-common.js"></script>
 <script>
-    const calc = {
-
-        DEFAULTS: { time: 60, po2: 1.4 },
-
-        get(id)      { return parseFloat(document.getElementById('inp_' + id).value); },
-        set(id, val) { document.getElementById('out_' + id).textContent = val; },
-
-        run() {
-            const t   = this.get('time');
-            const po2 = this.get('po2');
-
-            const errors = [];
-            if (isNaN(t)   || t <= 0)          errors.push('time');
-            if (isNaN(po2) || po2 <= 0.5)       errors.push('po2');
-
-            ['time','po2'].forEach(f => {
-                document.getElementById('inp_' + f).classList.toggle('err', errors.includes(f));
-            });
-
-            if (errors.length > 0) {
-                alert('Input error — check highlighted fields.\nNote: pO₂ must be greater than 0.5 ATA for OTU to be valid.');
-                return;
-            }
-
-            // ── FORMULA: Calculator 1 (OTU) ──
-            // OTU = t × (2 × pO₂ − 1) ^ 0.833
-            const otu = t * Math.pow((2 * po2 - 1), 0.833);
-
-            // ── FORMULA: Calculator 2 (ESOT) ──
-            // ESOT = t × pO₂ ^ 2.285
-            const esot = t * Math.pow(po2, 2.285);
-
-            this.set('otu',  otu.toFixed(2));
-            this.set('esot', esot.toFixed(2));
-
-            document.getElementById('resultsCard').classList.add('visible');
-        },
-
-        reset() {
-            document.getElementById('inp_time').value = this.DEFAULTS.time;
-            document.getElementById('inp_po2').value  = this.DEFAULTS.po2;
-            ['time','po2'].forEach(f => {
-                document.getElementById('inp_' + f).classList.remove('err');
-            });
-            document.getElementById('resultsCard').classList.remove('visible');
-        }
-    };
+const IDS=['time','po2'];
+let CALC_DEF=null;
+async function init(){ const master=await loadMasterReference(); CALC_DEF=getCalculator(master,'otu_esot'); if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id, i.default); } } }
+function run(){ const time=parseFloat(document.getElementById('time').value); const po2=parseFloat(document.getElementById('po2').value); const errors=[]; if(!(time>0)) errors.push('time'); if(!(po2>0.5 && po2<=3.0)) errors.push('po2'); markError(IDS,errors); if(errors.length){ setText('otuOut','—'); setText('esotOut','—'); setNotice('Input error. pO₂ must be greater than 0.5 ATA.','crit'); return; } const otu=time*Math.pow((2*po2-1),0.833); const esot=time*Math.pow(po2,2.285); setText('otuOut',formatNumber(otu,2)); setText('esotOut',formatNumber(esot,2)); setNotice('OTU and ESOT calculated from the master reference formulas.','ok'); }
+function clearAll(){ if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id, i.default); } } clearErrors(IDS); setText('otuOut','—'); setText('esotOut','—'); setNotice('Enter the required values, then calculate.','warn'); }
+document.getElementById('calcBtn').addEventListener('click',run); document.getElementById('clearBtn').addEventListener('click',clearAll); init();
 </script>
 </body>
 </html>

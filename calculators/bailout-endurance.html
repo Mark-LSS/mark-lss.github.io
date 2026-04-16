@@ -1,378 +1,502 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N-Sea | Bailout Endurance Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diving Toolkit | Bailout Endurance</title>
+  <link rel="stylesheet" href="../assets/css/site.css">
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+  <style>
+    * { box-sizing: border-box; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a1a;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 30px 16px;
-        }
+    body {
+      min-height: 100vh;
+    }
 
-        .page { width: 100%; max-width: 560px; }
+    .calculator-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
 
-        /* ── HEADER ── */
-        header {
-            background: #014782;
-            border-radius: 6px 6px 0 0;
-            padding: 18px 24px;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
+    .calc-shell {
+      background: #ffffff;
+      border: 1px solid #d8dde4;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(10, 30, 60, 0.08);
+    }
 
-        .nsea-logo { flex-shrink: 0; }
-        .header-text { color: #FFFFFF; }
+    .calc-header {
+      background: #014782;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
 
-        .header-text h1 {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            line-height: 1.3;
-            color: #FFEE02;
-        }
+    .nsea-logo {
+      flex-shrink: 0;
+    }
 
-        .header-text p {
-            font-size: 11.5px;
-            color: rgba(255,255,255,0.80);
-            margin-top: 2px;
-            letter-spacing: 0.01em;
-        }
+    .calc-header-text h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.25;
+      color: #FFEE02;
+    }
 
-        /* ── NOTICE BAND ── */
-        .notice {
-            background: #014782;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 3px solid #FFEE02;
-            padding: 9px 24px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.75);
-            letter-spacing: 0.015em;
-        }
+    .calc-header-text p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.01em;
+      line-height: 1.4;
+    }
 
-        .notice strong { color: #FFEE02; font-weight: 700; }
-        .notice p + p  { margin-top: 6px; }
+    .notice {
+      background: #014782;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 3px solid #FFEE02;
+      padding: 10px 24px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.5;
+      letter-spacing: 0.015em;
+    }
 
-        /* ── CARD ── */
-        .card {
-            background: #FFFFFF;
-            border-left: 1px solid #d8dde4;
-            border-right: 1px solid #d8dde4;
-            padding: 24px;
-        }
+    .notice strong {
+      color: #FFEE02;
+      font-weight: 700;
+    }
 
-        .card + .card { border-top: 1px solid #e8ebef; }
+    .notice p + p {
+      margin-top: 6px;
+    }
 
-        .section-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            color: #014782;
-            margin-bottom: 14px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #FFEE02;
-            display: inline-block;
-        }
+    .card {
+      background: #ffffff;
+      padding: 24px;
+      border-top: 1px solid #e8ebef;
+    }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .card:first-of-type {
+      border-top: none;
+    }
 
-        /* ── FIELD ── */
-        .field { display: flex; flex-direction: column; gap: 5px; }
+    .section-label {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #FFEE02;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: #014782;
+    }
 
-        .field label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #4a5568;
-            letter-spacing: 0.01em;
-        }
+    .grid-2,
+    .grid-3 {
+      display: grid;
+      gap: 14px;
+    }
 
-        .field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
+    .grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
 
-        .field input {
-            padding: 9px 11px;
-            border: 1.5px solid #c8cdd5;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a1a1a;
-            background: #f8f9fb;
-            transition: border-color 0.15s, background 0.15s;
-            width: 100%;
-        }
+    .grid-3 {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
 
-        .field input:focus { outline: none; border-color: #014782; background: #fff; }
-        .field input.err   { border-color: #cc2200; background: #fff5f3; }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
 
-        /* ── BUTTONS ── */
-        .btn-row { display: flex; gap: 10px; margin-top: 22px; }
+    .field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4a5568;
+      letter-spacing: 0.01em;
+    }
 
-        .btn-calc {
-            flex: 1;
-            padding: 12px 20px;
-            background: #014782;
-            color: #FFEE02;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+    .field .unit {
+      font-size: 10px;
+      color: #8a9299;
+      font-weight: 400;
+    }
 
-        .btn-calc:hover { background: #013560; }
+    .field input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1.5px solid #c8cdd5;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      background: #f8f9fb;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
 
-        .btn-reset {
-            padding: 12px 20px;
-            background: #e8ebef;
-            color: #4a5568;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+    .field input:focus {
+      outline: none;
+      border-color: #014782;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(1, 71, 130, 0.10);
+    }
 
-        .btn-reset:hover { background: #d8dde4; }
+    .field input.err {
+      border-color: #cc2200;
+      background: #fff5f3;
+    }
 
-        /* ── RESULTS CARD ── */
-        .results-card {
-            background: #014782;
-            border-left: 1px solid #013560;
-            border-right: 1px solid #013560;
-            padding: 20px 24px;
-            display: none;
-        }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
 
-        .results-card.visible { display: block; }
+    .btn-calc {
+      flex: 1;
+      min-height: 46px;
+      padding: 12px 20px;
+      background: #014782;
+      color: #FFEE02;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
 
-        .results-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            color: #FFEE02;
-            margin-bottom: 14px;
-        }
+    .btn-calc:hover {
+      background: #013560;
+    }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.10);
-        }
+    .btn-reset {
+      min-height: 46px;
+      padding: 12px 20px;
+      background: #e8ebef;
+      color: #4a5568;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
 
-        .result-row:last-child { border-bottom: none; }
+    .btn-reset:hover {
+      background: #d8dde4;
+    }
 
-        .result-name {
-            font-size: 12px;
-            color: rgba(255,255,255,0.80);
-            font-weight: 500;
-        }
+    .results-card {
+      background: #014782;
+      padding: 20px 24px;
+      display: none;
+    }
 
-        .result-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #FFEE02;
-            letter-spacing: -0.01em;
-        }
+    .results-card.visible {
+      display: block;
+    }
 
-        .result-row.highlight .result-value {
-            font-size: 28px;
-        }
+    .results-label {
+      margin-bottom: 14px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: #FFEE02;
+    }
 
-        .result-row.sub .result-value {
-            font-size: 14px;
-            color: rgba(255,255,255,0.85);
-        }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
 
-        /* ── FOOTER ── */
-        footer {
-            background: #e8ebef;
-            border: 1px solid #d8dde4;
-            border-top: none;
-            border-radius: 0 0 6px 6px;
-            padding: 10px 24px;
-        }
+    .result-row:last-child {
+      border-bottom: none;
+    }
 
-        footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
-    </style>
+    .result-name {
+      font-size: 12px;
+      color: rgba(255,255,255,0.82);
+      font-weight: 500;
+    }
+
+    .result-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFEE02;
+      letter-spacing: -0.01em;
+      text-align: right;
+    }
+
+    .result-row.highlight .result-value {
+      font-size: 28px;
+    }
+
+    .calc-footer {
+      background: #e8ebef;
+      padding: 10px 24px;
+      border-top: 1px solid #d8dde4;
+    }
+
+    .calc-footer span {
+      font-size: 10px;
+      color: #8a9299;
+      letter-spacing: 0.01em;
+    }
+
+    .reference-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: #f7f9fc;
+      border: 1px solid #d7dee7;
+      border-radius: 8px;
+      color: #5b6978;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 720px) {
+      .calc-header {
+        align-items: flex-start;
+      }
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .result-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .result-value {
+        text-align: left;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="page">
 
-    <header>
-        <div class="nsea-logo">
-            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
-                <rect width="50" height="58" rx="3" fill="#014782"/>
-                <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
-                      fill="none" stroke="#FFEE02" stroke-width="8.5"
-                      stroke-linecap="butt" stroke-linejoin="miter"/>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="brand-mark">∩</div>
+      <div>
+        <h1>Diving Toolkit</h1>
+        <p class="tagline">Operational calculators and support tools</p>
+      </div>
+    </div>
+
+    <nav class="top-nav">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#calculators" class="active">Calculators</a>
+      <a href="../index.html#emergency">Emergency</a>
+      <a href="../documents/index.html">Documents</a>
+    </nav>
+  </div>
+</header>
+
+<main class="tool-page">
+  <div class="container tool-shell">
+
+    <div class="tool-topbar">
+      <div class="tool-breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../index.html#calculators">Calculators</a>
+        <span>/</span>
+        <span>Bailout Endurance</span>
+      </div>
+
+      <a class="back-home" href="../index.html">← Back to Home</a>
+    </div>
+
+    <div class="calculator-wrap">
+      <div class="calc-shell">
+
+        <div class="calc-header">
+          <div class="nsea-logo">
+            <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="50" height="58" rx="3" fill="#014782"/>
+              <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50"
+                    fill="none" stroke="#FFEE02" stroke-width="8.5"
+                    stroke-linecap="butt" stroke-linejoin="miter"/>
             </svg>
-        </div>
-        <div class="header-text">
-            <h1>BAILOUT ENDURANCE<br>CALCULATOR</h1>
+          </div>
+          <div class="calc-header-text">
+            <h1>BAILOUT ENDURANCE CALCULATOR</h1>
             <p>Bailout Duration at Depth &amp; Maximum Umbilical Deployment</p>
-        </div>
-    </header>
-
-    <div class="notice">
-        <p><strong>SAFETY RULE 2:</strong>&nbsp; 1 minute of bailout gas for every 10 m of umbilical deployed. Endurance is always rounded <strong style="color:#FFEE02;">DOWN</strong> to full minutes — never up.</p>
-        <p><strong>DEFAULTS:</strong>&nbsp; Regulator pressure = 10 bar &nbsp;|&nbsp; Emergency breathing rate = 40 L/min</p>
-    </div>
-
-    <!-- DIVE PARAMETERS -->
-    <div class="card">
-        <span class="section-label">Dive Parameters</span>
-        <div class="grid-2">
-            <div class="field">
-                <label>Working Depth <span class="unit">(msw)</span></label>
-                <input type="number" id="inp_depth" value="50" min="0" step="1">
-            </div>
-            <div class="field">
-                <label>Floodable Volume <span class="unit">(L)</span></label>
-                <input type="number" id="inp_vol" value="8" min="0" step="0.5">
-            </div>
-        </div>
-    </div>
-
-    <!-- CYLINDER PARAMETERS -->
-    <div class="card">
-        <span class="section-label">Bailout Cylinder</span>
-        <div class="grid-3">
-            <div class="field">
-                <label>Cylinder Pressure <span class="unit">(bar)</span></label>
-                <input type="number" id="inp_bottle" value="200" min="0" step="1">
-            </div>
-            <div class="field">
-                <label>Regulator Pressure <span class="unit">(bar)</span></label>
-                <input type="number" id="inp_reg" value="10" min="0" step="1">
-            </div>
-            <div class="field">
-                <label>Breathing Rate <span class="unit">(L/min)</span></label>
-                <input type="number" id="inp_rate" value="40" min="1" step="1">
-            </div>
+          </div>
         </div>
 
-        <div class="btn-row">
-            <button class="btn-calc" onclick="calc.run()">CALCULATE</button>
-            <button class="btn-reset" onclick="calc.reset()">RESET</button>
+        <div class="notice">
+          <p><strong>SAFETY RULE 2:</strong> 1 minute of bailout gas for every 10 m of umbilical deployed. Endurance is always rounded <strong>DOWN</strong> to full minutes — never up.</p>
+          <p><strong>DEFAULTS:</strong> Regulator pressure = 10 bar &nbsp;|&nbsp; Emergency breathing rate = 40 L/min</p>
         </div>
-    </div>
 
-    <!-- RESULTS -->
-    <div class="results-card" id="resultsCard">
-        <div class="results-label">RESULTS</div>
+        <div class="card">
+          <span class="section-label">Dive Parameters</span>
+          <div class="grid-2">
+            <div class="field">
+              <label for="inp_depth">Working Depth <span class="unit">(msw)</span></label>
+              <input type="number" id="inp_depth" value="50" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="inp_vol">Floodable Volume <span class="unit">(L)</span></label>
+              <input type="number" id="inp_vol" value="8" min="0" step="0.5">
+            </div>
+          </div>
+        </div>
 
-        <div class="result-row highlight">
+        <div class="card">
+          <span class="section-label">Bailout Cylinder</span>
+          <div class="grid-3">
+            <div class="field">
+              <label for="inp_bottle">Cylinder Pressure <span class="unit">(bar)</span></label>
+              <input type="number" id="inp_bottle" value="200" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="inp_reg">Regulator Pressure <span class="unit">(bar)</span></label>
+              <input type="number" id="inp_reg" value="10" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="inp_rate">Breathing Rate <span class="unit">(L/min)</span></label>
+              <input type="number" id="inp_rate" value="40" min="1" step="1">
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-calc" type="button" onclick="calc.run()">CALCULATE</button>
+            <button class="btn-reset" type="button" onclick="calc.reset()">RESET</button>
+          </div>
+
+          <div class="reference-box">
+            Operational support calculator only. Confirm assumptions, reserves, deductions and emergency planning rules against approved company procedures before use.
+          </div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+          <div class="results-label">Results</div>
+
+          <div class="result-row highlight">
             <span class="result-name">Bailout Endurance</span>
             <span class="result-value" id="out_full_mins">—</span>
-        </div>
-        <div class="result-row highlight">
+          </div>
+
+          <div class="result-row highlight">
             <span class="result-name">Max Umbilical Deployment</span>
             <span class="result-value" id="out_umbilical">—</span>
+          </div>
         </div>
+
+        <div class="calc-footer">
+          <span>N-Sea Group | Calculator Reference Rev. 1</span>
+        </div>
+
+      </div>
     </div>
 
-    <footer>
-        <span>N-Sea Group | Calculator Reference Rev. 1</span>
-    </footer>
+  </div>
+</main>
 
-</div>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <span>Diving Toolkit</span>
+    <span>Operational calculator</span>
+  </div>
+</footer>
 
 <script>
-    const calc = {
+  const calc = {
+    DEFAULTS: {
+      depth: 50,
+      vol: 8,
+      bottle: 200,
+      reg: 10,
+      rate: 40
+    },
 
-        DEFAULTS: {
-            depth: 50, vol: 8, bottle: 200, reg: 10, rate: 40
-        },
+    get(id) {
+      return parseFloat(document.getElementById('inp_' + id).value);
+    },
 
-        get(id)      { return parseFloat(document.getElementById('inp_' + id).value); },
-        set(id, val) { document.getElementById('out_' + id).textContent = val; },
+    set(id, val) {
+      document.getElementById('out_' + id).textContent = val;
+    },
 
-        run() {
-            const depth  = this.get('depth');
-            const vol    = this.get('vol');
-            const bottle = this.get('bottle');
-            const reg    = this.get('reg');
-            const rate   = this.get('rate');
+    run() {
+      const depth = this.get('depth');
+      const vol = this.get('vol');
+      const bottle = this.get('bottle');
+      const reg = this.get('reg');
+      const rate = this.get('rate');
 
-            const errors = [];
-            if (isNaN(depth)  || depth  < 0)  errors.push('depth');
-            if (isNaN(vol)    || vol    <= 0)  errors.push('vol');
-            if (isNaN(bottle) || bottle <= 0)  errors.push('bottle');
-            if (isNaN(reg)    || reg    < 0)   errors.push('reg');
-            if (isNaN(rate)   || rate   <= 0)  errors.push('rate');
+      const errors = [];
+      if (isNaN(depth) || depth < 0) errors.push('depth');
+      if (isNaN(vol) || vol <= 0) errors.push('vol');
+      if (isNaN(bottle) || bottle <= 0) errors.push('bottle');
+      if (isNaN(reg) || reg < 0) errors.push('reg');
+      if (isNaN(rate) || rate <= 0) errors.push('rate');
 
-            ['depth','vol','bottle','reg','rate'].forEach(f => {
-                document.getElementById('inp_' + f).classList.toggle('err', errors.includes(f));
-            });
+      ['depth', 'vol', 'bottle', 'reg', 'rate'].forEach(f => {
+        document.getElementById('inp_' + f).classList.toggle('err', errors.includes(f));
+      });
 
-            if (errors.length > 0) {
-                alert('Input error — check highlighted fields.');
-                return;
-            }
+      if (errors.length > 0) {
+        alert('Input error — check highlighted fields.');
+        return;
+      }
 
-            // ── FORMULA CHAIN: Calculator 7 ──
+      const ambient = depth / 10 + 1;
+      const unusable = ambient + reg;
+      const available = bottle - unusable;
+      const freeGas = vol * available;
+      const consumption = ambient * rate;
+      const totalTime = freeGas / consumption;
+      const fullMins = Math.floor(totalTime);
+      const umbilical = fullMins * 10;
 
-            // Step 1: Ambient_Pressure = Depth ÷ 10 + 1
-            const ambient = depth / 10 + 1;
+      this.set('full_mins', fullMins + ' min');
+      this.set('umbilical', umbilical + ' m');
 
-            // Step 2: Unusable_Pressure = Ambient + Regulator
-            const unusable = ambient + reg;
+      document.getElementById('resultsCard').classList.add('visible');
+    },
 
-            // Step 3: Available_Pressure = Bottle − Unusable
-            const available = bottle - unusable;
+    reset() {
+      const d = this.DEFAULTS;
+      document.getElementById('inp_depth').value = d.depth;
+      document.getElementById('inp_vol').value = d.vol;
+      document.getElementById('inp_bottle').value = d.bottle;
+      document.getElementById('inp_reg').value = d.reg;
+      document.getElementById('inp_rate').value = d.rate;
 
-            // Step 4: Free_Gas_Volume = Floodable_Volume × Available_Pressure
-            const free_gas = vol * available;
+      ['depth', 'vol', 'bottle', 'reg', 'rate'].forEach(f => {
+        document.getElementById('inp_' + f).classList.remove('err');
+      });
 
-            // Step 5: Gas_Consumption_Rate = Ambient × Breathing_Rate
-            const consumption = ambient * rate;
-
-            // Step 6: Total_Time = Free_Gas ÷ Consumption_Rate
-            const total_time = free_gas / consumption;
-
-            // Step 7: Full_Minutes = floor(Total_Time) — NEVER round up
-            const full_mins = Math.floor(total_time);
-
-            // Step 8: Umbilical_Allowed = Full_Minutes × 10
-            const umbilical = full_mins * 10;
-
-            this.set('full_mins',  full_mins + ' min');
-            this.set('umbilical',  umbilical + ' m');
-
-            document.getElementById('resultsCard').classList.add('visible');
-        },
-
-        reset() {
-            const d = this.DEFAULTS;
-            document.getElementById('inp_depth').value  = d.depth;
-            document.getElementById('inp_vol').value    = d.vol;
-            document.getElementById('inp_bottle').value = d.bottle;
-            document.getElementById('inp_reg').value    = d.reg;
-            document.getElementById('inp_rate').value   = d.rate;
-
-            ['depth','vol','bottle','reg','rate'].forEach(f => {
-                document.getElementById('inp_' + f).classList.remove('err');
-            });
-            document.getElementById('resultsCard').classList.remove('visible');
-        }
-    };
+      document.getElementById('resultsCard').classList.remove('visible');
+      this.set('full_mins', '—');
+      this.set('umbilical', '—');
+    }
+  };
 </script>
+
 </body>
 </html>

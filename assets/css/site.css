@@ -728,3 +728,190 @@ a {
     width:100%;
   }
 }
+
+
+/* ==========================================
+   COMPACT CALCULATOR SHELL OVERRIDES
+   Paste at the very bottom of site.css
+========================================== */
+
+:root{
+  --calc-maxw: 820px;
+}
+
+/* Page wrap */
+.calc-page{
+  margin: 22px auto;
+  padding: 0 14px 24px;
+}
+
+/* Breadcrumb row */
+.calc-crumbs{
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.calc-back-link{
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Main shell */
+.calc-shell{
+  border-radius: 14px;
+}
+
+.calc-shell-header{
+  padding: 18px 20px 14px;
+}
+
+.calc-shell-title{
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+
+.calc-shell-subtitle{
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.calc-shell-body{
+  padding: 18px 20px 18px;
+}
+
+.calc-shell-footer{
+  padding: 10px 20px 12px;
+  font-size: 11px;
+}
+
+/* Sections */
+.calc-section{
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+}
+
+.calc-section:last-of-type{
+  margin-bottom: 14px;
+}
+
+.calc-section-label{
+  margin: 0 0 10px;
+  padding: 0 0 4px;
+  font-size: 12px;
+}
+
+/* Grids */
+.calc-grid{
+  gap: 10px;
+}
+
+/* Fields */
+.calc-field{
+  gap: 5px;
+}
+
+.calc-field label{
+  font-size: 13px;
+}
+
+.calc-field .unit{
+  font-size: 11px;
+}
+
+.calc-field input,
+.calc-field select,
+.calc-field textarea{
+  padding: 9px 11px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+/* Buttons */
+.calc-btn-row{
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.calc-btn{
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.calc-btn-primary{
+  min-width: 130px;
+}
+
+/* Results */
+.calc-results{
+  gap: 10px;
+}
+
+.calc-result-card{
+  padding: 12px 12px 10px;
+  min-height: 88px;
+  border-radius: 10px;
+}
+
+.calc-result-name{
+  margin: 0 0 6px;
+  font-size: 11px;
+}
+
+.calc-result-value{
+  font-size: 22px;
+}
+
+.calc-result-unit{
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Notices and notes */
+.calc-notice{
+  padding: 10px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.calc-notes{
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.calc-notes p{
+  margin: 0 0 6px;
+}
+
+/* Mobile tightening too */
+@media (max-width: 640px){
+  .calc-page{
+    margin: 12px auto;
+    padding: 0 10px 18px;
+  }
+
+  .calc-shell-header{
+    padding: 16px 14px 12px;
+  }
+
+  .calc-shell-body{
+    padding: 14px;
+  }
+
+  .calc-shell-footer{
+    padding: 9px 14px 11px;
+  }
+
+  .calc-shell-title{
+    font-size: 19px;
+  }
+
+  .calc-shell-subtitle{
+    font-size: 13px;
+  }
+
+  .calc-result-value{
+    font-size: 20px;
+  }
+}

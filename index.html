@@ -4,224 +4,707 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Diving Toolkit</title>
-  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="preconnect" href="https://unpkg.com">
   <style>
-    .page-home-compact{padding:20px 0 34px}
-    .compact-hero{background:linear-gradient(135deg,var(--navy-dark),var(--navy));color:#fff;border-radius:14px;box-shadow:var(--shadow);padding:22px 22px 20px;margin-bottom:24px}
-    .compact-hero h2{margin:0 0 8px;font-size:22px;line-height:1.15}
-    .compact-hero p{margin:0;max-width:760px;color:rgba(255,255,255,.9);font-size:15px;line-height:1.45}
-    .group-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
-    .group-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
-    .group-card.emergency{border-color:#e5b7b7;background:#fff9f9}
-    .group-toggle{width:100%;border:none;background:transparent;text-align:left;padding:15px 16px 14px;cursor:pointer;display:flex;align-items:start;justify-content:space-between;gap:14px}
-    .group-toggle:hover{background:rgba(11,63,120,.03)}
-    .group-card.emergency .group-toggle:hover{background:rgba(168,44,44,.03)}
-    .group-text h3{margin:0 0 4px;font-size:20px;line-height:1.15;color:var(--navy)}
-    .group-card.emergency .group-text h3{color:#8f1d1d}
-    .group-meta{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
-    .group-count{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;background:rgba(11,63,120,.08);color:var(--navy);font-size:13px;font-weight:700;flex-shrink:0}
-    .group-card.emergency .group-count{background:rgba(143,29,29,.08);color:#8f1d1d}
-    .group-panel{display:none;border-top:1px solid var(--line);padding:8px 12px 12px;background:#fbfdff}
-    .group-card.open .group-panel{display:block}
-    .group-grid{display:grid;grid-template-columns:1fr;gap:10px}
-    .tool-mini{display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 13px 11px;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease}
-    .tool-mini:hover{transform:translateY(-1px);border-color:#bfd0e3;box-shadow:0 8px 18px rgba(10,30,60,.08)}
-    .tool-mini strong{display:block;margin:0 0 4px;color:var(--navy);font-size:17px;line-height:1.2}
-    .tool-mini span{display:block;color:var(--muted);font-size:13px;line-height:1.35}
-    .section-slim{margin-top:28px}
-    .section-slim h2{margin:0 0 6px;font-size:28px;color:var(--navy-dark)}
-    .section-slim p{margin:0 0 14px;color:var(--muted);font-size:14px}
-    .section-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-    .section-link-card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px 16px 14px;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease}
-    .section-link-card:hover{transform:translateY(-1px);border-color:#bfd0e3;box-shadow:0 8px 18px rgba(10,30,60,.08)}
-    .section-link-card h3{margin:0 0 6px;color:var(--navy);font-size:20px;line-height:1.2}
-    .section-link-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
-    @media (max-width:980px){.group-layout,.section-links{grid-template-columns:1fr}}
-    @media (max-width:680px){
-      .page-home-compact{padding:14px 0 24px}
-      .compact-hero{padding:18px 16px;margin-bottom:18px}
-      .compact-hero h2{font-size:20px}
-      .group-toggle{padding:13px 14px 12px}
-      .group-text h3{font-size:18px}
-      .tool-mini{padding:11px 12px 10px}
-      .tool-mini strong{font-size:16px}
-      .section-slim{margin-top:22px}
-      .section-slim h2{font-size:24px}
+    :root{
+      --bg:#edf2f7;
+      --panel:#0f2740;
+      --panel-2:#143252;
+      --panel-3:#1a3f67;
+      --surface:rgba(255,255,255,0.62);
+      --surface-2:rgba(255,255,255,0.74);
+      --surface-dark:rgba(11,26,43,0.78);
+      --text:#17324c;
+      --muted:#607489;
+      --line:rgba(255,255,255,0.42);
+      --line-dark:rgba(16,39,64,0.12);
+      --blue:#0d3f78;
+      --blue-2:#0b315f;
+      --yellow:#f2d200;
+      --red-soft:rgba(171,43,43,0.08);
+      --red-line:rgba(171,43,43,0.24);
+      --shadow:0 14px 34px rgba(17,34,56,0.10);
+      --shadow-soft:0 8px 20px rgba(17,34,56,0.07);
+      --radius-xl:24px;
+      --radius-lg:18px;
+      --radius-md:14px;
+      --radius-sm:10px;
+      --maxw:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.88), transparent 42%),
+        linear-gradient(180deg, #f5f8fb 0%, var(--bg) 100%);
+      min-height:100vh;
+    }
+
+    a{text-decoration:none;color:inherit}
+
+    .container{
+      width:min(var(--maxw), calc(100% - 28px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background:rgba(10,34,61,0.88);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 6px 20px rgba(8,22,38,0.14);
+    }
+
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:14px 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .brand-mark{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      color:var(--yellow);
+      font-size:24px;
+      font-weight:800;
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+      flex-shrink:0;
+    }
+
+    .brand-text{min-width:0}
+    .brand-text h1{
+      margin:0;
+      font-size:17px;
+      color:#fff;
+      line-height:1.1;
+      letter-spacing:.01em;
+    }
+    .brand-text p{
+      margin:3px 0 0;
+      font-size:12px;
+      color:rgba(255,255,255,0.74);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:460px;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+    }
+
+    .nav a{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:38px;
+      padding:0 12px;
+      border-radius:999px;
+      color:rgba(255,255,255,0.88);
+      font-size:14px;
+      font-weight:700;
+      border:1px solid transparent;
+    }
+
+    .nav a.active,
+    .nav a:hover{
+      background:rgba(255,255,255,0.08);
+      border-color:rgba(255,255,255,0.08);
+      color:#fff;
+    }
+
+    .page{
+      padding:22px 0 30px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:var(--radius-xl);
+      background:
+        linear-gradient(135deg, rgba(9,35,63,0.96), rgba(17,59,104,0.90));
+      color:#fff;
+      box-shadow:var(--shadow);
+      padding:24px 24px 22px;
+      margin-bottom:20px;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.14), transparent 36%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), transparent 35%);
+      pointer-events:none;
+    }
+
+    .hero h2{
+      position:relative;
+      margin:0 0 8px;
+      font-size:31px;
+      line-height:1.05;
+      letter-spacing:-0.03em;
+    }
+
+    .hero p{
+      position:relative;
+      margin:0;
+      max-width:780px;
+      color:rgba(255,255,255,0.90);
+      font-size:15px;
+      line-height:1.45;
+    }
+
+    .intro-row{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:18px;
+      margin:0 0 12px;
+    }
+
+    .intro-row h3{
+      margin:0 0 4px;
+      font-size:17px;
+      color:var(--blue-2);
+    }
+
+    .intro-row p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .glass-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+    }
+
+    .group{
+      border-radius:var(--radius-lg);
+      background:linear-gradient(180deg, var(--surface-2), var(--surface));
+      border:1px solid rgba(255,255,255,0.55);
+      box-shadow:var(--shadow-soft);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .group:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,0.18), transparent 30%);
+      pointer-events:none;
+    }
+
+    .group.emergency{
+      background:linear-gradient(180deg, rgba(255,249,249,0.82), rgba(255,241,241,0.72));
+      border-color:var(--red-line);
+    }
+
+    .group-toggle{
+      width:100%;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      padding:14px 16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      text-align:left;
+      position:relative;
+      z-index:1;
+    }
+
+    .group-toggle:hover{background:rgba(255,255,255,0.10)}
+    .group-info{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      min-width:0;
+    }
+
+    .group-icon{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:rgba(13,63,120,0.08);
+      color:var(--blue);
+      flex-shrink:0;
+      border:1px solid rgba(13,63,120,0.08);
+    }
+
+    .group.emergency .group-icon{
+      background:rgba(171,43,43,0.08);
+      color:#9d2020;
+      border-color:rgba(171,43,43,0.10);
+    }
+
+    .group-copy{min-width:0}
+    .group-copy h4{
+      margin:1px 0 3px;
+      font-size:16px;
+      line-height:1.12;
+      color:var(--blue-2);
+    }
+    .group.emergency .group-copy h4{color:#9d2020}
+    .group-copy p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .group-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .count{
+      min-width:26px;
+      height:26px;
+      padding:0 8px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:rgba(13,63,120,0.08);
+      color:var(--blue);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .group.emergency .count{
+      background:rgba(171,43,43,0.08);
+      color:#9d2020;
+    }
+
+    .chev{
+      width:28px;height:28px;border-radius:999px;
+      display:grid;place-items:center;
+      color:var(--muted);
+      transition:transform .18s ease;
+    }
+
+    .group.open .chev{transform:rotate(180deg)}
+
+    .group-panel{
+      display:none;
+      border-top:1px solid var(--line-dark);
+      padding:8px 10px 10px;
+      position:relative;
+      z-index:1;
+    }
+
+    .group.open .group-panel{display:block}
+
+    .tool-list{
+      display:grid;
+      gap:8px;
+    }
+
+    .tool-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.42);
+      border:1px solid rgba(16,39,64,0.08);
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+      min-height:62px;
+    }
+
+    .tool-row:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,0.66);
+      border-color:rgba(13,63,120,0.16);
+    }
+
+    .tool-row-left{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      min-width:0;
+    }
+
+    .tool-badge{
+      width:28px;height:28px;border-radius:10px;flex-shrink:0;
+      display:grid;place-items:center;
+      background:rgba(13,63,120,0.08);
+      color:var(--blue);
+    }
+
+    .tool-row strong{
+      display:block;
+      margin:1px 0 3px;
+      font-size:14px;
+      color:var(--blue-2);
+      line-height:1.2;
+    }
+
+    .tool-row span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.32;
+    }
+
+    .open-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      background:rgba(13,63,120,0.08);
+      color:var(--blue);
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      align-self:center;
+      flex-shrink:0;
+    }
+
+    .quick-links{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+
+    .quick-card{
+      border-radius:16px;
+      background:linear-gradient(180deg, var(--surface-2), var(--surface));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border:1px solid rgba(255,255,255,0.55);
+      box-shadow:var(--shadow-soft);
+      padding:14px 15px;
+      transition:transform .12s ease, border-color .12s ease;
+    }
+
+    .quick-card:hover{
+      transform:translateY(-1px);
+      border-color:rgba(13,63,120,0.16);
+    }
+
+    .quick-card h5{
+      margin:0 0 4px;
+      font-size:16px;
+      color:var(--blue-2);
+    }
+
+    .quick-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .footer{
+      margin-top:18px;
+      padding:12px 0 8px;
+      border-top:1px solid rgba(16,39,64,0.08);
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    @media (max-width: 980px){
+      .glass-grid,
+      .quick-links{grid-template-columns:1fr}
+      .hero h2{font-size:27px}
+    }
+
+    @media (max-width: 700px){
+      .container{width:min(var(--maxw), calc(100% - 18px))}
+      .topbar-inner{padding:11px 0;align-items:flex-start;flex-direction:column}
+      .nav{width:100%;justify-content:flex-start}
+      .brand-text h1{font-size:16px}
+      .brand-text p{white-space:normal;max-width:none}
+      .page{padding:14px 0 20px}
+      .hero{padding:18px 16px 16px;margin-bottom:16px}
+      .hero h2{font-size:22px}
+      .hero p{font-size:14px}
+      .intro-row{display:block}
+      .intro-row p{margin-top:3px}
+      .group-toggle{padding:12px 13px}
+      .group-copy h4{font-size:15px}
+      .group-panel{padding:8px}
+      .tool-row{padding:10px}
+      .tool-row strong{font-size:13px}
+      .tool-row span{font-size:11px}
+      .quick-links{margin-top:16px}
+      .footer{flex-direction:column;align-items:flex-start}
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
+  <header class="topbar">
+    <div class="container topbar-inner">
       <div class="brand">
         <div class="brand-mark">∩</div>
-        <div>
+        <div class="brand-text">
           <h1>Diving Toolkit</h1>
-          <p class="tagline">Operational calculators, emergency tools, familiarisations and reference material</p>
+          <p>Operational calculators, emergency tools, familiarisations and reference material</p>
         </div>
       </div>
-      <nav class="top-nav" aria-label="Main navigation">
-        <a href="index.html" class="active">Home</a>
-        <a href="tools/">Calculators</a>
-        <a href="emergency/bailout-opened-while-on-nitrox.html">Emergency</a>
-        <a href="familiarisations/">Familiarisations</a>
-        <a href="documents/">Documents</a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="active">Home</a>
+        <a href="#">Calculators</a>
+        <a href="#">Emergency</a>
+        <a href="#">Familiarisations</a>
+        <a href="#">Documents</a>
       </nav>
     </div>
   </header>
 
-  <main class="page-home-compact">
+  <main class="page">
     <div class="container">
-      <section class="compact-hero">
+      <section class="hero">
         <h2>Practical diving tools in one place</h2>
-        <p>Compact grouped access to calculators, nitrox emergency tools, familiarisation material, systems support tools and reference documents. Built to stay clean on desktop and smartphone.</p>
+        <p>Clean grouped access to gas, oxygen exposure and nitrox emergency tools, with room for familiarisations, systems support tools and reference documents.</p>
       </section>
 
-      <section>
-        <div class="section-heading">
-          <h2>Calculator Groups</h2>
-          <p>Open one group at a time to keep the page tidy and quick to scan.</p>
+      <div class="intro-row">
+        <div>
+          <h3>Calculator Groups</h3>
+          <p>Compact dark-panel inspired accordion with restrained corporate colors and mobile-friendly density.</p>
         </div>
+      </div>
 
-        <div class="group-layout">
-          <article class="group-card open" data-group>
-            <button class="group-toggle" type="button" aria-expanded="true">
-              <div class="group-text">
-                <h3>Gas / Nitrox</h3>
-                <p class="group-meta">Core breathing gas calculations and table support tools.</p>
-              </div>
-              <span class="group-count">3</span>
-            </button>
-            <div class="group-panel">
-              <div class="group-grid">
-                <a class="tool-mini" href="calculators/ead-and-table-depth-selection.html"><strong>EAD + Table Depth</strong><span>Equivalent air depth with exact Safety EAD and DacDoDat table lookup.</span></a>
-                <a class="tool-mini" href="calculators/daltons-law-calculations.html"><strong>Dalton’s Law</strong><span>Three-value solver for depth, partial pressure and O₂ percentage.</span></a>
-                <a class="tool-mini" href="calculators/bailout-endurance.html"><strong>Bailout Endurance</strong><span>Available bailout time at depth and maximum umbilical deployment.</span></a>
+      <section class="glass-grid">
+        <article class="group open" data-group>
+          <button class="group-toggle" type="button" aria-expanded="true">
+            <div class="group-info">
+              <div class="group-icon" data-icon="flask-conical"></div>
+              <div class="group-copy">
+                <h4>Gas / Nitrox</h4>
+                <p>Core breathing gas calculations and table support tools.</p>
               </div>
             </div>
-          </article>
+            <div class="group-actions">
+              <div class="count">3</div>
+              <div class="chev" data-icon="chevron-down"></div>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="#">
+                <div class="tool-row-left">
+                  <div class="tool-badge" data-icon="ruler"></div>
+                  <div>
+                    <strong>EAD + Table Depth</strong>
+                    <span>Equivalent air depth with exact Safety EAD and DacDoDat lookup.</span>
+                  </div>
+                </div>
+                <div class="open-pill">Open</div>
+              </a>
+              <a class="tool-row" href="#">
+                <div class="tool-row-left">
+                  <div class="tool-badge" data-icon="sigma"></div>
+                  <div>
+                    <strong>Dalton’s Law</strong>
+                    <span>Three-value solver for depth, pO₂ and O₂ percentage.</span>
+                  </div>
+                </div>
+                <div class="open-pill">Open</div>
+              </a>
+              <a class="tool-row" href="#">
+                <div class="tool-row-left">
+                  <div class="tool-badge" data-icon="timer"></div>
+                  <div>
+                    <strong>Bailout Endurance</strong>
+                    <span>Available bailout time at depth and max umbilical deployment.</span>
+                  </div>
+                </div>
+                <div class="open-pill">Open</div>
+              </a>
+            </div>
+          </div>
+        </article>
 
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-text">
-                <h3>Oxygen Exposure</h3>
-                <p class="group-meta">Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
-              </div>
-              <span class="group-count">6</span>
-            </button>
-            <div class="group-panel">
-              <div class="group-grid">
-                <a class="tool-mini" href="calculators/calculate-otu-and-esot.html"><strong>OTU</strong><span>Calculate oxygen toxicity units from time and partial pressure.</span></a>
-                <a class="tool-mini" href="calculators/calculate-otu-and-esot.html"><strong>ESOT</strong><span>Calculate equivalent surface oxygen time from time and partial pressure.</span></a>
-                <a class="tool-mini" href="calculators/otu-esot-converter.html"><strong>OTU / ESOT Converter</strong><span>Convert exposure values between OTU and ESOT at a selected pO₂.</span></a>
-                <a class="tool-mini" href="calculators/esot-recovery-calculator.html"><strong>ESOT Recovery</strong><span>Model residual ESOT after a recovery period.</span></a>
-                <a class="tool-mini" href="calculators/multi-segment-otu-esot.html"><strong>Multi-Segment OTU / ESOT</strong><span>Accumulate multiple exposure segments in one calculation.</span></a>
-                <a class="tool-mini" href="calculators/vital-capacity-reduction-calculator.html"><strong>Vital Capacity Reduction</strong><span>Estimate reduction trend from accumulated oxygen exposure.</span></a>
+        <article class="group" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-info">
+              <div class="group-icon" data-icon="activity"></div>
+              <div class="group-copy">
+                <h4>Oxygen Exposure</h4>
+                <p>Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
               </div>
             </div>
-          </article>
+            <div class="group-actions">
+              <div class="count">6</div>
+              <div class="chev" data-icon="chevron-down"></div>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="gauge"></div><div><strong>OTU</strong><span>Calculate oxygen toxicity units from time and partial pressure.</span></div></div><div class="open-pill">Open</div></a>
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="gauge-circle"></div><div><strong>ESOT</strong><span>Equivalent surface oxygen time calculation.</span></div></div><div class="open-pill">Open</div></a>
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="repeat"></div><div><strong>OTU / ESOT Converter</strong><span>Convert between OTU and ESOT at selected pO₂.</span></div></div><div class="open-pill">Open</div></a>
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="refresh-cw"></div><div><strong>ESOT Recovery</strong><span>Model residual ESOT after recovery time.</span></div></div><div class="open-pill">Open</div></a>
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="layers-3"></div><div><strong>Multi-Segment OTU / ESOT</strong><span>Accumulate multiple exposure segments in one run.</span></div></div><div class="open-pill">Open</div></a>
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="lungs"></div><div><strong>Vital Capacity Reduction</strong><span>Estimate reduction trend from accumulated exposure.</span></div></div><div class="open-pill">Open</div></a>
+            </div>
+          </div>
+        </article>
 
-          <article class="group-card emergency" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-text">
-                <h3>Nitrox Emergencies</h3>
-                <p class="group-meta">Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
-              </div>
-              <span class="group-count">2</span>
-            </button>
-            <div class="group-panel">
-              <div class="group-grid">
-                <a class="tool-mini" href="emergency/nitrox-failure-switch-to-air.html"><strong>Nitrox Failure Switch to Air</strong><span>Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.</span></a>
-                <a class="tool-mini" href="emergency/bailout-opened-while-on-nitrox.html"><strong>Bailout Opened While on Nitrox</strong><span>Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.</span></a>
+        <article class="group emergency" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-info">
+              <div class="group-icon" data-icon="shield-alert"></div>
+              <div class="group-copy">
+                <h4>Nitrox Emergencies</h4>
+                <p>Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
               </div>
             </div>
-          </article>
+            <div class="group-actions">
+              <div class="count">2</div>
+              <div class="chev" data-icon="chevron-down"></div>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="arrow-left-right"></div><div><strong>Nitrox Failure Switch to Air</strong><span>Compute adjusted actual O₂, EAD and pO₂ after nitrox loss.</span></div></div><div class="open-pill">Open</div></a>
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="siren"></div><div><strong>Bailout Opened While on Nitrox</strong><span>Compute blended actual O₂, EAD and pO₂ after bailout opening.</span></div></div><div class="open-pill">Open</div></a>
+            </div>
+          </div>
+        </article>
 
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-text">
-                <h3>Familiarisations</h3>
-                <p class="group-meta">Training material, familiarisation sheets and read-through packs.</p>
-              </div>
-              <span class="group-count">→</span>
-            </button>
-            <div class="group-panel">
-              <div class="group-grid">
-                <a class="tool-mini" href="familiarisations/"><strong>Open Familiarisations</strong><span>Access familiarisation sheets and grouped training material.</span></a>
+        <article class="group" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-info">
+              <div class="group-icon" data-icon="book-open"></div>
+              <div class="group-copy">
+                <h4>Familiarisations</h4>
+                <p>Training material, familiarisation sheets and read-through packs.</p>
               </div>
             </div>
-          </article>
+            <div class="group-actions">
+              <div class="count">→</div>
+              <div class="chev" data-icon="chevron-down"></div>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="book-text"></div><div><strong>Open Familiarisations</strong><span>Access grouped training material and familiarisation sheets.</span></div></div><div class="open-pill">Open</div></a>
+            </div>
+          </div>
+        </article>
 
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-text">
-                <h3>Systems &amp; Tools</h3>
-                <p class="group-meta">Larger programs, support tools and future processing applications.</p>
-              </div>
-              <span class="group-count">→</span>
-            </button>
-            <div class="group-panel">
-              <div class="group-grid">
-                <a class="tool-mini" href="tools/"><strong>Open Systems &amp; Tools</strong><span>Browse calculators, support tools and future processing applications.</span></a>
+        <article class="group" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-info">
+              <div class="group-icon" data-icon="wrench"></div>
+              <div class="group-copy">
+                <h4>Systems &amp; Tools</h4>
+                <p>Larger programs, support tools and future processing applications.</p>
               </div>
             </div>
-          </article>
+            <div class="group-actions">
+              <div class="count">→</div>
+              <div class="chev" data-icon="chevron-down"></div>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="blocks"></div><div><strong>Open Systems &amp; Tools</strong><span>Browse larger support tools and future processing applications.</span></div></div><div class="open-pill">Open</div></a>
+            </div>
+          </div>
+        </article>
 
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-text">
-                <h3>Documents</h3>
-                <p class="group-meta">Reference documents, manuals, packs and supporting information.</p>
-              </div>
-              <span class="group-count">→</span>
-            </button>
-            <div class="group-panel">
-              <div class="group-grid">
-                <a class="tool-mini" href="documents/"><strong>Open Documents</strong><span>Open the document index and grouped reference material.</span></a>
+        <article class="group" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-info">
+              <div class="group-icon" data-icon="file-text"></div>
+              <div class="group-copy">
+                <h4>Documents</h4>
+                <p>Reference documents, manuals, packs and supporting information.</p>
               </div>
             </div>
-          </article>
-        </div>
+            <div class="group-actions">
+              <div class="count">→</div>
+              <div class="chev" data-icon="chevron-down"></div>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="#"><div class="tool-row-left"><div class="tool-badge" data-icon="folder-open"></div><div><strong>Open Documents</strong><span>Open grouped manuals, packs and linked reference material.</span></div></div><div class="open-pill">Open</div></a>
+            </div>
+          </div>
+        </article>
       </section>
 
-      <section class="section-slim">
-        <h2>Quick Access</h2>
-        <p>Direct entry points to the wider system without opening a group first.</p>
-        <div class="section-links">
-          <a class="section-link-card" href="familiarisations/"><h3>Familiarisations</h3><p>Training sheets, read-through material and grouped operational learning pages.</p></a>
-          <a class="section-link-card" href="tools/"><h3>Systems &amp; Tools</h3><p>Calculator launcher, support utilities and future larger applications.</p></a>
-          <a class="section-link-card" href="documents/"><h3>Documents</h3><p>Reference material, manuals, packs and future linked document libraries.</p></a>
-        </div>
+      <section class="quick-links">
+        <a class="quick-card" href="#"><h5>Familiarisations</h5><p>Training sheets, grouped learning pages and read-through material.</p></a>
+        <a class="quick-card" href="#"><h5>Systems &amp; Tools</h5><p>Calculator launcher, support utilities and future larger applications.</p></a>
+        <a class="quick-card" href="#"><h5>Documents</h5><p>Reference packs, manuals and future linked libraries.</p></a>
       </section>
+
+      <footer class="footer">
+        <span>Diving Toolkit</span>
+        <span>Dark panel / compact glass homepage concept</span>
+      </footer>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <span>Diving Toolkit</span>
-      <span>Compact grouped homepage</span>
-    </div>
-  </footer>
+  <script type="module">
+    import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+    createIcons({ icons });
 
-  <script>
-    (function () {
-      const groups = Array.from(document.querySelectorAll('[data-group]'));
-      groups.forEach(group => {
-        const button = group.querySelector('.group-toggle');
-        button.addEventListener('click', function () {
-          const isOpen = group.classList.contains('open');
-          groups.forEach(g => {
-            g.classList.remove('open');
-            const b = g.querySelector('.group-toggle');
-            if (b) b.setAttribute('aria-expanded', 'false');
-          });
-          if (!isOpen) {
-            group.classList.add('open');
-            button.setAttribute('aria-expanded', 'true');
-          }
+    const groups = [...document.querySelectorAll('[data-group]')];
+    groups.forEach(group => {
+      const button = group.querySelector('.group-toggle');
+      button.addEventListener('click', () => {
+        const open = group.classList.contains('open');
+        groups.forEach(g => {
+          g.classList.remove('open');
+          g.querySelector('.group-toggle')?.setAttribute('aria-expanded', 'false');
         });
+        if (!open) {
+          group.classList.add('open');
+          button.setAttribute('aria-expanded', 'true');
+        }
       });
-    })();
+    });
   </script>
 </body>
 </html>

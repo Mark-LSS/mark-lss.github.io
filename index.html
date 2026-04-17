@@ -157,6 +157,105 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .srch-name{font-size:13px;color:var(--txt)}
 .srch-path{font-size:11px;color:var(--txt3);margin-top:1px}
 .srch-none{padding:16px;text-align:center;color:var(--txt3);font-size:13px}
+
+/* ── MOBILE HAMBURGER (hidden on desktop) ── */
+.hamb{display:none;width:34px;height:32px;border:1px solid var(--bdr);background:var(--bg);border-radius:var(--r);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;margin-right:4px;color:var(--txt);padding:0}
+.hamb svg{display:block}
+.hamb:hover{background:var(--bg3)}
+#nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+
+/* ────────────────────────────────────────────
+   RESPONSIVE — PHONE / NARROW TABLET (≤780px)
+   ──────────────────────────────────────────── */
+@media (max-width:780px){
+  html,body{overflow:auto;font-size:14px}
+  #app{height:auto;min-height:100vh}
+
+  /* compact title bar — hide macOS dots + url label */
+  #title-bar{height:38px;padding:0 10px;gap:8px}
+  .tb-wins{display:none}
+  .tb-title{font-size:12px;line-height:1.15;white-space:normal}
+  .tb-url{display:none}
+  .tb-logo{font-size:10px;padding:3px 7px}
+
+  /* hide decorative menu bar on phones */
+  #menu-bar{display:none}
+
+  /* toolbar: horizontal scroll, larger tap targets */
+  #toolbar{height:46px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:0 6px}
+  #toolbar::-webkit-scrollbar{height:0;display:none}
+  .tb{height:34px;font-size:13px;padding:0 11px;flex-shrink:0}
+  .tb-sep{display:none}
+  .hamb{display:inline-flex}
+  #srch-wrap{display:none}
+
+  /* BODY: full-height minus chrome */
+  #body{height:calc(100vh - 84px)}   /* title 38 + toolbar 46 */
+
+  /* Nav becomes a fixed drawer, 85% of viewport */
+  #nav{
+    position:fixed;top:0;left:0;bottom:0;
+    width:86vw;min-width:0;max-width:340px;
+    height:100vh;z-index:100;
+    transform:translateX(-105%);
+    transition:transform .25s ease;
+    box-shadow:2px 0 24px rgba(0,0,0,.35);
+    background:var(--bg);
+  }
+  #nav.open{transform:translateX(0)}
+  #nav.col{width:86vw;min-width:0;transform:translateX(-105%)}
+  #nav-icons{display:none !important}
+  .nav-top{height:44px}
+  .nav-top-lbl{font-size:12px}
+  .nav-col-btn{width:32px;height:32px;font-size:13px}
+  #nav-scroll{display:block !important}
+
+  /* bigger tap targets in nav */
+  .ts-hdr{height:44px;font-size:15px}
+  .ts-ico{font-size:16px}
+  .tg-hdr{height:34px;font-size:11.5px;padding-left:30px}
+  .ti,.tfi{height:40px;font-size:14.5px}
+
+  /* backdrop for drawer */
+  body.mob-nav-open #nav-backdrop{display:block}
+
+  /* Main area: full width, stack tiles vertically */
+  #main{width:100%;min-width:0}
+  #tile-grid.c0,#tile-grid.c1,#tile-grid.c2,#tile-grid.c3,#tile-grid.c4{
+    grid-template-columns:1fr !important;
+    grid-auto-rows:minmax(calc(100vh - 160px),auto);
+  }
+  .calc-tile{min-height:calc(100vh - 170px)}
+
+  /* Tab bar scrollable */
+  #tab-bar{overflow-x:auto;scrollbar-width:none}
+  #tab-bar::-webkit-scrollbar{display:none}
+  .stab{min-width:140px;font-size:13px}
+
+  /* Home tile: tighten */
+  .home-tile{padding:24px 16px;gap:10px}
+  .home-banner-sm{padding:14px 16px;gap:12px}
+  .home-logo-sm{font-size:15px;padding:6px 11px}
+  .home-ttl-sm{font-size:14px}
+  .home-sub-sm{font-size:11.5px;line-height:1.4}
+
+  /* Tile header: bigger close button */
+  .tile-hdr{height:38px;padding:0 8px}
+  .tile-hdr-lbl{font-size:13px}
+  .tile-close{width:28px;height:28px;font-size:16px}
+  .tile-hdr-ext{padding:4px 8px;font-size:11px}
+
+  /* Status bar: simplify */
+  #sb{height:28px;gap:10px;padding:0 10px;flex-wrap:nowrap;overflow:hidden}
+  .sb-i{font-size:10.5px}
+  .sb-r{display:none}
+  .sb-i:nth-child(2){display:none}  /* hide BMS rev badge */
+
+  /* Search overlay: full-width on mobile */
+  #srch-ol{padding-top:30px;padding-left:10px;padding-right:10px}
+  .srch-box{width:100%;max-width:560px}
+  .srch-in-row input{font-size:16px}  /* avoid iOS zoom-on-focus */
+}
 </style>
 </head>
 <body>
@@ -186,6 +285,9 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <button class="mb">Help</button>
   </div>
   <div id="toolbar">
+    <button class="hamb" onclick="mobileNavToggle()" aria-label="Open navigation menu">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="2" x2="17" y2="2"/><line x1="1" y1="7" x2="17" y2="7"/><line x1="1" y1="12" x2="17" y2="12"/></svg>
+    </button>
     <button class="tb primary" onclick="closeAll()">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5L1.5 7H3v7h4v-4h2v4h4V7h1.5L8 1.5z"/></svg>Home
     </button>
@@ -210,6 +312,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   </div>
 
   <div id="body">
+    <div id="nav-backdrop" onclick="mobileNavToggle()"></div>
     <div id="nav">
       <div class="nav-top">
         <span class="nav-top-lbl">Navigation</span>
@@ -299,6 +402,17 @@ let openItems=[];
 let navCol=false;
 function navToggle(){navCol=!navCol;document.getElementById('nav').classList.toggle('col',navCol);document.getElementById('nav-col-btn').textContent=navCol?'▶':'◀'}
 
+/* mobile drawer toggle — slides nav in/out on narrow screens */
+function mobileNavToggle(){
+  const nav=document.getElementById('nav');
+  const open=nav.classList.toggle('open');
+  document.body.classList.toggle('mob-nav-open',open);
+}
+function mobileNavClose(){
+  document.getElementById('nav').classList.remove('open');
+  document.body.classList.remove('mob-nav-open');
+}
+
 function buildTree(){
   const tree=document.getElementById('nav-tree'),icons=document.getElementById('nav-icons');
   tree.innerHTML=DATA.map((sec,si)=>{
@@ -314,7 +428,7 @@ function buildTree(){
 }
 function togSec(bid,secId,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
 function togGrp(bid,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
-function openSec(secId){const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=document.getElementById(bid),hdr=document.getElementById('sh_'+secId);if(b&&!b.classList.contains('on')){b.classList.add('on');hdr&&hdr.classList.add('on')}}
+function openSec(secId){const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=document.getElementById(bid),hdr=document.getElementById('sh_'+secId);if(b&&!b.classList.contains('on')){b.classList.add('on');hdr&&hdr.classList.add('on')}if(window.innerWidth<=780){const nav=document.getElementById('nav');nav.classList.add('open');document.body.classList.add('mob-nav-open')}}
 
 /* ── OPEN / CLOSE ITEMS ── */
 function pickItem(itemId){
@@ -323,6 +437,8 @@ function pickItem(itemId){
   /* highlight nav */
   document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
   document.getElementById('ti_'+itemId)?.classList.add('on');
+  /* on mobile, auto-dismiss the drawer after pick */
+  if(window.innerWidth<=780)mobileNavClose();
   /* already open? just focus (scroll tab into view) */
   if(openItems.find(x=>x.id===itemId)){render();return}
   /* max 4 tiles */
@@ -420,7 +536,7 @@ function srchRun(q){
   res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${it.group?' › '+it.group:''}</div></div></div>`).join('');
 }
 function srchPick(id){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML='';const item=IDX.find(x=>x.id===id);if(item){openSec(item.secId);pickItem(id)}}
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape')document.getElementById('srch-ol').classList.remove('on')});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape'){document.getElementById('srch-ol').classList.remove('on');mobileNavClose()}});
 
 buildTree();
 render();

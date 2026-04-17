@@ -1,261 +1,380 @@
----
-render_with_liquid: false
-layout: default
-title: Home
-footer_label: Compact grouped homepage
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diving Toolkit — N-Sea Operations Library</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DIVING TOOLKIT — Operations Library Shell
+   mark-lss.github.io / index.html
+   Navy #014782  ·  Yellow #FFEE02
+   Self-contained — no Jekyll layout required
+   ═══════════════════════════════════════════════════════════════ */
 
-<main class="page-home-compact">
-  <div class="container">
-    <section class="compact-hero">
-      <h2>Practical diving tools in one place</h2>
-      <p>Compact grouped access to gas, oxygen exposure and nitrox emergency tools, with clear entry points for familiarisations, systems support tools and reference documents.</p>
-    </section>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nb:#014782;--nb-h:#013a6b;--nb-l:#0a5a9c;
+  --nb-tint:#e6f0f9;--nb-tint2:#c8ddf0;--ny:#FFEE02;
+  --bg:#ffffff;--bg2:#f4f5f7;--bg3:#eceef2;
+  --txt:#1b1d20;--txt2:#56606e;--txt3:#8b96a3;
+  --bdr:#d6dae1;--bdr2:#b8bec8;
+  --r:6px;--r-lg:10px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1b1e23;--bg2:#22262d;--bg3:#292e38;
+    --txt:#e4e7ec;--txt2:#98a2b0;--txt3:#5c6575;
+    --bdr:#30363f;--bdr2:#444d5a;
+    --nb-tint:#0d2640;--nb-tint2:#133350;
+  }
+}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;color:var(--txt);background:var(--bg2)}
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-    <section>
-      <div class="section-heading">
-        <h2>Calculator Groups</h2>
-        <p>Open one group at a time to keep the page tidy and quick to scan.</p>
+/* TITLE BAR */
+#title-bar{background:var(--nb);height:36px;display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0;user-select:none}
+.tb-wins{display:flex;gap:7px}.tb-wins span{display:block;width:12px;height:12px;border-radius:50%}
+.tw-c{background:#ff5f57}.tw-m{background:#febc2e}.tw-x{background:#28c840}
+.tb-logo{background:var(--ny);color:var(--nb);font-weight:700;font-size:11px;padding:3px 8px;border-radius:3px;letter-spacing:.05em;flex-shrink:0}
+.tb-title{color:rgba(255,255,255,.85);font-size:13px;font-weight:400;flex:1}
+.tb-url{color:rgba(255,255,255,.35);font-size:11px}
+
+/* MENU BAR */
+#menu-bar{background:var(--nb-h);height:27px;display:flex;align-items:stretch;flex-shrink:0;border-bottom:1px solid rgba(0,0,0,.2)}
+.mb{padding:0 11px;color:rgba(255,255,255,.75);font-size:12px;cursor:pointer;display:flex;align-items:center;border:none;background:transparent;transition:background .1s,color .1s}
+.mb:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* TOOLBAR */
+#toolbar{background:var(--bg2);height:38px;border-bottom:1px solid var(--bdr);padding:0 8px;display:flex;align-items:center;gap:2px;flex-shrink:0}
+.tb{height:26px;padding:0 9px;border:1px solid transparent;border-radius:var(--r);background:transparent;color:var(--txt2);font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .12s;white-space:nowrap;text-decoration:none}
+.tb:hover{background:var(--bg);border-color:var(--bdr);color:var(--txt)}
+.tb.primary{background:var(--nb);color:#fff;border-color:var(--nb)}
+.tb.primary:hover{background:var(--nb-l)}
+.tb-sep{width:1px;height:20px;background:var(--bdr);margin:0 3px;flex-shrink:0}
+#srch-wrap{margin-left:auto;display:flex;align-items:center;border:1px solid var(--bdr);border-radius:var(--r);background:var(--bg);height:26px}
+#srch-wrap input{border:none;background:transparent;padding:0 8px;font-size:12.5px;color:var(--txt);outline:none;width:170px}
+#srch-wrap input::placeholder{color:var(--txt3)}
+.srch-ico{padding:0 6px;color:var(--txt3);font-size:13px}
+
+/* BODY */
+#body{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* LEFT NAV */
+#nav{width:228px;min-width:228px;background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;transition:width .2s,min-width .2s;flex-shrink:0}
+#nav.col{width:40px;min-width:40px}
+.nav-top{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 11px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.nav-top-lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3);white-space:nowrap;transition:opacity .15s}
+#nav.col .nav-top-lbl{opacity:0;pointer-events:none}
+.nav-col-btn{width:22px;height:22px;border-radius:4px;background:transparent;border:none;cursor:pointer;color:var(--txt3);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:background .1s}
+.nav-col-btn:hover{background:var(--bg3);color:var(--txt)}
+#nav-icons{display:none;flex-direction:column;align-items:center;padding:8px 0;gap:2px}
+#nav.col #nav-icons{display:flex}
+#nav.col #nav-scroll{display:none}
+.nic{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:5px;border:none;background:transparent;cursor:pointer;font-size:15px;color:var(--txt2);transition:background .1s}
+.nic:hover{background:var(--bg3)}
+#nav-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+#nav-scroll::-webkit-scrollbar{width:4px}
+#nav-scroll::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+
+/* TREE */
+.ts-hdr{display:flex;align-items:center;height:34px;padding:0 8px 0 9px;cursor:pointer;user-select:none;font-size:13px;font-weight:500;color:var(--txt);transition:background .1s;white-space:nowrap;overflow:hidden}
+.ts-hdr:hover{background:var(--bg3)}.ts-hdr.on{color:var(--nb)}
+.ts-chv{width:14px;height:14px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--txt3);transition:transform .15s;flex-shrink:0}
+.ts-hdr.on .ts-chv{transform:rotate(90deg);color:var(--nb)}
+.ts-ico{font-size:14px;width:20px;text-align:center;flex-shrink:0;margin:0 7px 0 1px}
+.ts-lbl{flex:1;overflow:hidden;text-overflow:ellipsis}
+.ts-body{display:none}.ts-body.on{display:block}
+.tg-hdr{display:flex;align-items:center;height:27px;padding:0 8px 0 26px;cursor:pointer;user-select:none;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);transition:background .1s,color .1s;white-space:nowrap;overflow:hidden}
+.tg-hdr:hover{background:var(--bg3);color:var(--txt2)}.tg-hdr.on{color:var(--nb-l)}
+.tg-chv{width:12px;height:12px;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--txt3);transition:transform .13s;flex-shrink:0;margin-right:4px}
+.tg-hdr.on .tg-chv{transform:rotate(90deg)}
+.tg-body{display:none}.tg-body.on{display:block}
+.ti{display:flex;align-items:center;height:30px;padding:0 8px 0 38px;font-size:12.5px;color:var(--txt2);cursor:pointer;border-left:2px solid transparent;transition:background .1s,color .1s,border-color .1s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ti:hover{background:var(--nb-tint);color:var(--nb);border-left-color:var(--nb-tint2)}
+.ti.on{background:var(--nb-tint);color:var(--nb);border-left-color:var(--nb);font-weight:500}
+.tfi{display:flex;align-items:center;height:30px;padding:0 8px 0 28px;font-size:12.5px;color:var(--txt2);cursor:pointer;border-left:2px solid transparent;transition:background .1s,color .1s,border-color .1s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tfi:hover{background:var(--nb-tint);color:var(--nb);border-left-color:var(--nb-tint2)}
+.tfi.on{background:var(--nb-tint);color:var(--nb);border-left-color:var(--nb);font-weight:500}
+
+/* MAIN PANEL */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#tabs{display:flex;align-items:stretch;background:var(--bg3);border-bottom:1px solid var(--bdr);height:36px;overflow-x:auto;overflow-y:hidden;flex-shrink:0}
+#tabs::-webkit-scrollbar{height:0}
+.tab{display:flex;align-items:center;gap:6px;padding:0 12px;font-size:12.5px;color:var(--txt2);cursor:pointer;white-space:nowrap;border-right:1px solid var(--bdr);border-bottom:2px solid transparent;background:var(--bg3);user-select:none;transition:background .1s,color .1s;min-width:110px;max-width:210px;flex-shrink:0}
+.tab:hover{background:var(--bg2);color:var(--txt)}
+.tab.on{background:var(--bg);color:var(--txt);border-bottom-color:var(--nb);font-weight:500}
+.tab-lbl{flex:1;overflow:hidden;text-overflow:ellipsis}
+.tab-x{width:15px;height:15px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--txt3);flex-shrink:0;line-height:1;transition:background .1s}
+.tab-x:hover{background:var(--bdr2);color:var(--txt)}
+#bc{height:29px;display:flex;align-items:center;gap:4px;padding:0 14px;border-bottom:1px solid var(--bdr);background:var(--bg2);font-size:11.5px;color:var(--txt3);flex-shrink:0}
+.bc-s{opacity:.45}.bc-c{color:var(--txt);font-weight:500}
+#content{flex:1;overflow-y:auto;background:var(--bg)}
+#content::-webkit-scrollbar{width:6px}
+#content::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+
+/* HOME */
+.home-wrap{padding:28px 28px 20px}
+.home-banner{background:var(--nb);border-radius:var(--r-lg);padding:22px 26px;display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.home-logo{background:var(--ny);color:var(--nb);font-weight:700;font-size:21px;padding:10px 16px;border-radius:var(--r);flex-shrink:0;letter-spacing:.03em}
+.home-ttl{color:#fff;font-size:17px;font-weight:500;margin-bottom:4px}
+.home-sub{color:rgba(255,255,255,.6);font-size:12.5px;line-height:1.55}
+.home-sh{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3);margin-bottom:10px}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px;margin-bottom:24px}
+.hc{border:1px solid var(--bdr);border-radius:var(--r-lg);padding:13px 15px;background:var(--bg);cursor:pointer;transition:border-color .12s,background .12s;display:flex;align-items:flex-start;gap:11px}
+.hc:hover{border-color:var(--nb);background:var(--nb-tint)}
+.hc-ico{width:34px;height:34px;border-radius:var(--r);background:var(--nb);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.hc-name{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:2px}
+.hc-ct{font-size:11.5px;color:var(--txt2)}
+
+/* ITEM SCREEN */
+.item-wrap{padding:24px 26px}
+.item-h1{font-size:19px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.item-path{font-size:12px;color:var(--txt3);margin-bottom:20px}
+.item-launch{border:1px solid var(--bdr);border-radius:var(--r-lg);background:var(--bg2);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.item-launch-name{font-size:14.5px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.item-launch-desc{font-size:12.5px;color:var(--txt2);line-height:1.5;max-width:560px}
+.open-btn{background:var(--nb);color:#fff;border:none;border-radius:var(--r);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;transition:background .12s}
+.open-btn:hover{background:var(--nb-l)}
+.open-btn.ph{background:var(--bg3);color:var(--txt3);border:1px solid var(--bdr);cursor:default}
+.item-meta{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;font-size:12.5px}
+.im-row{display:flex;border-bottom:1px solid var(--bdr)}.im-row:last-child{border-bottom:none}
+.im-k{width:150px;min-width:150px;padding:7px 12px;background:var(--bg2);color:var(--txt2);font-weight:500;border-right:1px solid var(--bdr)}
+.im-v{padding:7px 12px;color:var(--txt);flex:1;word-break:break-all}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:3px;font-weight:500}
+.tc{background:#dbeafe;color:#1d4ed8}.tt{background:#d1fae5;color:#065f46}
+.tk{background:#fef3c7;color:#92400e}.td{background:#f3e8ff;color:#6b21a8}
+.te{background:#fee2e2;color:#991b1b}.tp{background:var(--bg3);color:var(--txt3)}
+@media(prefers-color-scheme:dark){
+  .tc{background:#1e3a5f;color:#93c5fd}.tt{background:#064e3b;color:#6ee7b7}
+  .tk{background:#451a03;color:#fcd34d}.td{background:#3b0764;color:#c4b5fd}
+  .te{background:#450a0a;color:#fca5a5}
+}
+
+/* STATUS BAR */
+#sb{background:var(--nb);height:23px;display:flex;align-items:center;padding:0 11px;gap:14px;flex-shrink:0}
+.sb-i{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.65);white-space:nowrap}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--ny);flex-shrink:0}
+.sb-r{margin-left:auto}
+
+/* SEARCH OVERLAY */
+#srch-ol{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-start;justify-content:center;padding-top:70px}
+#srch-ol.on{display:flex}
+.srch-box{background:var(--bg);border:1px solid var(--bdr2);border-radius:var(--r-lg);width:540px;overflow:hidden}
+.srch-in-row{display:flex;align-items:center;padding:9px 13px;border-bottom:1px solid var(--bdr);gap:8px}
+.srch-in-row input{flex:1;border:none;background:transparent;font-size:15px;color:var(--txt);outline:none}
+.srch-esc{font-size:11px;color:var(--txt3);white-space:nowrap}
+.srch-res{padding:5px;max-height:340px;overflow-y:auto}
+.srch-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:var(--r);cursor:pointer;transition:background .1s}
+.srch-item:hover{background:var(--nb-tint)}
+.srch-item:hover .srch-name{color:var(--nb)}
+.srch-name{font-size:13px;color:var(--txt)}
+.srch-path{font-size:11px;color:var(--txt3);margin-top:1px}
+.srch-none{padding:16px;text-align:center;color:var(--txt3);font-size:13px}
+</style>
+</head>
+<body>
+<div id="srch-ol" onclick="srchClose(event)">
+  <div class="srch-box">
+    <div class="srch-in-row">
+      <span style="font-size:15px;color:var(--txt3)">⌕</span>
+      <input id="srch-inp" type="text" placeholder="Search library…" oninput="srchRun(this.value)">
+      <span class="srch-esc">ESC to close</span>
+    </div>
+    <div class="srch-res" id="srch-res"></div>
+  </div>
+</div>
+<div id="app">
+  <div id="title-bar">
+    <div class="tb-wins"><span class="tw-c"></span><span class="tw-m"></span><span class="tw-x"></span></div>
+    <span class="tb-logo">N-SEA</span>
+    <span class="tb-title">Diving Toolkit — Operational Library</span>
+    <span class="tb-url">mark-lss.github.io</span>
+  </div>
+  <div id="menu-bar">
+    <button class="mb">File</button>
+    <button class="mb">View</button>
+    <button class="mb">Tools</button>
+    <button class="mb" onclick="srchOpen()">Search <span style="opacity:.4;font-size:10.5px;margin-left:3px">Ctrl+K</span></button>
+    <button class="mb">Help</button>
+  </div>
+  <div id="toolbar">
+    <button class="tb primary" onclick="homeTab()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5L1.5 7H3v7h4v-4h2v4h4V7h1.5L8 1.5z"/></svg>Home
+    </button>
+    <div class="tb-sep"></div>
+    <button class="tb" onclick="openSec('calc')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Calculators
+    </button>
+    <button class="tb" onclick="openSec('emrg')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l6 12H2L8 2z"/><line x1="8" y1="7" x2="8" y2="10"/><circle cx="8" cy="12.5" r=".6" fill="currentColor"/></svg>Emergency
+    </button>
+    <button class="tb" onclick="openSec('fam')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><polygon points="3,2 13,8 3,14"/></svg>Familiarisations
+    </button>
+    <button class="tb" onclick="openSec('tools')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><circle cx="8" cy="8" r="6" stroke-dasharray="2.5 2.5"/></svg>Systems &amp; Tools
+    </button>
+    <button class="tb" onclick="openSec('docs')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="1" width="10" height="14" rx="1"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>Documents
+    </button>
+    <div class="tb-sep"></div>
+    <button class="tb" onclick="srchOpen()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><line x1="10" y1="10" x2="14" y2="14"/></svg>Search
+    </button>
+    <div id="srch-wrap"><span class="srch-ico">⌕</span><input type="text" placeholder="Quick search…" onfocus="srchOpen()" readonly></div>
+  </div>
+  <div id="body">
+    <div id="nav">
+      <div class="nav-top">
+        <span class="nav-top-lbl">Navigation</span>
+        <button class="nav-col-btn" id="nav-col-btn" onclick="navToggle()" title="Collapse">◀</button>
       </div>
-
-      <div class="group-layout">
-
-        <article class="group-card open" data-group>
-          <button class="group-toggle" type="button" aria-expanded="true">
-            <div class="group-copy">
-              <h3>Gas / Nitrox</h3>
-              <p>Core breathing gas calculations and table support tools.</p>
-            </div>
-            <div class="group-actions">
-              <span class="group-count">3</span>
-              <span class="group-chevron">⌄</span>
-            </div>
-          </button>
-          <div class="group-panel">
-            <div class="tool-list">
-              <a class="tool-row" href="/calculators/ead-and-table-depth-selection.html">
-                <div class="tool-row-copy">
-                  <strong>EAD + Table Depth</strong>
-                  <span>Equivalent air depth with exact Safety EAD and DacDoDat table lookup.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/calculators/daltons-law-calculations.html">
-                <div class="tool-row-copy">
-                  <strong>Dalton's Law</strong>
-                  <span>Three-value solver for depth, partial pressure and O₂ percentage.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/calculators/bailout-endurance.html">
-                <div class="tool-row-copy">
-                  <strong>Bailout Endurance</strong>
-                  <span>Available bailout time at depth and maximum umbilical deployment.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="group-card" data-group>
-          <button class="group-toggle" type="button" aria-expanded="false">
-            <div class="group-copy">
-              <h3>Oxygen Exposure</h3>
-              <p>Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
-            </div>
-            <div class="group-actions">
-              <span class="group-count">5</span>
-              <span class="group-chevron">⌄</span>
-            </div>
-          </button>
-          <div class="group-panel">
-            <div class="tool-list">
-              <a class="tool-row" href="/calculators/calculate-otu-and-esot.html">
-                <div class="tool-row-copy">
-                  <strong>OTU / ESOT</strong>
-                  <span>Single page for oxygen toxicity units and equivalent surface oxygen time.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/calculators/otu-esot-converter.html">
-                <div class="tool-row-copy">
-                  <strong>OTU / ESOT Converter</strong>
-                  <span>Convert exposure values between OTU and ESOT at selected pO₂.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/calculators/esot-recovery-calculator.html">
-                <div class="tool-row-copy">
-                  <strong>ESOT Recovery</strong>
-                  <span>Model residual ESOT after a recovery period.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/calculators/multi-segment-otu-esot.html">
-                <div class="tool-row-copy">
-                  <strong>Multi-Segment OTU / ESOT</strong>
-                  <span>Accumulate multiple exposure segments in one calculation.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/calculators/vital-capacity-reduction-calculator.html">
-                <div class="tool-row-copy">
-                  <strong>Vital Capacity Reduction</strong>
-                  <span>Estimate reduction trend from accumulated oxygen exposure.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="group-card emergency" data-group>
-          <button class="group-toggle" type="button" aria-expanded="false">
-            <div class="group-copy">
-              <h3>Nitrox Emergencies</h3>
-              <p>Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
-            </div>
-            <div class="group-actions">
-              <span class="group-count">2</span>
-              <span class="group-chevron">⌄</span>
-            </div>
-          </button>
-          <div class="group-panel">
-            <div class="tool-list">
-              <a class="tool-row" href="/emergency/nitrox-failure-switch-to-air.html">
-                <div class="tool-row-copy">
-                  <strong>Nitrox Failure Switch to Air</strong>
-                  <span>Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-              <a class="tool-row" href="/emergency/bailout-opened-while-on-nitrox.html">
-                <div class="tool-row-copy">
-                  <strong>Bailout Opened While on Nitrox</strong>
-                  <span>Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="group-card" data-group>
-          <button class="group-toggle" type="button" aria-expanded="false">
-            <div class="group-copy">
-              <h3>Familiarisations</h3>
-              <p>Interactive training modules and familiarisation packs.</p>
-            </div>
-            <div class="group-actions">
-              <span class="group-count">→</span>
-              <span class="group-chevron">⌄</span>
-            </div>
-          </button>
-          <div class="group-panel">
-            <div class="tool-list">
-              <a class="tool-row" href="/familiarisations/">
-                <div class="tool-row-copy">
-                  <strong>Open Familiarisations</strong>
-                  <span>Access familiarisation sheets and grouped training material.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="group-card" data-group>
-          <button class="group-toggle" type="button" aria-expanded="false">
-            <div class="group-copy">
-              <h3>Systems &amp; Tools</h3>
-              <p>Larger programs, support tools and future processing applications.</p>
-            </div>
-            <div class="group-actions">
-              <span class="group-count">→</span>
-              <span class="group-chevron">⌄</span>
-            </div>
-          </button>
-          <div class="group-panel">
-            <div class="tool-list">
-              <a class="tool-row" href="/tools/">
-                <div class="tool-row-copy">
-                  <strong>Open Systems &amp; Tools</strong>
-                  <span>Browse calculators, support tools and future processing applications.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="group-card" data-group>
-          <button class="group-toggle" type="button" aria-expanded="false">
-            <div class="group-copy">
-              <h3>Documents</h3>
-              <p>Reference documents, manuals, packs and supporting information.</p>
-            </div>
-            <div class="group-actions">
-              <span class="group-count">→</span>
-              <span class="group-chevron">⌄</span>
-            </div>
-          </button>
-          <div class="group-panel">
-            <div class="tool-list">
-              <a class="tool-row" href="/documents/">
-                <div class="tool-row-copy">
-                  <strong>Open Documents</strong>
-                  <span>Open grouped manuals, packs and linked reference material.</span>
-                </div>
-                <span class="tool-open">→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <section class="quick-links">
-      <a class="quick-card" href="/familiarisations/">
-        <h3>Familiarisations</h3>
-        <p>Training sheets, grouped learning pages and read-through material.</p>
-      </a>
-      <a class="quick-card" href="/tools/">
-        <h3>Systems &amp; Tools</h3>
-        <p>Calculator launcher, support utilities and future larger applications.</p>
-      </a>
-      <a class="quick-card" href="/documents/">
-        <h3>Documents</h3>
-        <p>Reference packs, manuals and future linked libraries.</p>
-      </a>
-    </section>
-
-    <div class="homepage-footer">
-      <span>Diving Toolkit</span>
-      <span>Compact grouped homepage</span>
+      <div id="nav-icons"></div>
+      <div id="nav-scroll"><div id="nav-tree"></div></div>
+    </div>
+    <div id="main">
+      <div id="tabs"></div>
+      <div id="bc"><span>Diving Toolkit</span></div>
+      <div id="content"></div>
     </div>
   </div>
-</main>
-
+  <div id="sb">
+    <div class="sb-i"><span class="sb-dot"></span>Online</div>
+    <div class="sb-i" id="sb-rev">BMS Rev 2.9</div>
+    <div class="sb-i" id="sb-sec">Operations Library</div>
+    <div class="sb-i sb-r">N-Sea Group · Offshore Diving Operations</div>
+  </div>
+</div>
 <script>
-(function(){
-  const groups = Array.from(document.querySelectorAll('[data-group]'));
-  groups.forEach(group => {
-    const button = group.querySelector('.group-toggle');
-    button.addEventListener('click', function(e){
-      if (e.target.closest('a')) return;
-      const isOpen = group.classList.contains('open');
-      groups.forEach(g => {
-        g.classList.remove('open');
-        const b = g.querySelector('.group-toggle');
-        if (b) b.setAttribute('aria-expanded','false');
-      });
-      if (!isOpen) {
-        group.classList.add('open');
-        button.setAttribute('aria-expanded','true');
-      }
-    });
-  });
-})();
+const DATA=[
+  {id:'calc',label:'Calculators',icon:'⊞',groups:[
+    {name:'Gas / Nitrox',items:[
+      {id:'ead',name:'EAD + Table Depth',tag:'tc',href:'/calculators/ead-and-table-depth-selection.html',desc:'Equivalent air depth with exact Safety EAD and DacDoDat table lookup.',rev:'—'},
+      {id:'dalton',name:"Dalton's Law",tag:'tc',href:'/calculators/daltons-law-calculations.html',desc:'Three-value solver for depth, partial pressure and O₂ percentage.',rev:'—'},
+      {id:'bailout',name:'Bailout Endurance',tag:'tc',href:'/calculators/bailout-endurance.html',desc:'Available bailout time at depth and maximum umbilical deployment.',rev:'—'}
+    ]},
+    {name:'Oxygen Exposure',items:[
+      {id:'otu',name:'OTU / ESOT',tag:'tc',href:'/calculators/calculate-otu-and-esot.html',desc:'Single page for oxygen toxicity units and equivalent surface oxygen time.',rev:'—'},
+      {id:'otuconv',name:'OTU / ESOT Converter',tag:'tc',href:'/calculators/otu-esot-converter.html',desc:'Convert exposure values between OTU and ESOT at selected pO₂.',rev:'—'},
+      {id:'esotrec',name:'ESOT Recovery',tag:'tc',href:'/calculators/esot-recovery-calculator.html',desc:'Model residual ESOT after a recovery period.',rev:'—'},
+      {id:'multiseg',name:'Multi-Segment OTU / ESOT',tag:'tc',href:'/calculators/multi-segment-otu-esot.html',desc:'Accumulate multiple exposure segments in one calculation.',rev:'—'},
+      {id:'vc',name:'Vital Capacity Reduction',tag:'tc',href:'/calculators/vital-capacity-reduction-calculator.html',desc:'Estimate reduction trend from accumulated oxygen exposure.',rev:'—'}
+    ]}
+  ]},
+  {id:'emrg',label:'Emergency',icon:'⚠',groups:[
+    {name:'Nitrox Emergencies',items:[
+      {id:'nxfail',name:'Nitrox Failure — Switch to Air',tag:'te',href:'/emergency/nitrox-failure-switch-to-air.html',desc:'Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.',rev:'—'},
+      {id:'boox',name:'Bailout Opened While on Nitrox',tag:'te',href:'/emergency/bailout-opened-while-on-nitrox.html',desc:'Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.',rev:'—'}
+    ]}
+  ]},
+  {id:'fam',label:'Familiarisations',icon:'▶',groups:[
+    {name:'Daughter Craft',items:[
+      {id:'dc',name:'Daughter Craft Diving Operations',tag:'tt',href:'/familiarisations/daughter-craft.html',desc:'BMS-OP-0630-MA-001 Rev 2.9 — Launch & recovery, mooring, NDL constraints, Nitrox, emergency responses. 20-question assessment.',rev:'2.9'},
+      {id:'broco',name:'Ultra Thermic Cutting — Broco BR-22 Plus',tag:'tt',href:'/familiarisations/broco-ultrathermic-cutting.html',desc:'IMCA D 003 Rev.2 — Hazards, equipment, setup, cutting operations, FMECA, troubleshooting. 21-section knowledge quiz.',rev:'IMCA D 003 Rev.2'},
+      {id:'broco2',name:'Broco BR-22 Plus — Familiarisation',tag:'tt',href:'/familiarisations/broco-cutting.html',desc:'N-Sea BMS — Cutting procedures, inspection, assembly, deployment and assessment.',rev:'—'}
+    ]},
+    {name:'Technical Reference',items:[
+      {id:'esotgd',name:'Oxygen Toxicity — DMAC 35 Guide',tag:'tt',href:'/familiarisations/esot-dmac35-guide.html',desc:'ESOT & OTU guide — DMAC 35 Rev.1 Feb 2025. Interactive calculators, worked examples, tables and knowledge quiz.',rev:'DMAC 35 Rev.1'},
+      {id:'umbil',name:'Extended Air Diving Umbilical Operations',tag:'tt',href:'/familiarisations/extended-umbilicals.html',desc:'IMCA D040 — Safe distance logic, diagram lab, calculators, checklists and knowledge tests.',rev:'IMCA D040'}
+    ]},
+    {name:'SAT Operations',items:[
+      {id:'satplan',name:'SAT Operations Planner',tag:'tt',href:'/familiarisations/sat-bell-operations-planner.html',desc:'Single-bell and twin-bell operational models with rotation scheduling and dive planning tools.',rev:'—'}
+    ]}
+  ]},
+  {id:'tools',label:'Systems & Tools',icon:'◈',groups:[
+    {name:'Operational Systems',items:[
+      {id:'facility',name:'Facility Portal',tag:'tk',href:'#',desc:'Hyperbaric chamber data and global access tools.',rev:'Planned',ph:true},
+      {id:'doccomp',name:'Document Comparison Tool',tag:'tk',href:'#',desc:'Compare procedures across multiple manuals using semantic search.',rev:'Planned',ph:true},
+      {id:'manbuild',name:'Manual Builder',tag:'tk',href:'#',desc:'Structured DOCX processing and normalisation system.',rev:'Planned',ph:true},
+      {id:'erp',name:'ERP Generator',tag:'tk',href:'#',desc:'Generate emergency response plans and contact sheets.',rev:'Planned',ph:true}
+    ]}
+  ]},
+  {id:'docs',label:'Documents',icon:'◧',groups:[
+    {name:'Reference Material',items:[
+      {id:'docref',name:'Reference Documents',tag:'td',href:'#',desc:'Manuals, packs and linked reference material will be added here.',rev:'—',ph:true}
+    ]}
+  ]}
+];
+const TAGLBL={tc:'Calculator',tt:'Training Module',tk:'System / Tool',td:'Document',te:'Emergency Tool'};
+const IDX=[];
+DATA.forEach(sec=>{(sec.groups||[]).forEach(g=>g.items.forEach(it=>IDX.push({...it,section:sec.label,group:g.name,secId:sec.id})));(sec.flat||[]).forEach(it=>IDX.push({...it,section:sec.label,group:null,secId:sec.id}))});
+
+let navCol=false;
+function navToggle(){navCol=!navCol;document.getElementById('nav').classList.toggle('col',navCol);document.getElementById('nav-col-btn').textContent=navCol?'▶':'◀'}
+
+function buildTree(){
+  const tree=document.getElementById('nav-tree'),icons=document.getElementById('nav-icons');
+  tree.innerHTML=DATA.map((sec,si)=>{
+    const bid='sb'+si;
+    let inner=(sec.groups||[]).map((g,gi)=>{
+      const gbid='gb'+si+'_'+gi;
+      return`<div class="tg-hdr" onclick="togGrp('${gbid}',this)"><span class="tg-chv">▶</span>${g.name}</div><div class="tg-body" id="${gbid}">${g.items.map(it=>`<div class="ti" id="ti_${it.id}" onclick="pickItem('${it.id}')">${it.name}</div>`).join('')}</div>`;
+    }).join('');
+    inner+=(sec.flat||[]).map(it=>`<div class="tfi" id="ti_${it.id}" onclick="pickItem('${it.id}')">${it.name}</div>`).join('');
+    return`<div class="ts-hdr" id="sh_${sec.id}" onclick="togSec('${bid}','${sec.id}',this)"><span class="ts-chv">▶</span><span class="ts-ico">${sec.icon}</span><span class="ts-lbl">${sec.label}</span></div><div class="ts-body" id="${bid}">${inner}</div>`;
+  }).join('');
+  icons.innerHTML=DATA.map(sec=>`<button class="nic" title="${sec.label}" onclick="openSec('${sec.id}')">${sec.icon}</button>`).join('');
+}
+
+function togSec(bid,secId,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
+function togGrp(bid,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
+function openSec(secId){const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=document.getElementById(bid),hdr=document.getElementById('sh_'+secId);if(b&&!b.classList.contains('on')){b.classList.add('on');hdr&&hdr.classList.add('on')}}
+
+let tabs=[],activeTab=null,tid=0;
+function mkid(){return'T'+(++tid)}
+function renderTabs(){document.getElementById('tabs').innerHTML=tabs.map(t=>`<div class="tab${t.id===activeTab?' on':''}" onclick="activTab('${t.id}')"><span class="tab-lbl">${t.label}</span>${t.home?'':`<span class="tab-x" onclick="closeTab(event,'${t.id}')">✕</span>`}</div>`).join('')}
+
+function activTab(id){
+  activeTab=id;const t=tabs.find(x=>x.id===id);renderTabs();
+  if(t.home){renderHome();setBC([]);document.getElementById('sb-sec').textContent='Home'}
+  else renderItem(t.itemId);
+}
+function closeTab(e,id){
+  e.stopPropagation();const idx=tabs.findIndex(t=>t.id===id);tabs.splice(idx,1);
+  if(activeTab===id){const next=tabs[Math.min(idx,tabs.length-1)];if(next)activTab(next.id);else{activeTab=null;renderTabs();document.getElementById('content').innerHTML='';setBC([])}}
+  else renderTabs();
+}
+function homeTab(){let h=tabs.find(t=>t.home);if(!h){h={id:mkid(),label:'⌂ Home',home:true};tabs.unshift(h)}activTab(h.id)}
+function pickItem(itemId){
+  document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
+  const el=document.getElementById('ti_'+itemId);if(el)el.classList.add('on');
+  let t=tabs.find(x=>x.itemId===itemId);
+  if(t){activTab(t.id);return}
+  const item=IDX.find(x=>x.id===itemId);if(!item)return;
+  t={id:mkid(),label:item.name,itemId};tabs.push(t);activTab(t.id);
+}
+
+function setBC(parts){
+  const all=['Diving Toolkit',...parts.filter(Boolean)];
+  document.getElementById('bc').innerHTML=all.map((p,i)=>i<all.length-1?`<span>${p}</span><span class="bc-s"> › </span>`:`<span class="bc-c">${p}</span>`).join('');
+}
+function renderHome(){
+  const cards=DATA.map(sec=>{const ct=(sec.groups||[]).reduce((a,g)=>a+g.items.length,0)+(sec.flat||[]).length;return`<div class="hc" onclick="openSec('${sec.id}')"><div class="hc-ico">${sec.icon}</div><div><div class="hc-name">${sec.label}</div><div class="hc-ct">${ct} item${ct!==1?'s':''}</div></div></div>`}).join('');
+  document.getElementById('content').innerHTML=`<div class="home-wrap"><div class="home-banner"><div class="home-logo">N-SEA</div><div><div class="home-ttl">Diving Toolkit — Operations Library</div><div class="home-sub">Operational calculators · Emergency tools · Familiarisations · Systems &amp; Tools · Reference documents<br>Select any item from the navigation panel or click a category below.</div></div></div><div class="home-sh">Categories</div><div class="home-grid">${cards}</div></div>`;
+}
+function renderItem(itemId){
+  const item=IDX.find(x=>x.id===itemId);if(!item)return;
+  setBC([item.section,item.group,item.name]);document.getElementById('sb-sec').textContent=item.name;
+  const tagCls=item.tag||'tp',tagLbl=TAGLBL[item.tag]||'—',isph=!!item.ph;
+  const btnHtml=isph?`<span class="open-btn ph">Coming Soon</span>`:`<a class="open-btn" href="${item.href}" target="_blank" rel="noopener">Open ↗</a>`;
+  const meta=[['Type',`<span class="tag ${tagCls}">${tagLbl}</span>`],['Section',item.section],['Group',item.group||'—'],['Revision',item.rev||'—'],['Status',isph?'Placeholder — not yet deployed':'Available'],['Path',item.href==='#'?'—':item.href]].map(([k,v])=>`<div class="im-row"><div class="im-k">${k}</div><div class="im-v">${v}</div></div>`).join('');
+  document.getElementById('content').innerHTML=`<div class="item-wrap"><div class="item-h1">${item.name}</div><div class="item-path">${item.section}${item.group?' › '+item.group:''}</div><div class="item-launch"><div><div class="item-launch-name">${item.name}</div><div class="item-launch-desc">${item.desc||'Click Open to access this resource.'}</div></div>${btnHtml}</div><div class="item-meta">${meta}</div></div>`;
+}
+
+function srchOpen(){document.getElementById('srch-ol').classList.add('on');setTimeout(()=>document.getElementById('srch-inp').focus(),40)}
+function srchClose(e){if(e.target===document.getElementById('srch-ol')){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML=''}}
+function srchRun(q){
+  const res=document.getElementById('srch-res');q=q.trim().toLowerCase();
+  if(!q){res.innerHTML='';return}
+  const hits=IDX.filter(it=>it.name.toLowerCase().includes(q)||(it.desc&&it.desc.toLowerCase().includes(q))||it.section.toLowerCase().includes(q)||(it.group&&it.group.toLowerCase().includes(q)));
+  if(!hits.length){res.innerHTML='<div class="srch-none">No results</div>';return}
+  res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${it.group?' › '+it.group:''}</div></div></div>`).join('');
+}
+function srchPick(id){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML='';const item=IDX.find(x=>x.id===id);if(item){openSec(item.secId);pickItem(id)}}
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape')document.getElementById('srch-ol').classList.remove('on')});
+
+buildTree();homeTab();
 </script>
+</body>
+</html>

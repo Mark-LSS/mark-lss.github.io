@@ -434,11 +434,21 @@ function openSec(secId){const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=d
 function pickItem(itemId){
   const item=IDX.find(x=>x.id===itemId);
   if(!item)return;
+  const isMobile=window.innerWidth<=780;
+  /* on mobile: one tile at a time — clear any other open */
+  if(isMobile){
+    openItems=[];
+    document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
+    document.getElementById('ti_'+itemId)?.classList.add('on');
+    mobileNavClose();
+    openItems.push(item);
+    render();
+    return;
+  }
+  /* desktop: multi-tile behaviour */
   /* highlight nav */
   document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
   document.getElementById('ti_'+itemId)?.classList.add('on');
-  /* on mobile, auto-dismiss the drawer after pick */
-  if(window.innerWidth<=780)mobileNavClose();
   /* already open? just focus (scroll tab into view) */
   if(openItems.find(x=>x.id===itemId)){render();return}
   /* max 4 tiles */

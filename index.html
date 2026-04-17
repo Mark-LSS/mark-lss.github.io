@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diving Toolkit — N-Sea Operations Library</title>
 <style>
+<<<<<<< HEAD
 /* ═══════════════════════════════════════════════════════════════
    DIVING TOOLKIT — Operations Library Shell
    mark-lss.github.io / index.html
@@ -40,6 +41,36 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .tb-title{color:rgba(255,255,255,.85);font-size:13px;font-weight:400;flex:1}
 .tb-url{color:rgba(255,255,255,.35);font-size:11px}
 
+=======
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nb:#014782;--nb-h:#013a6b;--nb-l:#0a5a9c;
+  --nb-tint:#e6f0f9;--nb-tint2:#c8ddf0;--ny:#FFEE02;
+  --bg:#ffffff;--bg2:#f4f5f7;--bg3:#eceef2;
+  --txt:#1b1d20;--txt2:#56606e;--txt3:#8b96a3;
+  --bdr:#d6dae1;--bdr2:#b8bec8;
+  --r:6px;--r-lg:10px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1b1e23;--bg2:#22262d;--bg3:#292e38;
+    --txt:#e4e7ec;--txt2:#98a2b0;--txt3:#5c6575;
+    --bdr:#30363f;--bdr2:#444d5a;
+    --nb-tint:#0d2640;--nb-tint2:#133350;
+  }
+}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;color:var(--txt);background:var(--bg2)}
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TITLE BAR */
+#title-bar{background:var(--nb);height:36px;display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0;user-select:none}
+.tb-wins{display:flex;gap:7px}.tb-wins span{display:block;width:12px;height:12px;border-radius:50%}
+.tw-c{background:#ff5f57}.tw-m{background:#febc2e}.tw-x{background:#28c840}
+.tb-logo{background:var(--ny);color:var(--nb);font-weight:700;font-size:11px;padding:3px 8px;border-radius:3px;letter-spacing:.05em;flex-shrink:0}
+.tb-title{color:rgba(255,255,255,.85);font-size:13px;font-weight:400;flex:1}
+.tb-url{color:rgba(255,255,255,.35);font-size:11px}
+
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 /* MENU BAR */
 #menu-bar{background:var(--nb-h);height:27px;display:flex;align-items:stretch;flex-shrink:0;border-bottom:1px solid rgba(0,0,0,.2)}
 .mb{padding:0 11px;color:rgba(255,255,255,.75);font-size:12px;cursor:pointer;display:flex;align-items:center;border:none;background:transparent;transition:background .1s,color .1s}
@@ -99,6 +130,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 
 /* MAIN PANEL */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+<<<<<<< HEAD
 #tabs{display:flex;align-items:stretch;background:var(--bg3);border-bottom:1px solid var(--bdr);height:36px;overflow-x:auto;overflow-y:hidden;flex-shrink:0}
 #tabs::-webkit-scrollbar{height:0}
 .tab{display:flex;align-items:center;gap:6px;padding:0 12px;font-size:12.5px;color:var(--txt2);cursor:pointer;white-space:nowrap;border-right:1px solid var(--bdr);border-bottom:2px solid transparent;background:var(--bg3);user-select:none;transition:background .1s,color .1s;min-width:110px;max-width:210px;flex-shrink:0}
@@ -150,6 +182,52 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
   .tk{background:#451a03;color:#fcd34d}.td{background:#3b0764;color:#c4b5fd}
   .te{background:#450a0a;color:#fca5a5}
 }
+=======
+
+/* SLIM TAB BAR — just shows open items, no content switching */
+#tab-bar{display:flex;align-items:stretch;background:var(--bg3);border-bottom:1px solid var(--bdr);height:34px;overflow-x:auto;overflow-y:hidden;flex-shrink:0}
+#tab-bar::-webkit-scrollbar{height:0}
+.stab{display:flex;align-items:center;gap:6px;padding:0 10px;font-size:12px;color:var(--txt2);white-space:nowrap;border-right:1px solid var(--bdr);border-bottom:2px solid transparent;background:var(--bg3);user-select:none;min-width:100px;max-width:180px;flex-shrink:0}
+.stab.on{background:var(--bg);color:var(--txt);border-bottom-color:var(--nb);font-weight:500}
+.stab-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.stab-x{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt3);flex-shrink:0;cursor:pointer;transition:background .1s}
+.stab-x:hover{background:var(--bdr2);color:var(--txt)}
+
+/* TILE GRID — the main content area */
+#tile-grid{flex:1;display:grid;overflow:hidden;gap:1px;background:var(--bdr)}
+/* 0 open → single cell showing home */
+#tile-grid.c0{grid-template-columns:1fr}
+/* 1 open → full width */
+#tile-grid.c1{grid-template-columns:1fr}
+/* 2 open → 50/50 */
+#tile-grid.c2{grid-template-columns:1fr 1fr}
+/* 3+ open → thirds */
+#tile-grid.c3{grid-template-columns:1fr 1fr 1fr}
+#tile-grid.c4{grid-template-columns:1fr 1fr}
+
+/* HOME TILE */
+.home-tile{background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;gap:14px}
+.home-banner-sm{background:var(--nb);border-radius:var(--r-lg);padding:20px 30px;display:flex;align-items:center;gap:18px;max-width:560px;width:100%}
+.home-logo-sm{background:var(--ny);color:var(--nb);font-weight:700;font-size:18px;padding:8px 14px;border-radius:var(--r);flex-shrink:0}
+.home-ttl-sm{color:#fff;font-size:15px;font-weight:500;margin-bottom:3px}
+.home-sub-sm{color:rgba(255,255,255,.6);font-size:12px;line-height:1.5}
+.home-hint{color:var(--txt3);font-size:12.5px}
+
+/* CALC TILE */
+.calc-tile{background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.tile-hdr{height:32px;background:var(--nb);display:flex;align-items:center;padding:0 10px;gap:8px;flex-shrink:0}
+.tile-hdr-lbl{color:rgba(255,255,255,.9);font-size:12px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile-close{width:20px;height:20px;border-radius:4px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:background .1s,color .1s;line-height:1}
+.tile-close:hover{background:rgba(255,255,255,.25);color:#fff}
+.tile-hdr-ext{color:rgba(255,255,255,.5);font-size:11px;text-decoration:none;padding:2px 6px;border-radius:3px;border:1px solid rgba(255,255,255,.2);transition:all .1s;white-space:nowrap}
+.tile-hdr-ext:hover{background:rgba(255,255,255,.15);color:#fff}
+.calc-tile iframe{flex:1;border:none;width:100%;height:100%}
+
+/* placeholder tile (coming soon) */
+.ph-tile{background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.ph-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--txt3);font-size:13px}
+.ph-icon{font-size:28px;opacity:.4}
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 
 /* STATUS BAR */
 #sb{background:var(--nb);height:23px;display:flex;align-items:center;padding:0 11px;gap:14px;flex-shrink:0}
@@ -184,6 +262,10 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <div class="srch-res" id="srch-res"></div>
   </div>
 </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 <div id="app">
   <div id="title-bar">
     <div class="tb-wins"><span class="tw-c"></span><span class="tw-m"></span><span class="tw-x"></span></div>
@@ -199,7 +281,11 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <button class="mb">Help</button>
   </div>
   <div id="toolbar">
+<<<<<<< HEAD
     <button class="tb primary" onclick="homeTab()">
+=======
+    <button class="tb primary" onclick="closeAll()">
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
       <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5L1.5 7H3v7h4v-4h2v4h4V7h1.5L8 1.5z"/></svg>Home
     </button>
     <div class="tb-sep"></div>
@@ -224,6 +310,10 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     </button>
     <div id="srch-wrap"><span class="srch-ico">⌕</span><input type="text" placeholder="Quick search…" onfocus="srchOpen()" readonly></div>
   </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
   <div id="body">
     <div id="nav">
       <div class="nav-top">
@@ -234,6 +324,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
       <div id="nav-scroll"><div id="nav-tree"></div></div>
     </div>
     <div id="main">
+<<<<<<< HEAD
       <div id="tabs"></div>
       <div id="bc"><span>Diving Toolkit</span></div>
       <div id="content"></div>
@@ -246,10 +337,26 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <div class="sb-i sb-r">N-Sea Group · Offshore Diving Operations</div>
   </div>
 </div>
+=======
+      <div id="tab-bar"></div>
+      <div id="tile-grid" class="c0"></div>
+    </div>
+  </div>
+
+  <div id="sb">
+    <div class="sb-i"><span class="sb-dot"></span>Online</div>
+    <div class="sb-i">BMS Rev 2.9</div>
+    <div class="sb-i" id="sb-open">No items open</div>
+    <div class="sb-i sb-r">N-Sea Group · Offshore Diving Operations</div>
+  </div>
+</div>
+
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 <script>
 const DATA=[
   {id:'calc',label:'Calculators',icon:'⊞',groups:[
     {name:'Gas / Nitrox',items:[
+<<<<<<< HEAD
       {id:'ead',name:'EAD + Table Depth',tag:'tc',href:'/calculators/ead-and-table-depth-selection.html',desc:'Equivalent air depth with exact Safety EAD and DacDoDat table lookup.',rev:'—'},
       {id:'dalton',name:"Dalton's Law",tag:'tc',href:'/calculators/daltons-law-calculations.html',desc:'Three-value solver for depth, partial pressure and O₂ percentage.',rev:'—'},
       {id:'bailout',name:'Bailout Endurance',tag:'tc',href:'/calculators/bailout-endurance.html',desc:'Available bailout time at depth and maximum umbilical deployment.',rev:'—'}
@@ -260,16 +367,34 @@ const DATA=[
       {id:'esotrec',name:'ESOT Recovery',tag:'tc',href:'/calculators/esot-recovery-calculator.html',desc:'Model residual ESOT after a recovery period.',rev:'—'},
       {id:'multiseg',name:'Multi-Segment OTU / ESOT',tag:'tc',href:'/calculators/multi-segment-otu-esot.html',desc:'Accumulate multiple exposure segments in one calculation.',rev:'—'},
       {id:'vc',name:'Vital Capacity Reduction',tag:'tc',href:'/calculators/vital-capacity-reduction-calculator.html',desc:'Estimate reduction trend from accumulated oxygen exposure.',rev:'—'}
+=======
+      {id:'ead',name:'EAD + Table Depth',href:'/calculators/ead-and-table-depth-selection.html'},
+      {id:'dalton',name:"Dalton's Law",href:'/calculators/daltons-law-calculations.html'},
+      {id:'bailout',name:'Bailout Endurance',href:'/calculators/bailout-endurance.html'}
+    ]},
+    {name:'Oxygen Exposure',items:[
+      {id:'otu',name:'OTU / ESOT',href:'/calculators/calculate-otu-and-esot.html'},
+      {id:'otuconv',name:'OTU / ESOT Converter',href:'/calculators/otu-esot-converter.html'},
+      {id:'esotrec',name:'ESOT Recovery',href:'/calculators/esot-recovery-calculator.html'},
+      {id:'multiseg',name:'Multi-Segment OTU / ESOT',href:'/calculators/multi-segment-otu-esot.html'},
+      {id:'vc',name:'Vital Capacity Reduction',href:'/calculators/vital-capacity-reduction-calculator.html'}
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
     ]}
   ]},
   {id:'emrg',label:'Emergency',icon:'⚠',groups:[
     {name:'Nitrox Emergencies',items:[
+<<<<<<< HEAD
       {id:'nxfail',name:'Nitrox Failure — Switch to Air',tag:'te',href:'/emergency/nitrox-failure-switch-to-air.html',desc:'Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.',rev:'—'},
       {id:'boox',name:'Bailout Opened While on Nitrox',tag:'te',href:'/emergency/bailout-opened-while-on-nitrox.html',desc:'Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.',rev:'—'}
+=======
+      {id:'nxfail',name:'Nitrox Failure — Switch to Air',href:'/emergency/nitrox-failure-switch-to-air.html'},
+      {id:'boox',name:'Bailout Opened While on Nitrox',href:'/emergency/bailout-opened-while-on-nitrox.html'}
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
     ]}
   ]},
   {id:'fam',label:'Familiarisations',icon:'▶',groups:[
     {name:'Daughter Craft',items:[
+<<<<<<< HEAD
       {id:'dc',name:'Daughter Craft Diving Operations',tag:'tt',href:'/familiarisations/daughter-craft.html',desc:'BMS-OP-0630-MA-001 Rev 2.9 — Launch & recovery, mooring, NDL constraints, Nitrox, emergency responses. 20-question assessment.',rev:'2.9'},
       {id:'broco',name:'Ultra Thermic Cutting — Broco BR-22 Plus',tag:'tt',href:'/familiarisations/broco-ultrathermic-cutting.html',desc:'IMCA D 003 Rev.2 — Hazards, equipment, setup, cutting operations, FMECA, troubleshooting. 21-section knowledge quiz.',rev:'IMCA D 003 Rev.2'},
       {id:'broco2',name:'Broco BR-22 Plus — Familiarisation',tag:'tt',href:'/familiarisations/broco-cutting.html',desc:'N-Sea BMS — Cutting procedures, inspection, assembly, deployment and assessment.',rev:'—'}
@@ -280,18 +405,38 @@ const DATA=[
     ]},
     {name:'SAT Operations',items:[
       {id:'satplan',name:'SAT Operations Planner',tag:'tt',href:'/familiarisations/sat-bell-operations-planner.html',desc:'Single-bell and twin-bell operational models with rotation scheduling and dive planning tools.',rev:'—'}
+=======
+      {id:'dc',name:'Daughter Craft Diving Operations',href:'/familiarisations/daughter-craft.html'},
+      {id:'broco',name:'Ultra Thermic Cutting — Broco BR-22 Plus',href:'/familiarisations/broco-ultrathermic-cutting.html'},
+      {id:'broco2',name:'Broco BR-22 Plus — Familiarisation',href:'/familiarisations/broco-cutting.html'}
+    ]},
+    {name:'Technical Reference',items:[
+      {id:'esotgd',name:'Oxygen Toxicity — DMAC 35 Guide',href:'/familiarisations/esot-dmac35-guide.html'},
+      {id:'umbil',name:'Extended Air Diving Umbilical Operations',href:'/familiarisations/extended-umbilicals.html'}
+    ]},
+    {name:'SAT Operations',items:[
+      {id:'satplan',name:'SAT Operations Planner',href:'/familiarisations/sat-bell-operations-planner.html'}
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
     ]}
   ]},
   {id:'tools',label:'Systems & Tools',icon:'◈',groups:[
     {name:'Operational Systems',items:[
+<<<<<<< HEAD
       {id:'facility',name:'Facility Portal',tag:'tk',href:'#',desc:'Hyperbaric chamber data and global access tools.',rev:'Planned',ph:true},
       {id:'doccomp',name:'Document Comparison Tool',tag:'tk',href:'#',desc:'Compare procedures across multiple manuals using semantic search.',rev:'Planned',ph:true},
       {id:'manbuild',name:'Manual Builder',tag:'tk',href:'#',desc:'Structured DOCX processing and normalisation system.',rev:'Planned',ph:true},
       {id:'erp',name:'ERP Generator',tag:'tk',href:'#',desc:'Generate emergency response plans and contact sheets.',rev:'Planned',ph:true}
+=======
+      {id:'facility',name:'Facility Portal',href:'#',ph:true},
+      {id:'doccomp',name:'Document Comparison Tool',href:'#',ph:true},
+      {id:'manbuild',name:'Manual Builder',href:'#',ph:true},
+      {id:'erp',name:'ERP Generator',href:'#',ph:true}
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
     ]}
   ]},
   {id:'docs',label:'Documents',icon:'◧',groups:[
     {name:'Reference Material',items:[
+<<<<<<< HEAD
       {id:'docref',name:'Reference Documents',tag:'td',href:'#',desc:'Manuals, packs and linked reference material will be added here.',rev:'—',ph:true}
     ]}
   ]}
@@ -300,6 +445,20 @@ const TAGLBL={tc:'Calculator',tt:'Training Module',tk:'System / Tool',td:'Docume
 const IDX=[];
 DATA.forEach(sec=>{(sec.groups||[]).forEach(g=>g.items.forEach(it=>IDX.push({...it,section:sec.label,group:g.name,secId:sec.id})));(sec.flat||[]).forEach(it=>IDX.push({...it,section:sec.label,group:null,secId:sec.id}))});
 
+=======
+      {id:'docref',name:'Reference Documents',href:'#',ph:true}
+    ]}
+  ]}
+];
+
+const IDX=[];
+DATA.forEach(sec=>(sec.groups||[]).forEach(g=>g.items.forEach(it=>IDX.push({...it,section:sec.label,group:g.name,secId:sec.id}))));
+
+/* open items list: [{id, name, href, ph}] */
+let openItems=[];
+
+/* ── NAV ── */
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 let navCol=false;
 function navToggle(){navCol=!navCol;document.getElementById('nav').classList.toggle('col',navCol);document.getElementById('nav-col-btn').textContent=navCol?'▶':'◀'}
 
@@ -316,11 +475,15 @@ function buildTree(){
   }).join('');
   icons.innerHTML=DATA.map(sec=>`<button class="nic" title="${sec.label}" onclick="openSec('${sec.id}')">${sec.icon}</button>`).join('');
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 function togSec(bid,secId,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
 function togGrp(bid,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
 function openSec(secId){const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=document.getElementById(bid),hdr=document.getElementById('sh_'+secId);if(b&&!b.classList.contains('on')){b.classList.add('on');hdr&&hdr.classList.add('on')}}
 
+<<<<<<< HEAD
 let tabs=[],activeTab=null,tid=0;
 function mkid(){return'T'+(++tid)}
 function renderTabs(){document.getElementById('tabs').innerHTML=tabs.map(t=>`<div class="tab${t.id===activeTab?' on':''}" onclick="activTab('${t.id}')"><span class="tab-lbl">${t.label}</span>${t.home?'':`<span class="tab-x" onclick="closeTab(event,'${t.id}')">✕</span>`}</div>`).join('')}
@@ -362,19 +525,124 @@ function renderItem(itemId){
   document.getElementById('content').innerHTML=`<div class="item-wrap"><div class="item-h1">${item.name}</div><div class="item-path">${item.section}${item.group?' › '+item.group:''}</div><div class="item-launch"><div><div class="item-launch-name">${item.name}</div><div class="item-launch-desc">${item.desc||'Click Open to access this resource.'}</div></div>${btnHtml}</div><div class="item-meta">${meta}</div></div>`;
 }
 
+=======
+/* ── OPEN / CLOSE ITEMS ── */
+function pickItem(itemId){
+  const item=IDX.find(x=>x.id===itemId);
+  if(!item)return;
+  /* highlight nav */
+  document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
+  document.getElementById('ti_'+itemId)?.classList.add('on');
+  /* already open? just focus (scroll tab into view) */
+  if(openItems.find(x=>x.id===itemId)){render();return}
+  /* max 4 tiles */
+  if(openItems.length>=4){openItems.shift()}
+  openItems.push(item);
+  render();
+}
+
+function closeTile(itemId){
+  openItems=openItems.filter(x=>x.id!==itemId);
+  /* clear nav highlight if no longer open */
+  document.getElementById('ti_'+itemId)?.classList.remove('on');
+  render();
+}
+
+function closeAll(){
+  openItems=[];
+  document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
+  render();
+}
+
+/* ── RENDER ── */
+function render(){
+  renderTabBar();
+  renderTileGrid();
+  renderStatus();
+}
+
+function renderTabBar(){
+  const bar=document.getElementById('tab-bar');
+  if(!openItems.length){bar.innerHTML='';return}
+  bar.innerHTML=openItems.map(it=>
+    `<div class="stab on"><span class="stab-lbl">${it.name}</span><span class="stab-x" onclick="closeTile('${it.id}')">✕</span></div>`
+  ).join('');
+}
+
+function renderTileGrid(){
+  const grid=document.getElementById('tile-grid');
+  const n=openItems.length;
+  /* set grid class */
+  grid.className='c'+Math.min(n,4);
+  if(n===0){
+    grid.innerHTML=`<div class="home-tile">
+      <div class="home-banner-sm">
+        <div class="home-logo-sm">N-SEA</div>
+        <div>
+          <div class="home-ttl-sm">Diving Toolkit — Operations Library</div>
+          <div class="home-sub-sm">Calculators · Emergency tools · Familiarisations · Systems &amp; Tools</div>
+        </div>
+      </div>
+      <div class="home-hint">Select an item from the navigation panel</div>
+    </div>`;
+    return;
+  }
+  grid.innerHTML=openItems.map(it=>tileHTML(it)).join('');
+}
+
+function tileHTML(it){
+  if(it.ph){
+    return`<div class="calc-tile">
+      <div class="tile-hdr">
+        <span class="tile-hdr-lbl">${it.name}</span>
+        <button class="tile-close" onclick="closeTile('${it.id}')">✕</button>
+      </div>
+      <div class="ph-body">
+        <div class="ph-icon">◈</div>
+        <div>Coming soon</div>
+        <div style="font-size:11px;color:var(--txt3)">This tool is not yet deployed</div>
+      </div>
+    </div>`;
+  }
+  return`<div class="calc-tile">
+    <div class="tile-hdr">
+      <span class="tile-hdr-lbl">${it.name}</span>
+      <a class="tile-hdr-ext" href="${it.href}" target="_blank" rel="noopener">↗ Full screen</a>
+      <button class="tile-close" onclick="closeTile('${it.id}')">✕</button>
+    </div>
+    <iframe src="${it.href}" title="${it.name}" loading="lazy"></iframe>
+  </div>`;
+}
+
+function renderStatus(){
+  const n=openItems.length;
+  document.getElementById('sb-open').textContent=n===0?'No items open':n===1?openItems[0].name:n+' items open';
+}
+
+/* ── SEARCH ── */
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 function srchOpen(){document.getElementById('srch-ol').classList.add('on');setTimeout(()=>document.getElementById('srch-inp').focus(),40)}
 function srchClose(e){if(e.target===document.getElementById('srch-ol')){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML=''}}
 function srchRun(q){
   const res=document.getElementById('srch-res');q=q.trim().toLowerCase();
   if(!q){res.innerHTML='';return}
+<<<<<<< HEAD
   const hits=IDX.filter(it=>it.name.toLowerCase().includes(q)||(it.desc&&it.desc.toLowerCase().includes(q))||it.section.toLowerCase().includes(q)||(it.group&&it.group.toLowerCase().includes(q)));
+=======
+  const hits=IDX.filter(it=>it.name.toLowerCase().includes(q)||(it.section&&it.section.toLowerCase().includes(q))||(it.group&&it.group.toLowerCase().includes(q)));
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
   if(!hits.length){res.innerHTML='<div class="srch-none">No results</div>';return}
   res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${it.group?' › '+it.group:''}</div></div></div>`).join('');
 }
 function srchPick(id){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML='';const item=IDX.find(x=>x.id===id);if(item){openSec(item.secId);pickItem(id)}}
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape')document.getElementById('srch-ol').classList.remove('on')});
 
+<<<<<<< HEAD
 buildTree();homeTab();
+=======
+buildTree();
+render();
+>>>>>>> d0da2db (Tiled iframe layout, remove metadata screen)
 </script>
 </body>
 </html>

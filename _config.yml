@@ -4,7 +4,6 @@ baseurl: ""
 url: "https://mark-lss.github.io"
 
 markdown: kramdown
-permalink: pretty
 
 exclude:
   - README.md

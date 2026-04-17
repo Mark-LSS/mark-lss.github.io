@@ -1,23 +1,352 @@
 ---
 render_with_liquid: false
-layout: fam-doc
+layout: null
 title: "SAT Operations Planner"
 subtitle: "Bell Rotation, DSV Efficiency & Dive Planning"
 ---
-<a href="/" class="home-btn">⬅ Back to Library</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-Sea | SAT Operations Planner — Bell Rotation, DSV Efficiency & Dive Planning</title>
+<style>
+/* ══════════════════════════════════════════════════════════
+   RESET & BODY
+══════════════════════════════════════════════════════════ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #f0f2f5; color: #1a1a1a;
+    min-height: 100vh;
+    padding: 30px 16px;
+}
+.page { width: 100%; max-width: 1200px; margin: 0 auto; }
+
+/* ══════════════════════════════════════════════════════════
+   HEADER & NOTICE
+══════════════════════════════════════════════════════════ */
+header {
+    background: #014782; border-radius: 6px 6px 0 0;
+    padding: 18px 24px; display: flex; align-items: center; gap: 18px;
+}
+.nsea-logo { flex-shrink: 0; }
+.header-text h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.3; color: #FFEE02; }
+.header-text p  { font-size: 11.5px; color: rgba(255,255,255,0.80); margin-top: 2px; letter-spacing: 0.01em; }
+.notice { background: #014782; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 3px solid #FFEE02; padding: 9px 24px; font-size: 11px; color: rgba(255,255,255,0.75); letter-spacing: 0.015em; }
+.notice strong { color: #FFEE02; font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════
+   MAIN TAB BAR
+══════════════════════════════════════════════════════════ */
+.main-tab-bar {
+    display: flex; background: #013560;
+    border-left: 1px solid #013560; border-right: 1px solid #013560;
+    border-bottom: 3px solid #FFEE02;
+}
+.main-tab-btn {
+    padding: 13px 26px; font-size: 11px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: rgba(255,255,255,0.55); background: transparent;
+    border: none; cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -3px; transition: color 0.15s;
+}
+.main-tab-btn:hover  { color: rgba(255,255,255,0.85); }
+.main-tab-btn.active { color: #FFEE02; border-bottom-color: #FFEE02; }
+.main-panel { display: none; }
+.main-panel.active { display: block; }
+
+/* ══════════════════════════════════════════════════════════
+   BELL ROTATION COMPONENTS (verbatim from v2)
+══════════════════════════════════════════════════════════ */
+.card { background: #FFFFFF; border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; padding: 24px; }
+.card + .card { border-top: 1px solid #e8ebef; }
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #014782; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid #FFEE02; display: inline-block; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+.grid-8 { display: grid; grid-template-columns: repeat(8,1fr); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 11px; font-weight: 600; color: #4a5568; letter-spacing: 0.01em; }
+.field input, .field select { padding: 9px 11px; border: 1.5px solid #c8cdd5; border-radius: 4px; font-size: 14px; font-weight: 500; color: #1a1a1a; background: #f8f9fb; transition: border-color 0.15s, background 0.15s; width: 100%; }
+.field input:focus { outline: none; border-color: #014782; background: #fff; }
+.field .unit { font-size: 10px; color: #8a9299; font-weight: 400; }
+.field.fixed input  { background: #f0f2f5; color: #8a9299; border-color: #e0e3e8; pointer-events: none; }
+.field.active-input input { border-color: #014782; background: #fff; border-width: 2px; }
+.field.active-input label { color: #014782; }
+.field.auto-filled input { background: #e8f5e9; border-color: #1a6e3a; color: #1a6e3a; font-weight: 700; }
+.field.auto-filled label { color: #1a6e3a; }
+.metrics-strip { display: grid; gap: 0; border-top: 1px solid #e8ebef; }
+.metric-cell { padding: 12px 14px; border-right: 1px solid #e8ebef; text-align: center; }
+.metric-cell:last-child { border-right: none; }
+.mc-label { font-size: 9px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #8a9299; margin-bottom: 5px; }
+.mc-value { font-size: 16px; font-weight: 700; color: #014782; line-height: 1; }
+.mc-unit  { font-size: 9px; color: #aab0b8; margin-top: 2px; }
+.metric-cell.ok   .mc-value { color: #1a6e3a; }
+.metric-cell.warn .mc-value { color: #a05000; }
+.metric-cell.crit .mc-value { color: #8b0000; }
+.manning-panel { border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; background: #fff; }
+.manning-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid #e8ebef; }
+.manning-col   { padding: 18px 24px; border-right: 1px solid #e8ebef; }
+.manning-col:last-child { border-right: none; }
+.manning-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #014782; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 2px solid #FFEE02; display: inline-block; }
+.manning-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 11.5px; }
+.manning-row:last-child { border-bottom: none; }
+.mr-label { color: #4a5568; }
+.mr-val   { font-weight: 700; color: #1a1a1a; }
+.mr-val.ok   { color: #1a6e3a; }
+.mr-val.warn { color: #a05000; }
+.mr-val.crit { color: #8b0000; }
+.verdict-band { padding: 10px 24px; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; border-top: 1px solid rgba(0,0,0,0.06); }
+.verdict-ok   { background: #1a6e3a; color: #fff; }
+.verdict-warn { background: #a05000; color: #FFEE02; }
+.verdict-crit { background: #8b0000; color: #fff; }
+.tab-bar { display: flex; border-bottom: 2px solid #FFEE02; background: #014782; border-left: 1px solid #013560; border-right: 1px solid #013560; }
+.tab-btn { padding: 11px 22px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); background: transparent; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 0.15s; }
+.tab-btn:hover  { color: rgba(255,255,255,0.85); }
+.tab-btn.active { color: #FFEE02; border-bottom-color: #FFEE02; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.compare-header { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #014782; border-left: 1px solid #013560; border-right: 1px solid #013560; border-top: 1px solid rgba(255,255,255,0.08); }
+.ch-cell { padding: 16px 24px; border-right: 1px solid rgba(255,255,255,0.08); }
+.ch-cell:last-child { border-right: none; }
+.ch-title { font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #FFEE02; margin-bottom: 5px; }
+.ch-sub   { font-size: 11.5px; color: rgba(255,255,255,0.70); line-height: 1.5; }
+.rot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.rot-half { padding: 20px 24px; border-right: 1px solid #e8ebef; }
+.rot-half:last-child { border-right: none; }
+table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+thead th { background: #f0f2f5; color: #4a5568; font-weight: 700; font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; padding: 7px 9px; text-align: left; border-bottom: 2px solid #d8dde4; }
+tbody tr { border-bottom: 1px solid #e8ebef; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f8f9fb; }
+tbody td { padding: 6px 9px; color: #2d3748; }
+tbody td:first-child { font-weight: 700; color: #1a1a1a; }
+tbody tr.div-row td { padding: 0; height: 3px; background: #FFEE02; border: none; }
+.team-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: middle; position: relative; top: -1px; }
+.slot-badge    { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; }
+.reduced-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700; background: #fff3e0; color: #a05000; margin-left: 4px; border: 1px solid #ffd080; }
+.full-badge    { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 700; background: #e8f5e9; color: #1a6e3a; margin-left: 4px; border: 1px solid #a5d6a7; }
+.warn-val { color: #a05000; font-weight: 700; }
+.ok-val   { color: #1a6e3a; font-weight: 700; }
+.gantt-wrap { padding: 20px 24px; overflow-x: auto; }
+.gantt-sec  { margin-bottom: 22px; }
+.gantt-sec:last-child { margin-bottom: 0; }
+.gantt-sec-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #014782; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.gantt-sec-label::after { content: ''; flex: 1; height: 1px; background: #FFEE02; }
+.gantt-legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid #e8ebef; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #4a5568; }
+.legend-swatch { width: 14px; height: 9px; border-radius: 2px; }
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #013560; }
+.sum-half { background: #014782; padding: 20px 24px; }
+.sum-half-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FFEE02; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.result-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
+.result-row:last-child { border-bottom: none; }
+.result-name  { font-size: 12px; color: rgba(255,255,255,0.80); font-weight: 500; }
+.result-value { font-size: 20px; font-weight: 700; color: #FFEE02; letter-spacing: -0.01em; }
+.result-row.sub       .result-value { font-size: 13px; color: rgba(255,255,255,0.85); }
+.result-row.warn-row  .result-value { color: #ff8c42; }
+.result-row.crit-row  .result-value { color: #ff6b6b; }
+.efficiency-band { background: #013560; border-left: 1px solid #013560; border-right: 1px solid #013560; border-top: 1px solid rgba(255,255,255,0.06); padding: 18px 24px; display: flex; align-items: center; gap: 20px; }
+.eff-number { font-size: 48px; font-weight: 700; color: #FFEE02; letter-spacing: -0.03em; line-height: 1; flex-shrink: 0; }
+.eff-label  { font-size: 13px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px; }
+.eff-detail { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.7; }
+.info-band { padding: 10px 24px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; border-left: 1px solid #013560; border-right: 1px solid #013560; border-top: 1px solid rgba(255,255,255,0.06); }
+.info-band.warn { background: #a05000; color: #FFEE02; }
+.info-band.crit { background: #8b0000; color: #fff; }
+.note-band { background: #f0f2f5; border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; border-top: 1px solid #e8ebef; padding: 10px 24px; font-size: 10px; color: #6a7585; line-height: 1.6; }
+.note-band strong { color: #014782; }
+
+.reentry-card { border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; border-top: 3px solid #FFEE02; background: #fff; }
+.reentry-header { background: #014782; color: #FFEE02; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 10px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.reentry-body { padding: 20px 24px; }
+.reentry-rule { font-size: 13px; color: #1a1a1a; line-height: 1.6; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #e8ebef; }
+.reentry-rule strong { color: #014782; }
+.reentry-formula { font-size: 13px; font-weight: 600; color: #014782; background: #e3f0fb; border-left: 4px solid #014782; padding: 10px 16px; border-radius: 0 4px 4px 0; margin-bottom: 16px; line-height: 1.5; }
+.reentry-results { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.reentry-result { background: #f8f9fb; border: 1px solid #d8dde4; border-radius: 4px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+.rr-label   { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8a9299; }
+.rr-calc    { font-size: 18px; font-weight: 700; color: #a05000; line-height: 1.2; }
+.rr-verdict { font-size: 13px; font-weight: 700; color: #014782; }
+.reentry-depth-note { font-size: 12px; color: #4a5568; line-height: 1.6; background: #fff8e1; border: 1px solid #ffd080; border-radius: 4px; padding: 10px 14px; }
+
+/* ══════════════════════════════════════════════════════════
+   DSV EFFICIENCY PANEL STYLES
+══════════════════════════════════════════════════════════ */
+.eff-panel-card { background: #FFFFFF; border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4; padding: 24px; }
+.eff-panel-card + .eff-panel-card { border-top: 1px solid #e8ebef; }
+
+/* Wet handshake steps */
+.wh-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 16px; }
+.wh-step { background: #f8f9fb; border: 1px solid #d8dde4; border-radius: 4px; padding: 14px; position: relative; }
+.wh-step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #014782; color: #FFEE02; font-size: 11px; font-weight: 700; border-radius: 50%; margin-bottom: 8px; }
+.wh-step-title { font-size: 11px; font-weight: 700; color: #014782; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.wh-step-text  { font-size: 11.5px; color: #2d3748; line-height: 1.6; }
+.wh-step.highlight { background: #e3f0fb; border-color: #014782; border-left: 3px solid #FFEE02; }
+.wh-step.highlight .wh-step-num { background: #FFEE02; color: #014782; }
+
+/* DSV efficiency matrix */
+.eff-matrix-wrap { overflow-x: auto; margin-top: 16px; }
+.eff-matrix { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.eff-matrix thead th { background: #014782; color: #FFEE02; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 10px; text-align: center; border-bottom: 3px solid #FFEE02; border-right: 1px solid rgba(255,255,255,0.12); }
+.eff-matrix thead th:first-child { text-align: left; }
+.eff-matrix thead tr.sub-header th { background: #f0f2f5; color: #4a5568; font-size: 8.5px; border-bottom: 2px solid #d8dde4; }
+.eff-matrix tbody tr { border-bottom: 1px solid #e8ebef; }
+.eff-matrix tbody tr:hover { background: #f8f9fb; }
+.eff-matrix tbody td { padding: 8px 10px; color: #2d3748; text-align: center; border-right: 1px solid #e8ebef; }
+.eff-matrix tbody td:first-child { font-weight: 700; color: #014782; text-align: left; font-size: 13px; }
+.eff-matrix .col-divider { border-right: 2px solid #FFEE02 !important; }
+.cell-ok   { color: #1a6e3a; font-weight: 700; }
+.cell-warn { color: #a05000; font-weight: 700; }
+.cell-crit { color: #8b0000; font-weight: 700; }
+.cell-na   { color: #aab0b8; font-style: italic; }
+.cell-gain { font-size: 15px; font-weight: 700; color: #FFEE02; background: #013560; border-radius: 3px; padding: 2px 7px; }
+.cell-gain-na { font-size: 12px; color: #aab0b8; }
+
+/* Live efficiency block */
+.live-eff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+.live-eff-half { background: #014782; border-radius: 4px; padding: 18px 20px; }
+.le-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FFEE02; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.le-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 12px; }
+.le-row:last-child { border-bottom: none; }
+.le-key { color: rgba(255,255,255,0.75); }
+.le-val { font-weight: 700; color: #FFEE02; font-size: 16px; }
+.le-val.small { font-size: 13px; }
+
+/* ══════════════════════════════════════════════════════════
+   DIVE PLANNER SECTION — scoped to .planner-section
+══════════════════════════════════════════════════════════ */
+.planner-section {
+    --bg1:#eaf1f7; --bg2:#f6f9fc; --panel:#fff; --ink:#1f2d3d; --muted:#5f6e7d;
+    --blue:#4f81bd; --blue2:#dbe8f6; --hold:#ffe699; --deco:#c6e0b4; --done:#d9d9d9;
+    --good:#6aa84f; --warn-p:#f6b26b; --bad:#e06666; --line:#c7d3df; --today:#d63384;
+    --shadow:0 10px 30px rgba(0,0,0,.08); --radius:16px;
+    background: #f0f2f5; padding: 0;
+    border-left: 1px solid #d8dde4; border-right: 1px solid #d8dde4;
+}
+.planner-section .pcard {
+    background: var(--panel); border-radius: 0; padding: 24px; margin-bottom: 0;
+    border-left: none; border-right: none; border-bottom: 1px solid #e8ebef;
+}
+.planner-section h2 { margin: 0 0 14px; font-size: 14px; font-weight: 700; color: #014782; letter-spacing: 0.01em; }
+.planner-section .field-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.planner-section .field-grid .field { min-width: 0; }
+.planner-section .pfield { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.planner-section .pfield label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.planner-section .pfield input { width: 100%; padding: 9px 11px; border: 1.5px solid var(--line); border-radius: 4px; font-size: 14px; background: #fff; color: var(--ink); }
+.planner-section .pfield input:focus { outline: none; border-color: var(--blue); }
+/* field inputs inside planner need override since .field is defined globally */
+.planner-section .field input,
+.planner-section .field select { border-radius: 8px; border: 1.5px solid var(--line); background: #fff; }
+.planner-section .field input:focus { border-color: var(--blue); background: #fff; }
+.planner-section .field label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.planner-section .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.planner-section button.action {
+    border: 0; border-radius: 8px; padding: 9px 14px; font-family: inherit;
+    font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; background: var(--blue);
+}
+.planner-section button.secondary { background: #8aa6c6; }
+.planner-section button.success { background: var(--good); }
+.planner-section button.danger { background: #c0504d; }
+.planner-section .note { color: var(--muted); font-size: 13px; line-height: 1.45; margin-top: 10px; }
+.planner-section .small { font-size: 12px; color: var(--muted); }
+.planner-section .ptabs { display: flex; gap: 0; border-bottom: 2px solid #FFEE02; background: #014782; }
+.planner-section .ptab-btn { padding: 11px 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); background: transparent; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.planner-section .ptab-btn:hover { color: rgba(255,255,255,0.85); }
+.planner-section .ptab-btn.active { color: #FFEE02; border-bottom-color: #FFEE02; }
+.planner-section .ptab-panel { display: none; }
+.planner-section .ptab-panel.active { display: block; }
+.planner-section .teams { display: grid; gap: 14px; }
+.planner-section .team-card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+.planner-section .team-head { background: var(--blue); color: #fff; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.planner-section .team-head strong { font-size: 15px; }
+.planner-section .team-body { padding: 14px; }
+.planner-section .team-names { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 2px 0 12px; }
+.planner-section .stats { display: grid; grid-template-columns: repeat(4,minmax(150px,1fr)); gap: 10px; margin-top: 12px; }
+.planner-section .stat { border-radius: 8px; padding: 10px 12px; background: #f7fafc; border: 1px solid #e1e8f0; }
+.planner-section .stat .k { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: .04em; margin-bottom: 4px; }
+.planner-section .stat .v { font-size: 13px; font-weight: 700; }
+.planner-section .status-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 96px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.planner-section .ok  { background: rgba(106,168,79,.16); color: #2f6a19; }
+.planner-section .amber { background: rgba(246,178,107,.22); color: #9b4f00; }
+.planner-section .red { background: rgba(224,102,102,.18); color: #a61c1c; }
+.planner-section .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0 16px; }
+.planner-section .legend span { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.planner-section .swatch { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(0,0,0,.08); }
+.planner-section .timeline-wrap { overflow-x: auto; overflow-y: auto; max-height: 72vh; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.planner-section .timeline { min-width: 2600px; padding: 12px; }
+.planner-section .scale { position: sticky; top: 0; background: #fff; z-index: 3; display: grid; grid-template-columns: 220px 1fr; border-bottom: 1px solid var(--line); margin-bottom: 8px; padding-bottom: 8px; }
+.planner-section .scale-days { position: relative; height: 58px; background-image: linear-gradient(to right, rgba(70,110,160,.12) 1px, transparent 1px); background-size: calc(100% / var(--days)) 100%; }
+.planner-section .month-label { position: absolute; top: 2px; transform: translateX(-50%); font-size: 13px; font-weight: 700; color: var(--ink); background: rgba(255,255,255,.9); padding: 0 4px; border-radius: 4px; white-space: nowrap; }
+.planner-section .day-label { position: absolute; top: 24px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.planner-section .t-row { display: grid; grid-template-columns: 220px 1fr; min-height: 66px; border-bottom: 1px solid #edf2f7; }
+.planner-section .t-label { padding: 8px 10px; font-size: 13px; }
+.planner-section .t-label strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.planner-section .t-bar-area { position: relative; height: 50px; border-left: 1px solid var(--line); background-image: linear-gradient(to right, rgba(70,110,160,.12) 1px, transparent 1px); background-size: calc(100% / var(--days)) 100%; }
+.planner-section .seg { position: absolute; top: 10px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 6px; }
+.planner-section .seg.sat  { background: var(--blue2); }
+.planner-section .seg.hold { background: var(--hold); }
+.planner-section .seg.deco { background: var(--deco); }
+.planner-section .seg.done { background: var(--done); }
+.planner-section .today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--today); z-index: 2; }
+.planner-section .today-tag { position: absolute; top: -20px; transform: translateX(-50%); background: var(--today); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 999px; z-index: 4; white-space: nowrap; }
+.planner-section .compliance-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.planner-section table.compliance { width: 100%; border-collapse: collapse; min-width: 900px; }
+.planner-section table.compliance th,
+.planner-section table.compliance td { padding: 9px 11px; border-bottom: 1px solid #e8eef5; text-align: left; font-size: 13px; }
+.planner-section table.compliance th { background: #f0f2f5; position: sticky; top: 0; z-index: 1; color: #4a5568; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
+.planner-section table.compliance tbody td:first-child { font-weight: 700; color: #1a1a1a; }
+.planner-section table.compliance tbody tr:hover { background: #f8f9fb; }
+@media (max-width: 900px) {
+    .planner-section .field-grid { grid-template-columns: repeat(2,1fr); }
+    .planner-section .stats { grid-template-columns: repeat(2,minmax(150px,1fr)); }
+    .planner-section .team-names { grid-template-columns: 1fr; }
+    .wh-steps { grid-template-columns: 1fr 1fr; }
+    .grid-8 { grid-template-columns: repeat(4,1fr); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+footer { background: #e8ebef; border: 1px solid #d8dde4; border-top: none; border-radius: 0 0 6px 6px; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
+footer span { font-size: 10px; color: #8a9299; letter-spacing: 0.01em; }
+
+.home-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    background: #FFEE02;
+    color: #014782;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 9999;
+}
+.home-btn:hover {
+    background: #e6d800;
+}
+
+</style>
+</head>
+<body>
+
+<a href="../index.html" class="home-btn">⬅ Back to Library</a>
 <div class="page">
 
 <!-- HEADER -->
-<header style="background:var(--fam-navy);border-radius:6px 6px 0 0;padding:16px 24px;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--fam-yellow)">
-  <div style="flex-shrink:0;width:28px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39 53" fill="none"><path d="M19.3197 0C29.9897 0 38.4697 7.23999 38.4697 18.27V52.47H28.3097V18.69C28.3097 12.69 24.7997 9.11002 19.3097 9.11002C13.8197 9.11002 10.2497 12.69 10.2497 18.69V52.52H0.179688V18.32C0.179688 7.32001 8.6497 0.0499878 19.3197 0.0499878" fill="#FFEE02"/></svg></div>
-  <div>
-    <div style="font-family:var(--fam-head,'Oswald',Arial);font-size:.75rem;font-weight:700;letter-spacing:3px;color:var(--fam-yellow);text-transform:uppercase">N-SEA</div>
-    <div style="font-size:14px;font-weight:700;color:#FFEE02;letter-spacing:0.02em;line-height:1.3;font-family:var(--fam-head,'Oswald',Arial)">SAT Operations Planner — Bell Rotation, DSV Efficiency &amp; Dive Planning</div>
-    <div style="font-size:11.5px;color:rgba(255,255,255,0.80);margin-top:2px">Single-bell and twin-bell operational models with rotation scheduling</div>
-  </div>
+<header>
+    <div class="nsea-logo">
+        <svg width="50" height="58" viewBox="0 0 50 58" xmlns="http://www.w3.org/2000/svg">
+            <rect width="50" height="58" rx="3" fill="#014782"/>
+            <path d="M11 50 L11 27 A14 14 0 0 1 39 27 L39 50" fill="none" stroke="#FFEE02" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"/>
+        </svg>
+    </div>
+    <div class="header-text">
+        <h1>SAT OPERATIONS PLANNER — BELL ROTATION · DSV EFFICIENCY · DIVE PLANNING</h1>
+        <p>Single vs Twin Bell throughput · Wet handshake procedure · DSV efficiency matrix · Saturation decompression tracking · Compliance view</p>
+    </div>
 </header>
 
-<div style="background:#014782;padding:6px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;"><a href="/familiarisations/" style="display:inline-flex;align-items:center;padding:7px 12px;background:#fff;border:1px solid #c4d4e6;border-radius:10px;color:#014782;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;">← Home</a><span style="font-size:11px;color:rgba(255,255,255,.6);">SAT Operations Planner</span></div>
 <div class="notice">
     <strong>MODEL BASIS:</strong>&nbsp; Bell rotation: staggered decompression, 28-day cycle, 24 hr re-entry reserve is the governing manning factor.
     &nbsp;·&nbsp; <strong>Wet handshake:</strong> Bell B arrives on seabed, divers exchange job underwater — Bell A surfaces with zero dead time between work periods.
@@ -1288,7 +1617,25 @@ function printLandscapePdf(){
     const teamBlocks=teamCards.map((card,i)=>{const r=calcCardData(card);return`<div class="team-block"><h3>${escapeHtml(card.querySelector('.team-label').value||`Team ${i+1}`)}</h3><table class="print-table compact"><tr><th>Bellman</th><th>Diver 1</th><th>Diver 2</th><th>Storage Depth</th><th>Blowdown</th><th>Required Surface</th></tr><tr><td>${escapeHtml(card.querySelector('.name1').value)}</td><td>${escapeHtml(card.querySelector('.name2').value)}</td><td>${escapeHtml(card.querySelector('.name3').value)}</td><td>${escapeHtml(card.querySelector('.storage-depth').value)} msw</td><td>${escapeHtml(fmtDate(r.blowdown))}</td><td>${escapeHtml(fmtDate(r.reqSurface))}</td></tr></table><table class="print-table compact"><tr><th>Status</th><th>Max Surface By</th><th>Pre-Deco Hold Start</th><th>Deco Start</th></tr><tr><td>${escapeHtml(r.statusText)}</td><td>${escapeHtml(fmtDate(r.maxSurface))}</td><td>${escapeHtml(fmtDate(r.holdStart))}</td><td>${escapeHtml(fmtDate(r.decoStart))}</td></tr></table></div>`;}).join('');
     const timelineRows=buildTimelineRows(results);
     const timelineTable=timelineRows.length?`<table class="print-table timeline-table">${timelineRows.map((row,idx)=>`<tr>${row.map(cell=>idx===0?`<th>${escapeHtml(cell)}</th>`:`<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</table>`:'<p>No timeline data available.</p>';
-    const printHtml=`<div class="section"><h1>Saturation Planning &amp; Decompression Tracker — N-Sea SAT Operations Planner</h1>${projectTable}</div><div class="section"><h2>Compliance View</h2>${complianceTable}</div><div class="section page-break"><h2>Team Detail</h2>${teamBlocks}</div><div class="section page-break"><h2>Timeline Grid</h2>${timelineTable}</div>`;
+    const printHtml=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SAT Operations Planner Print Report</title><style>@page{size:A4 landscape;margin:10mm}body{font-family:Arial,sans-serif;font-size:11px;color:#1a1a1a}h1{font-size:16px;margin-bottom:12px;color:#014782}h2{font-size:13px;margin:16px 0 8px;color:#014782;border-bottom:2px solid #FFEE02;padding-bottom:4px}h3{font-size:12px;margin:12px 0 6px}.section{margin-bottom:20px}.print-table{width:100%;border-collapse:collapse;margin-bottom:8px}.print-table th,.print-table td{padding:5px 7px;border:1px solid #c7d3df;text-align:left;font-size:10px}.print-table th{background:#f0f2f5;font-weight:700}.print-table.project-table .label{background:#e3f0fb;font-weight:700;width:20%}.print-table.project-table .value{width:30%}.team-block{margin-bottom:12px;padding:8px;border:1px solid #c7d3df;border-radius:4px}.page-break{page-break-before:always}
+.home-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    background: #FFEE02;
+    color: #014782;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 9999;
+}
+.home-btn:hover {
+    background: #e6d800;
+}
+
+</style></head><body><div class="section"><h1>Saturation Planning &amp; Decompression Tracker — N-Sea SAT Operations Planner</h1>${projectTable}</div><div class="section"><h2>Compliance View</h2>${complianceTable}</div><div class="section page-break"><h2>Team Detail</h2>${teamBlocks}</div><div class="section page-break"><h2>Timeline Grid</h2>${timelineTable}</div></body></html>`;
     const w=window.open('','_blank');
     if(!w){alert('Pop-up blocked. Allow pop-ups to print the PDF report.');return;}
     w.document.open();w.document.write(printHtml);w.document.close();w.focus();
@@ -1674,3 +2021,5 @@ function calcDecision() {
     verdictEl.textContent = `${icon}  ${text}`;
 }
 </script>
+</body>
+</html>

@@ -199,9 +199,6 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <button class="tb" onclick="openSec('fam')">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><polygon points="3,2 13,8 3,14"/></svg>Familiarisations
     </button>
-    <button class="tb" onclick="openSec('tools')">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><circle cx="8" cy="8" r="6" stroke-dasharray="2.5 2.5"/></svg>Systems &amp; Tools
-    </button>
     <button class="tb" onclick="openSec('docs')">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="1" width="10" height="14" rx="1"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>Documents
     </button>
@@ -255,13 +252,17 @@ const DATA=[
     {name:'Nitrox Emergencies',items:[
       {id:'nxfail',name:'Nitrox Failure — Switch to Air',href:'/emergency/nitrox-failure-switch-to-air.html'},
       {id:'boox',name:'Bailout Opened While on Nitrox',href:'/emergency/bailout-opened-while-on-nitrox.html'}
+    ]},
+    {name:'Response Planning',items:[
+      {id:'erphbot',name:'ERP — HBOT / DDC Facility Reference',href:'/emergency/erp-hyperbaric-chambers.html'}
     ]}
   ]},
   {id:'fam',label:'Familiarisations',icon:'▶',groups:[
     {name:'Daughter Craft',items:[
-      {id:'dc',name:'Daughter Craft Diving Operations',href:'/familiarisations/daughter-craft.html'},
-      {id:'broco',name:'Ultra Thermic Cutting — Broco BR-22 Plus',href:'/familiarisations/broco-ultrathermic-cutting.html'},
-      {id:'broco2',name:'Broco BR-22 Plus — Familiarisation',href:'/familiarisations/broco-cutting.html'}
+      {id:'dc',name:'Daughter Craft Diving Operations',href:'/familiarisations/daughter-craft.html'}
+    ]},
+    {name:'Subsea Cutting',items:[
+      {id:'broco2',name:'Broco BR-22 Plus — Ultra Thermic Cutting',href:'/familiarisations/broco-cutting.html'}
     ]},
     {name:'Technical Reference',items:[
       {id:'esotgd',name:'Oxygen Toxicity — DMAC 35 Guide',href:'/familiarisations/esot-dmac35-guide.html'},
@@ -271,17 +272,25 @@ const DATA=[
       {id:'satplan',name:'SAT Operations Planner',href:'/familiarisations/sat-bell-operations-planner.html'}
     ]}
   ]},
-  {id:'tools',label:'Systems & Tools',icon:'◈',groups:[
-    {name:'Operational Systems',items:[
-      {id:'facility',name:'Facility Portal',href:'#',ph:true},
-      {id:'doccomp',name:'Document Comparison Tool',href:'#',ph:true},
-      {id:'manbuild',name:'Manual Builder',href:'#',ph:true},
-      {id:'erp',name:'ERP Generator',href:'#',ph:true}
-    ]}
-  ]},
   {id:'docs',label:'Documents',icon:'◧',groups:[
-    {name:'Reference Material',items:[
-      {id:'docref',name:'Reference Documents',href:'#',ph:true}
+    {name:'United Kingdom',items:[
+      {id:'gd023uk',name:'BMS-OP-0600-GD-023-UK (Rev 2.5)',href:'/documents/uk/BMS-OP-0600-GD-023-UK_v2_5.docx'},
+      {id:'te005uk',name:'BMS-OP-0600-TE-005-UK (Updated)',href:'/documents/uk/BMS-OP-0600-TE-005_UK_UPDATED.xlsx'}
+    ]},
+    {name:'Netherlands',items:[
+      {id:'gd024nl',name:'BMS-OP-0600-GD-024-NL (Rev 0.3)',href:'/documents/nl/BMS-OP-0600-GD-024-NL_v0_3.docx'},
+      {id:'te004nl',name:'BMS-OP-0600-TE-004-NL (Updated)',href:'/documents/nl/BMS-OP-0600-TE-004_NL_UPDATED.xlsx'}
+    ]},
+    {name:'Germany',items:[
+      {id:'gd025de',name:'BMS-OP-0600-GD-025-DE (Rev 1.2)',href:'/documents/de/BMS-OP-0600-GD-025-DE_v1_2.docx'},
+      {id:'te006de',name:'BMS-OP-0600-TE-006-DE (Updated)',href:'/documents/de/BMS-OP-0600-TE-006_DE_UPDATED.xlsx'}
+    ]},
+    {name:'United Arab Emirates',items:[
+      {id:'gd026uae',name:'BMS-OP-0600-GD-026-UAE (Rev 1.2)',href:'/documents/uae/BMS-OP-0600-GD-026-UAE_v1_2.docx'},
+      {id:'te006uae',name:'BMS-OP-0600-TE-006-UAE (Updated)',href:'/documents/uae/BMS-OP-0600-TE-006_UAE_UPDATED.xlsx'}
+    ]},
+    {name:'All Regions',items:[
+      {id:'gdall',name:'BMS-OP-0600-GD-ALL (Rev 1.0)',href:'/documents/all/BMS-OP-0600-GD-ALL_v1_0.docx'}
     ]}
   ]}
 ];
@@ -367,7 +376,7 @@ function renderTileGrid(){
         <div class="home-logo-sm">N-SEA</div>
         <div>
           <div class="home-ttl-sm">Diving Toolkit — Operations Library</div>
-          <div class="home-sub-sm">Calculators · Emergency tools · Familiarisations · Systems &amp; Tools</div>
+          <div class="home-sub-sm">Calculators · Emergency tools · Familiarisations · Documents</div>
         </div>
       </div>
       <div class="home-hint">Select an item from the navigation panel</div>
@@ -414,13 +423,4 @@ function srchRun(q){
   if(!q){res.innerHTML='';return}
   const hits=IDX.filter(it=>it.name.toLowerCase().includes(q)||(it.section&&it.section.toLowerCase().includes(q))||(it.group&&it.group.toLowerCase().includes(q)));
   if(!hits.length){res.innerHTML='<div class="srch-none">No results</div>';return}
-  res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${it.group?' › '+it.group:''}</div></div></div>`).join('');
-}
-function srchPick(id){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML='';const item=IDX.find(x=>x.id===id);if(item){openSec(item.secId);pickItem(id)}}
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape')document.getElementById('srch-ol').classList.remove('on')});
-
-buildTree();
-render();
-</script>
-</body>
-</html>
+  res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${i

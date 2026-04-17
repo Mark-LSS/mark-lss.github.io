@@ -1,0 +1,830 @@
+---
+render_with_liquid: false
+layout: null
+title: "ERP — HBOT / DDC Global Facility Reference"
+subtitle: "Hyperbaric chambers suitable for diver treatment"
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-Sea | HBOT / DDC Global Facility Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --navy:    #014782;
+  --navy-dk: #09396C;
+  --navy-lt: #E6EEF7;
+  --teal:    #1A8FA0;
+  --teal-dk: #136D7A;
+  --yellow:  #FFEE02;
+  --green:   #1A9B5F;
+  --amber:   #D4800A;
+  --red:     #B83228;
+  --blue-tag:#1A8FA0;
+  --bg:      #F2F4F6;
+  --card:    #FFFFFF;
+  --border:  #D0D8E4;
+  --text:    #0D2B4E;
+  --muted:   #4A6080;
+  --mono:    "IBM Plex Mono", monospace;
+  --sans:    "Montserrat", sans-serif;
+  --cond:    "Montserrat", sans-serif;
+  --sidebar-w: 268px;
+  --header-h: 72px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+
+/* ── HEADER ──────────────────────────────────────────────────────────── */
+header {
+  position:fixed; top:0; left:0; right:0; height:var(--header-h);
+  background:#FFFFFF;
+  align-items:center;
+  display:flex; align-items:center; padding:0 28px; gap:20px; z-index:1000;
+  border-bottom:3px solid var(--teal);
+  box-shadow: 0 2px 12px rgba(1,71,130,0.08);
+}
+
+/* N-Sea arch logo SVG */
+.nsea-logo { display:flex; align-items:center; gap:14px; text-decoration:none; }
+.logo-svg-wrap { display:none; }
+
+.header-divider { width:1px; height:36px; background:var(--border); }
+.header-title-block { display:flex; flex-direction:column; }
+.header-title { font-family:var(--sans); font-weight:700; font-size:17px; color:var(--navy-dk); letter-spacing:0.3px; line-height:1; }
+.header-sub { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-top:3px; }
+
+.header-right { margin-left:auto; display:flex; align-items:center; gap:16px; }
+.doc-ref { font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.5px; }
+.ver-badge {
+  background:var(--navy-lt); border:1px solid var(--border);
+  color:var(--navy); font-family:var(--mono); font-size:9px; letter-spacing:2px;
+  padding:4px 10px; text-transform:uppercase;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────── */
+.layout { display:flex; padding-top:var(--header-h); }
+
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
+aside {
+  position:fixed; left:0; top:var(--header-h); bottom:0; width:var(--sidebar-w);
+  background:#FFFFFF; overflow-y:auto; z-index:100;
+  border-right:1px solid var(--border);
+}
+.sidebar-section { padding:16px 0; }
+.sidebar-label {
+  font-family:var(--mono); font-size:9px; letter-spacing:3px; color:var(--muted);
+  padding:0 20px 10px; text-transform:uppercase; border-bottom:1px solid var(--border); margin-bottom:4px;
+}
+.region-btn {
+  display:flex; align-items:center; gap:10px;
+  width:100%; padding:9px 20px; border:none; background:none;
+  cursor:pointer; color:var(--muted); font-family:var(--sans); font-size:13px;
+  font-weight:500; transition:all 0.12s; text-align:left;
+}
+.region-btn:hover { background:var(--navy-lt); color:var(--navy); }
+.region-btn.active {
+  background:var(--navy-lt); color:var(--navy-dk); font-weight:600;
+  border-left:3px solid var(--teal);
+}
+.region-flag { font-size:16px; line-height:1; }
+.region-count {
+  margin-left:auto; font-family:var(--mono); font-size:10px;
+  background:var(--bg); padding:2px 7px; color:var(--muted); border:1px solid var(--border);
+}
+.region-btn.active .region-count { background:var(--teal); color:#fff; border-color:var(--teal); }
+.sidebar-divider { height:1px; background:var(--border); margin:4px 0; }
+
+.emerg-btn {
+  display:block; width:calc(100% - 28px); margin:0 14px 8px;
+  padding:10px 14px; background:rgba(184,50,40,0.06);
+  border:1px solid rgba(184,50,40,0.25); color:var(--red);
+  font-family:var(--mono); font-size:10px; letter-spacing:1px;
+  cursor:pointer; transition:all 0.15s; text-align:left;
+}
+.emerg-btn:hover { background:rgba(184,50,40,0.12); border-color:var(--red); }
+
+.legend-block { padding:12px 20px; }
+.leg-item { display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:7px; }
+.leg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; border:1px solid rgba(0,0,0,0.1); }
+
+/* ── MAIN ────────────────────────────────────────────────────────────── */
+main { margin-left:var(--sidebar-w); flex:1; min-height:calc(100vh - var(--header-h)); display:flex; flex-direction:column; }
+
+/* ── MAP ─────────────────────────────────────────────────────────────── */
+#map-container { height:300px; position:relative; border-bottom:1px solid var(--border); }
+#map { height:100%; width:100%; }
+.map-overlay {
+  position:absolute; top:12px; left:12px; z-index:400;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(8px);
+  border:1px solid var(--border); padding:10px 14px;
+  box-shadow:0 2px 12px rgba(1,71,130,0.1);
+}
+.map-title { font-family:var(--sans); font-weight:700; font-size:14px; color:var(--navy-dk); letter-spacing:0.5px; }
+.map-sub { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:1px; margin-top:2px; }
+.map-count-strip {
+  position:absolute; bottom:0; left:0; right:0; z-index:400;
+  background:rgba(255,255,255,0.92); backdrop-filter:blur(4px);
+  border-top:1px solid var(--border);
+  display:flex; gap:0; height:36px;
+}
+.mcs { flex:1; display:flex; align-items:center; justify-content:center; gap:7px;
+  font-family:var(--mono); font-size:10px; color:var(--muted); border-right:1px solid var(--border); }
+.mcs:last-child { border-right:none; }
+.mcs-dot { width:8px; height:8px; border-radius:50%; }
+.mcs b { color:var(--text); font-weight:600; }
+
+/* ── TOOLBAR ─────────────────────────────────────────────────────────── */
+.toolbar {
+  background:#fff; border-bottom:1px solid var(--border);
+  padding:12px 24px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  position:sticky; top:var(--header-h); z-index:50;
+  box-shadow:0 1px 4px rgba(0,0,0,0.04);
+}
+.search-wrap { position:relative; flex:1; min-width:200px; max-width:360px; }
+.search-wrap input {
+  width:100%; padding:8px 12px 8px 36px;
+  border:1px solid var(--border); font-family:var(--sans); font-size:13px;
+  background:var(--bg); color:var(--text); outline:none; transition:border 0.15s;
+}
+.search-wrap input:focus { border-color:var(--teal); background:#fff; }
+.search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); opacity:0.35; font-size:14px; }
+.filter-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip {
+  padding:5px 12px; border:1px solid var(--border); background:#fff;
+  font-family:var(--mono); font-size:9px; letter-spacing:0.5px;
+  cursor:pointer; color:var(--muted); transition:all 0.12s; text-transform:uppercase;
+}
+.chip:hover { border-color:var(--teal); color:var(--teal); }
+.chip.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+.chip.s-suitable.active { background:var(--green); border-color:var(--green); }
+.chip.s-arrange.active  { background:var(--amber); border-color:var(--amber); }
+.chip.s-verify.active   { background:var(--blue-tag); border-color:var(--blue-tag); }
+.chip.s-closed.active   { background:var(--red); border-color:var(--red); }
+.stats-bar { margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted); white-space:nowrap; }
+
+/* ── CARDS ───────────────────────────────────────────────────────────── */
+.cards-wrap { padding:24px; flex:1; }
+.region-header {
+  display:flex; align-items:baseline; gap:12px; margin:0 0 14px;
+  padding-bottom:10px; border-bottom:2px solid var(--teal);
+}
+.region-header h2 { font-family:var(--sans); font-weight:700; font-size:20px; color:var(--navy-dk); }
+.region-header .rh-count { font-family:var(--mono); font-size:10px; color:var(--muted); }
+.cards-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(308px,1fr));
+  gap:14px; margin-bottom:36px;
+}
+
+/* ── CARD ────────────────────────────────────────────────────────────── */
+.card {
+  background:var(--card); border:1px solid var(--border);
+  position:relative; overflow:hidden; display:flex; flex-direction:column;
+  cursor:pointer; transition:transform 0.12s, box-shadow 0.12s;
+}
+.card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,143,160,0.12); border-color:var(--teal); }
+.card-accent { height:4px; width:100%; }
+.card-accent.suitable { background:var(--green); }
+.card-accent.arrange  { background:var(--amber); }
+.card-accent.verify   { background:var(--blue-tag); }
+.card-accent.closed   { background:var(--red); }
+.card-head { padding:12px 14px 8px; display:flex; align-items:flex-start; gap:10px; }
+.card-flag { font-size:20px; line-height:1; margin-top:2px; flex-shrink:0; }
+.card-title-block { flex:1; min-width:0; }
+.card-name { font-family:var(--sans); font-weight:700; font-size:16px; color:var(--navy-dk); line-height:1.2; margin-bottom:2px; }
+.card-loc { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.status-pill {
+  flex-shrink:0; font-family:var(--mono); font-size:8px; letter-spacing:0.8px;
+  padding:3px 7px; text-transform:uppercase; align-self:flex-start; margin-top:2px; border:1px solid transparent;
+}
+.status-pill.suitable { background:rgba(26,155,95,0.1); color:var(--green); border-color:rgba(26,155,95,0.3); }
+.status-pill.arrange  { background:rgba(212,128,10,0.1); color:var(--amber); border-color:rgba(212,128,10,0.3); }
+.status-pill.verify   { background:rgba(30,111,165,0.1); color:var(--blue-tag); border-color:rgba(30,111,165,0.3); }
+.status-pill.closed   { background:rgba(184,50,40,0.1); color:var(--red); border-color:rgba(184,50,40,0.3); }
+
+.card-body { padding:0 14px 12px; flex:1; display:flex; flex-direction:column; gap:6px; }
+.card-row { display:flex; gap:8px; align-items:flex-start; }
+.card-key { font-family:var(--mono); font-size:8px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; min-width:64px; padding-top:1px; flex-shrink:0; }
+.card-val { font-size:12px; color:var(--text); line-height:1.4; flex:1; }
+.card-val.phone { font-family:var(--mono); font-size:10px; color:var(--navy); font-weight:500; }
+.card-val.emerg { font-family:var(--mono); font-size:10px; color:var(--red); font-weight:600; }
+.h24-yes { color:var(--green); font-weight:600; }
+.h24-no  { color:var(--red); }
+.h24-v   { color:var(--amber); }
+.card-div { height:1px; background:var(--border); margin:3px 0; }
+.card-note { background:var(--bg); border-left:2px solid var(--border); padding:6px 10px; font-size:11px; color:var(--muted); line-height:1.4; }
+.card-cat { font-family:var(--mono); font-size:8px; letter-spacing:0.5px; padding:2px 6px; background:var(--navy-lt); color:var(--navy); }
+.card-footer { padding:7px 14px; background:var(--bg); border-top:1px solid var(--border); font-family:var(--mono); font-size:9px; color:var(--muted); }
+
+/* ── EMERGENCY PANEL ─────────────────────────────────────────────────── */
+.emerg-panel {
+  position:fixed; top:0; right:-480px; width:440px; bottom:0;
+  background:#fff; z-index:2000; overflow-y:auto;
+  transition:right 0.28s cubic-bezier(0.4,0,0.2,1);
+  border-left:3px solid var(--red);
+  box-shadow:-4px 0 24px rgba(0,0,0,0.12);
+  padding-top:var(--header-h);
+}
+.emerg-panel.open { right:0; }
+.ep-header { padding:18px 22px 14px; background:rgba(184,50,40,0.05); border-bottom:1px solid rgba(184,50,40,0.15); }
+.ep-title { font-family:var(--sans); font-weight:700; font-size:20px; color:var(--red); letter-spacing:0.5px; }
+.ep-sub { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:1px; margin-top:3px; }
+.ep-close { position:absolute; top:78px; right:16px; background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; line-height:1; padding:4px; transition:color 0.12s; }
+.ep-close:hover { color:var(--text); }
+.ep-section { padding:14px 22px; border-bottom:1px solid var(--border); }
+.ep-section-label { font-family:var(--mono); font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.ep-contact { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--bg); }
+.ep-contact:last-child { border-bottom:none; }
+.ep-cc { width:34px; height:34px; background:var(--navy-lt); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.ep-info { flex:1; }
+.ep-org { font-size:12px; color:var(--text); font-weight:500; margin-bottom:2px; }
+.ep-phone { font-family:var(--mono); font-size:13px; color:var(--navy); letter-spacing:0.5px; font-weight:600; }
+.ep-note { font-size:10px; color:var(--muted); margin-top:2px; }
+.ep-phone.emerg { color:var(--red); }
+.ep-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:1999; }
+.ep-overlay.open { display:block; }
+
+/* ── MODAL ───────────────────────────────────────────────────────────── */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:3000; align-items:center; justify-content:center; padding:24px; }
+.modal-overlay.open { display:flex; }
+.modal { background:#fff; max-width:620px; width:100%; max-height:82vh; overflow-y:auto; position:relative; animation:mIn 0.18s ease; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+@keyframes mIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+.modal-header { padding:18px 22px; background:var(--navy-dk); border-bottom:3px solid var(--yellow); position:sticky; top:0; }
+.modal-title { font-family:var(--sans); font-weight:700; font-size:19px; color:#fff; }
+.modal-doc { font-family:var(--mono); font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:1px; margin-top:3px; }
+.modal-close { position:absolute; top:14px; right:18px; background:none; border:none; color:rgba(255,255,255,0.5); font-size:20px; cursor:pointer; }
+.modal-body { padding:22px; }
+.modal-status { padding:7px 12px; font-family:var(--mono); font-size:9px; letter-spacing:2px; color:#fff; margin-bottom:14px; display:inline-block; }
+.modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.modal-field label { font-family:var(--mono); font-size:8px; letter-spacing:2px; color:var(--muted); display:block; margin-bottom:3px; text-transform:uppercase; }
+.modal-field p { font-size:13px; color:var(--text); }
+.modal-field p.mono { font-family:var(--mono); font-size:11px; color:var(--navy); }
+.modal-field p.red { font-family:var(--mono); font-size:13px; color:var(--red); font-weight:600; }
+.modal-notes { background:var(--bg); border-left:3px solid var(--teal); padding:10px 14px; margin-bottom:14px; font-size:13px; line-height:1.6; color:var(--text); }
+.modal-sources { padding:10px 14px; background:var(--navy-lt); border:1px solid var(--border); }
+.modal-sources a { font-family:var(--mono); font-size:10px; color:var(--navy); display:block; margin-bottom:3px; word-break:break-all; }
+.modal-warn { margin-top:14px; font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:0.5px; border-top:1px solid var(--border); padding-top:10px; }
+
+/* ── NO RESULTS ──────────────────────────────────────────────────────── */
+.no-results { text-align:center; padding:80px 40px; color:var(--muted); }
+.no-results h3 { font-family:var(--sans); font-size:24px; margin-bottom:8px; color:var(--navy); }
+
+/* ── SCROLLBAR ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.12); }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- N-Sea Arch Logo SVG -->
+        <a class="nsea-logo" href="#">
+    <img src="data:image/jpeg;base64,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zDMKJ912QWCCgNv34iHgYg3XJ97JP2u7eFF+XUCoN/VnMAcjAC9CYZZn1H08ojcAyN4NQp0ijSfteqgzRUqzPCSyIIEZyKQhyL8MJAz8Af1DTYhBGI6gl2l2BE6IAAAMAGAoBwBNkGBvmFSjj5yYeJaWHJyJVJjoiQza7+90QMRAI4GmQ8VI9x66hwi4B1H1wEc2cAPkPwcRHb1v738FXAG5x+n6iM/4W4C3IAPZ4iAZkA7RWDAfItbmgR5DIGJFCen1XtwE+a9DjN7cExmFu1en1Xtwa585QBMZhbNXp9V7cGufOUATGYWzV6fVe3BrnzlAExmFs1en1Xtwa585QBMZhbNXp9V7cGufOUATGYWzV6fVe3BrnzlAExmFs1en1Xtwa585QBMZhbNXp9V7cGufOUATGYWzV6fVe3BrnzlAExmFs1en1Xtwa585QBMZhbNXp9V7cGufOUATGYWzV6fVe3BrnzlAF2a2avTztg7PETVxwEIR9x2Q8C3HCEsFnhxwCEI8BIkfJ/nhLjqszyxCHLeHwJKITEEETBgRYPkSwTPBBBA82MAsZsZStkgLsu6oUbyQZEIv2pVGjuESBjMiLjCG3wUAQEtIZ77HOzVPRUBSQC6AW3C24TjRwA5oJWyNE7oF2h5TFiN2/wAHqSRKbATaLUDh1T0Vp3pwkBXA7X6IRLDiFX4GQte8Gga9SWAJGqMMQor5woHyL+BCPiUf36COyAZBEu/61mqekczrmMgxH0v9NT5gAGPBPaCda2ZDnT2jzMQu6DicayPgsUSYCIOY6oiJFsoI5gyOM8pwMQUYjMhdzLVPS0704S4XBa0BE+ALZD9UEMZJQN/fsngZPy1dRPrJCLBRTbWlnTgkHvJyuzX+/wACVqnorTvTg2ICT8CMdasDZlvh+LbD8RjETHebvKB6g/E5zmPw4hR9uZvHMj0QwzgedT6QsAAZXjSc4UAAsAaSVzel2U0gRraUo4LYZMe+8+1KioAEC+LkTOiKYpkSczaIdEmEuzGZE0Y5aTwyu/5J/9oADAMBAgICAwIAABD3333333333333333333333333/wD19/8AvfffffffffffffObLzv/AL33333333333z37vTbzT33333333333v1ix336Xb333333333036Df0h/133333333333/5b/2n/wCU9999999999/+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" alt="N-Sea" style="height:52px;width:auto;display:block;"/>
+    <span style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:17px;color:#014782;letter-spacing:0.3px;margin-left:12px;">N-Sea</span>
+  </a>
+  <div class="header-divider"></div>
+  <div class="header-title-block">
+    <div class="header-title">HBOT / DDC Global Facility Reference</div>
+    <div class="header-sub">BMS-OP-0600-GD-ALL &nbsp;·&nbsp; v1.0 &nbsp;·&nbsp; April 2026</div>
+  </div>
+  <div class="header-right">
+    <span class="doc-ref">44 facilities &nbsp;|&nbsp; 10 regions</span>
+    <div class="ver-badge">Dataset Current</div>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Regions</div>
+    <button class="region-btn active" onclick="filterRegion('ALL',this)">
+      <span class="region-flag">🌍</span> All Regions
+      <span class="region-count" id="cnt-ALL">44</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('UK',this)">
+      <span class="region-flag">🇬🇧</span> United Kingdom
+      <span class="region-count" id="cnt-UK">14</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('NL',this)">
+      <span class="region-flag">🇳🇱</span> Netherlands
+      <span class="region-count" id="cnt-NL">6</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('DE',this)">
+      <span class="region-flag">🇩🇪</span> Germany
+      <span class="region-count" id="cnt-DE">11</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('NO',this)">
+      <span class="region-flag">🇳🇴</span> Norway
+      <span class="region-count" id="cnt-NO">1</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('BE',this)">
+      <span class="region-flag">🇧🇪</span> Belgium
+      <span class="region-count" id="cnt-BE">1</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('FR',this)">
+      <span class="region-flag">🇫🇷</span> France
+      <span class="region-count" id="cnt-FR">2</span>
+    </button>
+    <div class="sidebar-divider"></div>
+    <button class="region-btn" onclick="filterRegion('UAE',this)">
+      <span class="region-flag">🇦🇪</span> UAE
+      <span class="region-count" id="cnt-UAE">4</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('QA',this)">
+      <span class="region-flag">🇶🇦</span> Qatar
+      <span class="region-count" id="cnt-QA">1</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('OM',this)">
+      <span class="region-flag">🇴🇲</span> Oman
+      <span class="region-count" id="cnt-OM">1</span>
+    </button>
+    <button class="region-btn" onclick="filterRegion('BH',this)">
+      <span class="region-flag">🇧🇭</span> Bahrain
+      <span class="region-count" id="cnt-BH">1</span>
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Emergency</div>
+    <button class="emerg-btn" onclick="openEmerg()">⚡&nbsp; EMERGENCY CONTACTS</button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Status Key</div>
+    <div class="legend-block">
+      <div class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Suitable for ERP use</div>
+      <div class="leg-item"><span class="leg-dot" style="background:var(--amber)"></span>Prior arrangement required</div>
+      <div class="leg-item"><span class="leg-dot" style="background:var(--blue-tag)"></span>Verify before ERP use</div>
+      <div class="leg-item"><span class="leg-dot" style="background:var(--red)"></span>Not operational</div>
+    </div>
+    <div style="padding:0 14px 4px;font-family:var(--mono);font-size:8px;color:var(--muted);line-height:1.6;letter-spacing:0.3px;">
+      All facilities must be confirmed directly before ERP issue. Dataset: Apr 2026.
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+
+<!-- MAP -->
+<div id="map-container">
+  <div id="map"></div>
+  <div class="map-overlay">
+    <div class="map-title">GLOBAL CHAMBER MAP</div>
+    <div class="map-sub">44 FACILITIES &nbsp;·&nbsp; CLICK MARKER FOR DETAILS</div>
+  </div>
+  <div class="map-count-strip">
+    <div class="mcs"><span class="mcs-dot" style="background:var(--green)"></span><b id="cs-suitable">0</b>&nbsp;Suitable</div>
+    <div class="mcs"><span class="mcs-dot" style="background:var(--amber)"></span><b id="cs-arrange">0</b>&nbsp;Arrange</div>
+    <div class="mcs"><span class="mcs-dot" style="background:var(--blue-tag)"></span><b id="cs-verify">0</b>&nbsp;Verify</div>
+    <div class="mcs"><span class="mcs-dot" style="background:var(--red)"></span><b id="cs-closed">0</b>&nbsp;Closed</div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search facility, city, phone..." oninput="applyFilters()">
+  </div>
+  <div class="filter-chips">
+    <button class="chip active" id="chip-ALL" onclick="filterStatus('ALL',this)">All</button>
+    <button class="chip s-suitable" id="chip-suitable" onclick="filterStatus('suitable',this)">Suitable</button>
+    <button class="chip s-arrange"  id="chip-arrange"  onclick="filterStatus('arrange',this)">Arrange</button>
+    <button class="chip s-verify"   id="chip-verify"   onclick="filterStatus('verify',this)">Verify</button>
+    <button class="chip s-closed"   id="chip-closed"   onclick="filterStatus('closed',this)">Closed</button>
+  </div>
+  <div class="stats-bar" id="statsBar">44 facilities</div>
+</div>
+
+<!-- CARDS -->
+<div class="cards-wrap" id="cardsWrap"></div>
+</main>
+</div>
+
+<!-- EMERGENCY PANEL -->
+<div class="ep-overlay" id="epOverlay" onclick="closeEmerg()"></div>
+<div class="emerg-panel" id="emergPanel">
+  <button class="ep-close" onclick="closeEmerg()">✕</button>
+  <div class="ep-header">
+    <div class="ep-title">⚡ Emergency Contacts</div>
+    <div class="ep-sub">DIVING ACCIDENT RESPONSE &nbsp;·&nbsp; CONFIRM BEFORE ERP USE</div>
+  </div>
+
+  <div class="ep-section">
+    <div class="ep-section-label">United Kingdom</div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇬🇧</div>
+      <div class="ep-info">
+        <div class="ep-org">BHA Diving Accident Helpline (Eng / Wales / NI)</div>
+        <div class="ep-phone emerg">07831 151523</div>
+        <div class="ep-note">24h. State "diving accident".</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇬🇧</div>
+      <div class="ep-info">
+        <div class="ep-org">Scotland Diving Helpline</div>
+        <div class="ep-phone emerg">0345 408 6008</div>
+        <div class="ep-note">NHS Grampian hyperbaric network</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇬🇧</div>
+      <div class="ep-info">
+        <div class="ep-org">HM Coastguard</div>
+        <div class="ep-phone">999 / VHF Ch 16</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ep-section">
+    <div class="ep-section-label">Netherlands</div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇳🇱</div>
+      <div class="ep-info">
+        <div class="ep-org">General Emergency (ambulance, fire, water)</div>
+        <div class="ep-phone emerg">112</div>
+        <div class="ep-note">Works on the water where mobile coverage available</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇳🇱</div>
+      <div class="ep-info">
+        <div class="ep-org">JRCC Den Helder / Coastguard</div>
+        <div class="ep-phone">+31 223 542300 / VHF Ch 16</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇳🇱</div>
+      <div class="ep-info">
+        <div class="ep-org">DMC Den Helder — Duty Physician</div>
+        <div class="ep-phone">0889-501417</div>
+        <div class="ep-note">Out-of-hours: 0223 65 82 20 → ask duty duikerarts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ep-section">
+    <div class="ep-section-label">Germany</div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇩🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">GTÜM Emergency Chambers Hotline</div>
+        <div class="ep-phone emerg">112</div>
+        <div class="ep-note">State: Tauchunfall. GTÜM: www.gtuem.org</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇩🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">MRCC Bremen (Maritime rescue)</div>
+        <div class="ep-phone">+49 421 536870 / VHF Ch 16</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇩🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">General Emergency</div>
+        <div class="ep-phone">112</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ep-section">
+    <div class="ep-section-label">Norway</div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇳🇴</div>
+      <div class="ep-info">
+        <div class="ep-org">General Emergency</div>
+        <div class="ep-phone emerg">113</div>
+        <div class="ep-note">State: "dykkerskade"</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇳🇴</div>
+      <div class="ep-info">
+        <div class="ep-org">Haukeland University Hospital</div>
+        <div class="ep-phone">+47 55 97 50 00</div>
+        <div class="ep-note">National hyperbaric authority since 1994</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ep-section">
+    <div class="ep-section-label">Belgium / France</div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇧🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">Belgium General Emergency</div>
+        <div class="ep-phone emerg">112</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇫🇷</div>
+      <div class="ep-info">
+        <div class="ep-org">SAMU (Medical Emergency)</div>
+        <div class="ep-phone emerg">15</div>
+        <div class="ep-note">Route to nearest hyperbaric unit</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇫🇷</div>
+      <div class="ep-info">
+        <div class="ep-org">CROSS Méditerranée (Maritime)</div>
+        <div class="ep-phone">196</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ep-section">
+    <div class="ep-section-label">Middle East</div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇦🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">UAE — Ambulance / Police</div>
+        <div class="ep-phone emerg">998 / 999</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇦🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">Abu Dhabi Coast Guard</div>
+        <div class="ep-phone">+971 2 541 5555</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇦🇪</div>
+      <div class="ep-info">
+        <div class="ep-org">Dubai Maritime City Authority</div>
+        <div class="ep-phone">+971 4 220 4440</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇶🇦</div>
+      <div class="ep-info"><div class="ep-org">Qatar Emergency</div><div class="ep-phone emerg">999</div></div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇴🇲</div>
+      <div class="ep-info">
+        <div class="ep-org">Oman Emergency</div>
+        <div class="ep-phone emerg">9999</div>
+        <div class="ep-note">Route to Royal Hospital Muscat</div>
+      </div>
+    </div>
+    <div class="ep-contact">
+      <div class="ep-cc">🇧🇭</div>
+      <div class="ep-info">
+        <div class="ep-org">Bahrain Emergency</div>
+        <div class="ep-phone emerg">999</div>
+        <div class="ep-note">Route to KHUH</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 22px;">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);line-height:1.8;letter-spacing:0.3px;border-top:1px solid var(--border);padding-top:12px;">
+      ⚠ Always confirm facility acceptance directly before ERP issue.<br>
+      DCI treatment &gt;6h after onset: 90% chance of non-reversible effects.<br>
+      All contacts subject to change — verify before each project.
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-doc" id="modalDoc"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const FACILITIES = [
+  {id:"uk-aberdeen",region:"UK",flag:"🇬🇧",name:"Aberdeen NHC",city:"Aberdeen",address:"Aberdeen Royal Infirmary, Foresterhill, Aberdeen AB25 2ZN",lat:57.1553,lng:-2.1432,phone:"01224 553264",emerg:"0345 408 6008",h24:"yes",cat:"Category 1",cls:"BHA",type:"Multiplace",hospital:"Aberdeen Royal Infirmary",status:"suitable",suit:"Suitable for ERP use",notes:"Primary Scottish emergency centre. BHA-listed. Authority verified 2026-04.",src:"https://ukhyperbaric.com/emergency/facilities/",email:"gram.hyperbaric@nhs.scot"},
+  {id:"uk-wirral",region:"UK",flag:"🇬🇧",name:"Hyperbaric Treatment & Training",city:"Birkenhead",address:"2 East Street, Birkenhead CH41 1BY",lat:53.3929,lng:-3.0167,phone:"0151 648 8000",emerg:"0151 648 8000 / 07802 824245",h24:"yes",cat:"Category 1",cls:"BHA",type:"Multiplace",hospital:"Liverpool FT NHS",status:"suitable",suit:"Suitable for ERP use",notes:"Category 1. Mobile backup 07802 824245 per BHA emergency page.",src:"https://ukhyperbaric.com/emergency/facilities/"},
+  {id:"uk-yarmouth",region:"UK",flag:"🇬🇧",name:"LHM Healthcare – East of England Hyperbaric Unit",city:"Great Yarmouth",address:"James Paget University Hospital, Lowestoft Road, Gorleston NR31 6LA",lat:52.5837,lng:1.7198,phone:"01493 452452",emerg:"01493 603151 / 07736 803966",h24:"yes",cat:"Category 1",cls:"BHA",type:"Multiplace",hospital:"James Paget University Hospital",status:"suitable",suit:"Suitable for ERP use",notes:"Category 1. ICU co-located. Dedicated emergency line and mobile fail-safe.",src:"https://ukhyperbaric.com/emergency/facilities/"},
+  {id:"uk-london",region:"UK",flag:"🇬🇧",name:"LHM Healthcare – Whipps Cross Hyperbaric Unit",city:"London",address:"Whipps Cross University Hospital, Leytonstone E11 1NR",lat:51.5769,lng:-0.0134,phone:"020 8539 1222",emerg:"07999 292999 / 07805 624856",h24:"yes",cat:"Category 1",cls:"BHA",type:"Multiplace",hospital:"Whipps Cross University Hospital",status:"suitable",suit:"Suitable for ERP use",notes:"Category 1 patients only. Dedicated emergency mobile; backup 07805 624856.",src:"https://ukhyperbaric.com/emergency/facilities/"},
+  {id:"uk-rugby",region:"UK",flag:"🇬🇧",name:"Midlands Diving Chamber",city:"Rugby",address:"Redwood House, Hospital of St Cross, Barby Road, Rugby CV22 5PX",lat:52.3647,lng:-1.2592,phone:"01788 579555",emerg:"07931 472602",h24:"yes",cat:"Category 2",cls:"BHA",type:"Multiplace",hospital:"Hospital of St Cross (no ED/ICU)",status:"arrange",suit:"Suitable only after direct confirmation",notes:"Category 2. Cannot accept critically ill patients. No on-site ED or ICU.",src:"https://ukhyperbaric.com/emergency/facilities/"},
+  {id:"uk-chichester",region:"UK",flag:"🇬🇧",name:"Hyperbaric Medicine Unit – St Richard's Hospital",city:"Chichester",address:"St Richard's Hospital, Spitalfield Lane, Chichester PO19 6SE",lat:50.8349,lng:-0.7662,phone:"01243 788122 ext 32504",emerg:"01243 330096",h24:"yes",cat:"Category 2",cls:"BHA",type:"Multiplace",hospital:"St Richard's Hospital",status:"arrange",suit:"Suitable only after direct confirmation",notes:"Corrected from Cat 1 to Cat 2. Temporarily unable to accept Category 1 critically ill patients.",src:"https://ukhyperbaric.com/emergency/facilities/"},
+  {id:"uk-hull",region:"UK",flag:"🇬🇧",name:"North of England Medical Hyperbaric Unit",city:"Hull",address:"Spire Hull and East Riding Hospital, Lowfield Road, Anlaby HU10 7AZ",lat:53.7359,lng:-0.4436,phone:"01482 672462",emerg:"01482 659471 / 07850 936598",h24:"yes",cat:"Category 1",cls:"BHA",type:"Multiplace",hospital:"Spire Hull & East Riding Hospital",status:"suitable",suit:"Suitable for ERP use",notes:"Category 1. Backup mobile 07850 936598 per BHA emergency page.",src:"https://ukhyperbaric.com/emergency/facilities/"},
+  {id:"uk-orkney",region:"UK",flag:"🇬🇧",name:"Orkney Hyperbaric Unit",city:"Stromness",address:"Old Academy Back Road, Stromness, Orkney KW16 3AW",lat:58.9697,lng:-3.2989,phone:"01856 850285",emerg:"0345 408 6008",h24:"yes",cat:"Category 2",cls:"BHA",type:"Multiplace",hospital:"NHS Orkney",status:"suitable",suit:"Suitable for ERP use",notes:"Scottish network. NHS Grampian governance. Remote — transport lead time critical.",src:"https://ukhyperbaric.com/members/"},
+  {id:"uk-plymouth",region:"UK",flag:"🇬🇧",name:"Plymouth DDRC Healthcare",city:"Plymouth",address:"Plymouth Science Park, Research Way, Derriford, Plymouth PL6 8BU",lat:50.4168,lng:-4.1087,phone:"01752 209999",emerg:"07831 151523",h24:"yes",cat:"Category 1",cls:"BHA",type:"Multiplace",hospital:"Derriford Hospital",status:"suitable",suit:"Suitable for ERP use",notes:"BHA-listed. Derriford Hospital on site with helipad.",src:"https://ukhyperbaric.com/emergency/facilities/",email:"info@ddrc.org",web:"https://www.ddrc.org"},
+  {id:"uk-strathcarron",region:"UK",flag:"🇬🇧",name:"Strathcarron Seafield Recompression Chamber",city:"Kishorn",address:"Seafield College, Kishorn, Strathcarron IV54 8YA",lat:57.38,lng:-5.63,phone:"01520 722215",emerg:"01520 722221 / 0345 408 6008",h24:"yes",cat:"Category 3",cls:"Non-BHA",type:"Multiplace",hospital:"",status:"arrange",suit:"Prior arrangement required",notes:"Category 3. Not on BHA emergency facilities page. Direct confirmation required.",src:""},
+  {id:"uk-gravesend",region:"UK",flag:"🇬🇧",name:"Gravesend Marine Services",city:"Gravesend",address:"Port of London Authority, Mark Lane, Gravesend DA12 2QB",lat:51.4415,lng:0.3691,phone:"01474 706473",emerg:"01474 560311",h24:"yes",cat:"Category 3",cls:"Non-BHA",type:"",hospital:"",status:"verify",suit:"Verify before ERP use",notes:"Not on BHA emergency page. Category 3 type. Verify current diving-emergency capability directly.",src:""},
+  {id:"uk-fortw",region:"UK",flag:"🇬🇧",name:"Fort William – The Underwater Centre",city:"Fort William",address:"Fort William, Scotland PH33 6LZ",lat:56.8186,lng:-5.1044,phone:"01397 703786",emerg:"0345 408 6008",h24:"verify",cat:"Category 2",cls:"Non-BHA",type:"",hospital:"",status:"verify",suit:"Verify before ERP use",notes:"Not on BHA emergency facilities page. Direct confirmation required.",src:""},
+  {id:"uk-oban",region:"UK",flag:"🇬🇧",name:"West Scotland Centre – Tritonia / Oban",city:"Oban",address:"Dunstaffnage Marine Laboratories, Dunbeg, Oban PA37 1QA",lat:56.4588,lng:-5.4375,phone:"NOT OPERATIONAL",emerg:"0345 408 6008 – triage only",h24:"no",cat:"CLOSED",cls:"BHA",type:"",hospital:"",status:"closed",suit:"NOT OPERATIONAL",notes:"CONFIRMED NOT OPERATIONAL as of April 2026. Do not use in any ERP.",src:"https://ukhyperbaric.com/members/"},
+  {id:"uk-poole",region:"UK",flag:"🇬🇧",name:"Poole – The Diver Clinic",city:"Poole",address:"7 Parkstone Road, Poole BH15 2NN",lat:50.7151,lng:-1.980,phone:"CLOSED",emerg:"CLOSED from 31 Jan 2025",h24:"no",cat:"CLOSED",cls:"",type:"",hospital:"",status:"closed",suit:"PERMANENTLY CLOSED",notes:"Permanent patient closure from 31 January 2025. Remove from all ERP references.",src:""},
+  {id:"nl-amsterdam",region:"NL",flag:"🇳🇱",name:"Amsterdam UMC – Hyperbare Geneeskunde (AMC)",city:"Amsterdam",address:"Meibergdreef 9, 1105 AZ Amsterdam",lat:52.2924,lng:4.9583,phone:"020 566 4500",emerg:"020 566 9111",h24:"yes",cat:"Category 1 equivalent",cls:"Internal equivalence",type:"Hospital-based academic",hospital:"Amsterdam UMC",status:"suitable",suit:"Suitable for ERP use",notes:"ONLY Dutch centre for ventilated/critical patients under HBO. Largest chamber in NL. 24/7 acute. Confirm direct acceptance before each project.",src:"https://www.amsterdamumc.nl/nl/hyperbare-geneeskunde/home",web:"https://www.amsterdamumc.nl"},
+  {id:"nl-goes",region:"NL",flag:"🇳🇱",name:"MCHZ / ADRZ Goes",city:"Goes",address:"'s-Gravenpolderseweg 114, 4462 RA Goes",lat:51.49,lng:3.87,phone:"088-1254290",emerg:"088-1250000 (ADRZ 24/7)",h24:"yes",cat:"Category 1 equivalent",cls:"Internal equivalence",type:"Hospital-based",hospital:"Admiraal De Ruyter Hospital (ADRZ)",status:"suitable",suit:"Suitable after direct confirmation",notes:"24/7 acute diving accident capability. Primary Zeeland Delta facility.",src:"https://www.hyperbaarcentrum.nl/duikongevallen/",email:"info@hyperbaarcentrum.nl",web:"https://www.hyperbaarcentrum.nl"},
+  {id:"nl-denhelder",region:"NL",flag:"🇳🇱",name:"Duikmedisch Centrum – Koninklijke Marine",city:"Den Helder",address:"Rijkszee- en Marinehaven, Gebouw IJsduiker, 1781 ZZ Den Helder",lat:52.9593,lng:4.7624,phone:"0223 65 30 76",emerg:"0889-501417; out-of-hours 0223 65 82 20",h24:"verify",cat:"Category 1 equivalent",cls:"Military",type:"Military multiplace",hospital:"Royal Netherlands Navy",status:"arrange",suit:"Prior arrangement required",notes:"Military facility. Treatment after consultation only. No inpatient capacity. Ventilated/unstable: additional consultation required.",src:"https://www.defensie.nl/organisatie/marine/eenheden/duikmedisch-centrum"},
+  {id:"nl-sneek",region:"NL",flag:"🇳🇱",name:"Antonius Hypercare – Sneek",city:"Sneek",address:"Bolswarderbaan 1, 8601 ZK Sneek",lat:53.0324,lng:5.6613,phone:"0515-488077",emerg:"0515-488077 / 112",h24:"yes",cat:"Category 2 equivalent",cls:"Internal equivalence",type:"Hospital-based",hospital:"Antonius Ziekenhuis Sneek",status:"suitable",suit:"Suitable – confirm direct",notes:"Contact confirmed publicly. Suitable for stable diving casualties.",src:"https://hypercare.nl/",email:"info@hypercare.nl",web:"https://hypercare.nl/"},
+  {id:"nl-ivhg-hoogeveen",region:"NL",flag:"🇳🇱",name:"IVHG – Hoogeveen",city:"Hoogeveen",address:"Dr. G.H. Amshoffweg 7, 7909 AA Hoogeveen",lat:52.7228,lng:6.4716,phone:"See www.ivhg.nl",emerg:"Request – 2-6h lead time",h24:"no",cat:"Category 2 (limited)",cls:"Internal equivalence",type:"Outpatient / freestanding",hospital:"Not hospital-based",status:"arrange",suit:"Prior arrangement – non-acute only",notes:"NON-ACUTE ONLY. 2-6h on request. No ventilated patients. Not suitable for acute ERP.",src:"https://www.ivhg.nl/",web:"https://www.ivhg.nl/"},
+  {id:"nl-ivhg-rotterdam",region:"NL",flag:"🇳🇱",name:"IVHG – Rotterdam",city:"Rotterdam",address:"Brielselaan 69e, 3081 AA Rotterdam",lat:51.9038,lng:4.4728,phone:"See www.ivhg.nl",emerg:"Request – 2-6h lead time",h24:"no",cat:"Category 2 (limited)",cls:"Internal equivalence",type:"Outpatient / freestanding",hospital:"Not hospital-based",status:"arrange",suit:"Prior arrangement – non-acute only",notes:"NON-ACUTE ONLY. Same limitations as Hoogeveen. No ventilated patients.",src:"https://www.ivhg.nl/",web:"https://www.ivhg.nl/"},
+  {id:"de-halle",region:"DE",flag:"🇩🇪",name:"Universitätsklinikum Halle",city:"Halle (Saale)",address:"Ernst-Grube-Str. 40, FG 15U02, D-06120 Halle",lat:51.4975,lng:11.9662,phone:"+49 345 557 4350",emerg:"+49 345 557 7501",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital multiplace",hospital:"UK Halle",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. Pre-warning 30 min.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-berlin",region:"DE",flag:"🇩🇪",name:"Vivantes Klinikum Friedrichshain",city:"Berlin",address:"Landsberger Allee 49, D-10249 Berlin",lat:52.5206,lng:13.4519,phone:"+49 30 130 23 17 00",emerg:"+49 30 130 23 15 02",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital multiplace",hospital:"Vivantes Klinikum Friedrichshain",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. Pre-warning 30 min.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-dusseldorf",region:"DE",flag:"🇩🇪",name:"Universitätsklinikum Düsseldorf – HBO",city:"Düsseldorf",address:"Moorenstraße 5, D-40225 Düsseldorf",lat:51.1927,lng:6.7889,phone:"hbo@med.uni-duesseldorf.de",emerg:"+49 172 109 9112 / +49 173 710 6600",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital multiplace",hospital:"UK Düsseldorf",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. Emergency via Schockraum if required.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-gelsenkirchen",region:"DE",flag:"🇩🇪",name:"Bergmannsheil Buer",city:"Gelsenkirchen",address:"Schernerweg 4, D-45894 Gelsenkirchen",lat:51.5697,lng:7.0528,phone:"+49 209 5902 570",emerg:"+49 209 5902 7233",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital multiplace",hospital:"BG Klinikum Bergmannsheil",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. No pre-warning but telephone contact essential.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-aachen",region:"DE",flag:"🇩🇪",name:"HBO-Zentrum Euregio Aachen",city:"Aachen",address:"Kackertstraße 11, D-52072 Aachen",lat:50.7731,lng:6.0617,phone:"+49 241 840 44",emerg:"+49 241 840 44",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital-linked multiplace",hospital:"Universitätsklinikum Aachen",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. Pre-warning 30 min. Adjacent to UKA ICU.",src:"https://www.gtuem.org/druckkammern/",web:"https://www.hbo-aachen.de"},
+  {id:"de-wiesbaden",region:"DE",flag:"🇩🇪",name:"HBO Rhein Main Taunus",city:"Wiesbaden",address:"Schiersteiner Straße 42, D-65187 Wiesbaden",lat:50.0731,lng:8.2393,phone:"+49 611 84 72 71 70",emerg:"+49 611 19222",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital multiplace",hospital:"Asklepios Klinik Wiesbaden",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. Asklepios site.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-murnau",region:"DE",flag:"🇩🇪",name:"BG Klinikum Murnau",city:"Murnau",address:"Professor-Küntscher-Straße 8, D-82418 Murnau",lat:47.6835,lng:11.2036,phone:"+49 8841 48 29 01",emerg:"+49 8841 48 26 62",h24:"yes",cat:"GTÜM List 1",cls:"GTÜM",type:"Hospital multiplace",hospital:"BG Klinikum Murnau",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 1. No pre-warning required; patient registration essential.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-munich",region:"DE",flag:"🇩🇪",name:"HBO-Center München",city:"Munich",address:"Bavariafilm-Platz 7, Geiselgasteig, Munich",lat:48.0768,lng:11.5417,phone:"+49 89 64979600",emerg:"+49 89 64979600",h24:"yes",cat:"GTÜM List 1 / VDD",cls:"GTÜM / VDD",type:"Hospital-linked multiplace",hospital:"VDD member",status:"suitable",suit:"Suitable for ERP use",notes:"VDD founding member. TÜV Süd + Germanischer Lloyd certified. Diving-specific since 1996. GTÜM-certified physicians.",src:"https://hbozentrum.de/en/diving-medicine/",web:"https://hbozentrum.de"},
+  {id:"de-kiel",region:"DE",flag:"🇩🇪",name:"Schifffahrtmedizinisches Institut der Marine",city:"Kronshagen / Kiel",address:"Kopperpahler Allee 120, D-24119 Kronshagen",lat:54.3233,lng:10.1333,phone:"Via GTÜM / MRCC",emerg:"On request",h24:"verify",cat:"GTÜM List 2 / Military",cls:"Military",type:"Military multiplace",hospital:"German Navy Medical Institute",status:"arrange",suit:"Prior arrangement – military",notes:"Military facility. Civilian/project access must be confirmed case-by-case through military command chain.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-ulm",region:"DE",flag:"🇩🇪",name:"Bundeswehrkrankenhaus Ulm",city:"Ulm",address:"Oberer Eselsberg 40, D-89081 Ulm",lat:48.4113,lng:9.9871,phone:"+49 731 17 10 20 53",emerg:"+49 731 17 10 20 55",h24:"yes",cat:"GTÜM List 2",cls:"GTÜM",type:"Hospital multiplace",hospital:"Bundeswehrkrankenhaus Ulm",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 2. Pre-warning 30 min. Military hospital.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"de-regensburg",region:"DE",flag:"🇩🇪",name:"Caritas-Krankenhaus St. Josef",city:"Regensburg",address:"Landshuterstraße 65, D-93053 Regensburg",lat:49.0134,lng:12.084,phone:"+49 941 782 3610",emerg:"+49 941 782 36 66",h24:"yes",cat:"GTÜM List 2",cls:"GTÜM",type:"Hospital multiplace",hospital:"Caritas-Krankenhaus St. Josef",status:"suitable",suit:"Suitable for ERP use",notes:"GTÜM List 2. No pre-warning.",src:"https://www.gtuem.org/druckkammern/"},
+  {id:"no-bergen",region:"NO",flag:"🇳🇴",name:"Haukeland University Hospital – Hyperbar Medisin",city:"Bergen",address:"Jonas Liesvei 65, 5021 Bergen, Norway",lat:60.3806,lng:5.3649,phone:"+47 55 97 50 00",emerg:"+47 55 97 50 00 / 113",h24:"yes",cat:"National authority",cls:"Norwegian national",type:"Hospital multiplace",hospital:"Haukeland University Hospital",status:"suitable",suit:"Suitable for ERP use",notes:"National hyperbaric medicine authority since 1994. North Sea offshore diving accident referral. Radio Medico telemedicine. Activate via 113.",src:"https://www.helse-bergen.no/en/departments/yrkesmedisinsk-avdeling/"},
+  {id:"be-brussels",region:"BE",flag:"🇧🇪",name:"Militair Hospitaal Koningin Astrid – HBO Centre",city:"Brussels",address:"Bruynstraat 1, 1120 Brussels",lat:50.8805,lng:4.3886,phone:"+32 2 264 48 20",emerg:"+32 2 264 48 20",h24:"yes",cat:"European centre of excellence",cls:"Military hospital",type:"Hospital multiplace",hospital:"Military Hospital Queen Astrid",status:"verify",suit:"Verify before ERP use",notes:"Military hospital. Civilian/project access must be confirmed before ERP issue.",src:"https://www.hopitalmilitaire.be/"},
+  {id:"fr-marseille",region:"FR",flag:"🇫🇷",name:"AP-HM – Médecine Hyperbare (Sainte-Marguerite)",city:"Marseille",address:"Hôpital Sainte-Marguerite, 270 Bd Sainte-Marguerite, 13009 Marseille",lat:43.2547,lng:5.3911,phone:"+33 4 91 74 40 00",emerg:"SAMU 15 / CROSS 196",h24:"yes",cat:"Hospital-based",cls:"French national / SFHM",type:"Hospital multiplace",hospital:"Hôpitaux Sud / AP-HM",status:"verify",suit:"Verify before ERP use",notes:"Dedicated hyperbaric, underwater and maritime medicine service. Emergency routing via SAMU 15 or CROSS Méditerranée 196.",src:"https://fr.ap-hm.fr/service/medecine-hyperbare-sub-aquatique-et-maritime-hopitaux-sud"},
+  {id:"fr-nice",region:"FR",flag:"🇫🇷",name:"CHU Nice – UTOH",city:"Nice",address:"Hôpital Pasteur, 30 Voie Romaine, 06001 Nice",lat:43.704,lng:7.2695,phone:"+33 4 92 03 55 75",emerg:"SAMU 15 / CROSS 196",h24:"yes",cat:"Hospital-based",cls:"French national / SFHM",type:"Hospital multiplace",hospital:"CHU Nice – Hôpital Pasteur",status:"verify",suit:"Verify before ERP use",notes:"Full hyperbaric indications including diving accidents. Mediterranean coast coverage.",src:"https://www.chu-nice.fr/offre-de-soins/anesthesie-reanimations-urgences-samu-smur/caisson-hyperbare/"},
+  {id:"uae-burjeel",region:"UAE",flag:"🇦🇪",name:"Burjeel Medical City – HBOT Centre",city:"Abu Dhabi",address:"Mohamed Bin Zayed City, Abu Dhabi, UAE",lat:24.3667,lng:54.5333,phone:"+971 80023",emerg:"+971 80023 / 998",h24:"verify",cat:"Internal Cat 2 assessment",cls:"Internal equivalence",type:"Monoplace",hospital:"Burjeel Medical City",status:"verify",suit:"Verify before ERP use",notes:"States DCS/AGE protocol, US Navy Table 6. UHMS/JCI accreditation. MONOPLACE ONLY. Emergency readiness must be confirmed per project.",src:"https://burjeelmedicalcity.com/specialities/hyperbaric-oxygen-therapy/"},
+  {id:"uae-zahra",region:"UAE",flag:"🇦🇪",name:"Al Zahra Hospital Dubai – HBOT",city:"Dubai",address:"Al Barsha 1, Sheikh Zayed Road, Dubai, UAE",lat:25.106,lng:55.176,phone:"+971 4 378 6666",emerg:"+971 4 378 6666 / 998",h24:"verify",cat:"Internal Cat 2 assessment",cls:"Internal equivalence",type:"Hospital-based",hospital:"Al Zahra Hospital Dubai",status:"verify",suit:"Verify before ERP use",notes:"DHA registry confirms HBOT and Undersea/Hyperbaric Oxygen Medicine. 24/7 Emergency Department confirmed. DCI acceptance must be confirmed.",src:"https://azhd.ae/"},
+  {id:"uae-fakeeh",region:"UAE",flag:"🇦🇪",name:"Fakeeh University Hospital – HBOT",city:"Dubai",address:"Dubai Silicon Oasis, Dubai, UAE",lat:25.115,lng:55.379,phone:"+971 4 414 44 44",emerg:"+971 4 414 44 44 / 998",h24:"verify",cat:"Internal Cat 2 assessment",cls:"Internal equivalence",type:"Hospital-based",hospital:"Fakeeh University Hospital",status:"verify",suit:"Verify before ERP use",notes:"Public site confirms HBOT, ICU, helipad and 24/7 emergency care. No source confirms guaranteed diving-emergency chamber standby.",src:"https://www.fuh.care/"},
+  {id:"uae-mirdif",region:"UAE",flag:"🇦🇪",name:"HMS Mirdif Hospital – Hyperbaric & Undersea Medicine",city:"Dubai",address:"Mirdif, Dubai, UAE",lat:25.2231,lng:55.4096,phone:"800467",emerg:"800467 / 998",h24:"verify",cat:"Internal Cat 2 assessment",cls:"Internal equivalence",type:"Hospital-based",hospital:"HMS Mirdif Hospital (JCI-accredited)",status:"verify",suit:"Verify before ERP use",notes:"JCI-accredited. Specialist: undersea and hyperbaric oxygen medicine. 24/7 diving accident availability not confirmed from public sources.",src:"https://www.hmsmirdifhospital.ae/"},
+  {id:"qa-doha",region:"QA",flag:"🇶🇦",name:"Hamad Medical Corporation – Hyperbaric Therapy Unit",city:"Doha",address:"Hamad General Hospital, Trauma and Emergency Center, Doha",lat:25.2969,lng:51.4439,phone:"+974 4439 4444",emerg:"+974 4439 4444 / 999",h24:"verify",cat:"Internal assessment",cls:"Internal equivalence",type:"Hospital-based",hospital:"Hamad General Hospital",status:"verify",suit:"Verify before ERP use",notes:"Unit within Trauma and Emergency Center. Primary referral for offshore Qatar. DCI acceptance must be confirmed with HMC directly.",src:"https://hamad.qa/"},
+  {id:"om-muscat",region:"OM",flag:"🇴🇲",name:"Royal Hospital Muscat – National Hyperbaric Medicine Center",city:"Muscat",address:"Al Ghubrah, PO Box 1331, Muscat, Oman",lat:23.6286,lng:58.5929,phone:"+968 2459 9000",emerg:"+968 2459 9000 / 9999",h24:"verify",cat:"Internal assessment",cls:"Internal equivalence",type:"Hospital multiplace",hospital:"Royal Hospital Muscat",status:"verify",suit:"Verify before ERP use",notes:"Official page notes 2 multiplace + 1 monoplace chamber. Primary government hospital for Oman offshore diving. DCI acceptance must be confirmed.",src:"https://royalhospital.med.om/eng/hyperbaric-medicine-center.php"},
+  {id:"bh-manama",region:"BH",flag:"🇧🇭",name:"King Hamad University Hospital – Hyperbaric Unit",city:"Manama",address:"Busaiteen, Manama, Bahrain",lat:26.2418,lng:50.6216,phone:"+973 1744 4444",emerg:"+973 1744 4444 / 999",h24:"verify",cat:"Internal assessment",cls:"Internal equivalence",type:"Hospital-based",hospital:"King Hamad University Hospital",status:"verify",suit:"Verify before ERP use",notes:"DCS listed as indication on official page. Confirm emergency diver access, on-call process and acceptance pathway.",src:"https://www.khuh.org.bh/en/hyperbaric"},
+];
+
+// ── COUNTS ──────────────────────────────────────────────────────────────────
+const REGIONS = ["UK","NL","DE","NO","BE","FR","UAE","QA","OM","BH"];
+const RNAMES  = {UK:"United Kingdom",NL:"Netherlands",DE:"Germany",NO:"Norway",BE:"Belgium",FR:"France",UAE:"United Arab Emirates",QA:"Qatar",OM:"Oman",BH:"Bahrain"};
+const SCOLS   = {suitable:"#1A9B5F",arrange:"#D4800A",verify:"#1E6FA5",closed:"#B83228"};
+
+REGIONS.forEach(r => {
+  const el = document.getElementById("cnt-"+r);
+  if(el) el.textContent = FACILITIES.filter(f=>f.region===r).length;
+});
+document.getElementById("cnt-ALL").textContent = FACILITIES.length;
+["suitable","arrange","verify","closed"].forEach(s => {
+  const el = document.getElementById("cs-"+s);
+  if(el) el.textContent = FACILITIES.filter(f=>f.status===s).length;
+});
+
+// ── MAP ──────────────────────────────────────────────────────────────────────
+const map = L.map("map",{zoomControl:true,attributionControl:true}).setView([50,10],3);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
+  attribution:"© OpenStreetMap | © CARTO", maxZoom:19
+}).addTo(map);
+
+const markers = {};
+function mkIcon(status) {
+  const c = SCOLS[status]||"#999";
+  return L.divIcon({
+    className:"",
+    html:`<svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z" fill="${c}" opacity="0.92"/>
+      <circle cx="12" cy="12" r="5" fill="white" opacity="0.95"/>
+    </svg>`,
+    iconSize:[24,32],iconAnchor:[12,32],popupAnchor:[0,-32],
+  });
+}
+FACILITIES.forEach(f => {
+  const m = L.marker([f.lat,f.lng],{icon:mkIcon(f.status)})
+    .bindPopup(`<div style="font-family:Montserrat,sans-serif;min-width:210px;padding:2px">
+      <div style="font-weight:700;font-size:13px;color:#01305A;margin-bottom:3px">${f.flag} ${f.name}</div>
+      <div style="font-size:11px;color:#5A6A82;margin-bottom:6px">${f.city}</div>
+      <div style="font-size:11px;margin-bottom:2px"><b>Emergency:</b> <span style="color:#B83228;font-family:monospace">${f.emerg}</span></div>
+      <div style="font-size:11px;margin-bottom:6px"><b>Cat:</b> ${f.cat}</div>
+      <span style="background:${SCOLS[f.status]};color:white;padding:2px 7px;font-size:9px;letter-spacing:1px;font-family:monospace">${f.suit.toUpperCase()}</span>
+      <div style="margin-top:8px">
+        <button onclick="showDetail('${f.id}')" style="border:1px solid #014782;background:#014782;color:white;font-size:10px;padding:4px 10px;cursor:pointer;font-family:IBM Plex Mono,monospace">VIEW DETAILS →</button>
+      </div>
+    </div>`,{maxWidth:290})
+    .addTo(map);
+  markers[f.id] = m;
+});
+
+// ── STATE & FILTER ───────────────────────────────────────────────────────────
+let curRegion="ALL", curStatus="ALL", srch="";
+
+function filterRegion(r, btn) {
+  curRegion=r;
+  document.querySelectorAll(".region-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const pts = FACILITIES.filter(f=>r==="ALL"||f.region===r).map(f=>[f.lat,f.lng]);
+  if(pts.length) map.flyToBounds(pts,{padding:[50,50],duration:0.7,maxZoom:r==="ALL"?4:8});
+  renderCards();
+}
+function filterStatus(s, btn) {
+  curStatus=s;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  btn.classList.add("active");
+  renderCards();
+}
+function applyFilters() {
+  srch = document.getElementById("searchInput").value.toLowerCase();
+  renderCards();
+}
+function matches(f) {
+  if(curStatus!=="ALL"&&f.status!==curStatus) return false;
+  if(srch&&!(f.name+f.city+f.address+f.phone+f.emerg+f.cat).toLowerCase().includes(srch)) return false;
+  return true;
+}
+
+// ── RENDER CARDS ─────────────────────────────────────────────────────────────
+function h24(v) {
+  if(v==="yes") return `<span class="h24-yes">✓ Yes</span>`;
+  if(v==="no")  return `<span class="h24-no">✗ No</span>`;
+  return `<span class="h24-v">? Verify</span>`;
+}
+function pillLabel(s) {
+  return s==="suitable"?"ERP Ready":s==="arrange"?"Arrange":s==="closed"?"Closed":"Verify";
+}
+function buildCard(f) {
+  return `<div class="card" id="card-${f.id}" onclick="showDetail('${f.id}')">
+    <div class="card-accent ${f.status}"></div>
+    <div class="card-head">
+      <span class="card-flag">${f.flag}</span>
+      <div class="card-title-block">
+        <div class="card-name">${f.name}</div>
+        <div class="card-loc">${f.address}</div>
+      </div>
+      <span class="status-pill ${f.status}">${pillLabel(f.status)}</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-key">Daytime</span><span class="card-val phone">${f.phone}</span></div>
+      <div class="card-row"><span class="card-key">Emergency</span><span class="card-val emerg">${f.emerg}</span></div>
+      <div class="card-row"><span class="card-key">24h</span><span class="card-val">${h24(f.h24)}</span></div>
+      <div class="card-row"><span class="card-key">Category</span><span class="card-val"><span class="card-cat">${f.cat}</span></span></div>
+      <div class="card-div"></div>
+      <div class="card-note">${f.notes}</div>
+    </div>
+    <div class="card-footer">${f.cls} · ${f.type||"—"}</div>
+  </div>`;
+}
+function renderCards() {
+  const wrap = document.getElementById("cardsWrap");
+  const regions = curRegion==="ALL"?REGIONS:[curRegion];
+  let html="", total=0;
+  regions.forEach(r => {
+    const facs = FACILITIES.filter(f=>f.region===r&&matches(f));
+    if(!facs.length) return;
+    total+=facs.length;
+    html+=`<div class="region-header"><h2>${RNAMES[r]}</h2><span class="rh-count">${facs.length} facilities</span></div><div class="cards-grid">`;
+    facs.forEach(f=>{html+=buildCard(f);});
+    html+="</div>";
+  });
+  if(!total) html=`<div class="no-results"><h3>No facilities found</h3><p>Try adjusting your search or filters.</p></div>`;
+  wrap.innerHTML=html;
+  document.getElementById("statsBar").textContent=`${total} facilities`;
+}
+
+// ── DETAIL MODAL ─────────────────────────────────────────────────────────────
+function showDetail(id) {
+  const f = FACILITIES.find(x=>x.id===id); if(!f) return;
+  document.getElementById("modalTitle").textContent=f.name;
+  document.getElementById("modalDoc").textContent=`${f.flag} ${f.city}  ·  ${f.id.toUpperCase()}`;
+  const c=SCOLS[f.status]||"#999";
+  let b=`<div class="modal-status" style="background:${c}">${f.suit.toUpperCase()}</div>
+  <div class="modal-grid">
+    <div class="modal-field"><label>Routine Tel</label><p class="mono">${f.phone}</p></div>
+    <div class="modal-field"><label>Emergency / 24h</label><p class="red">${f.emerg}</p></div>
+    <div class="modal-field"><label>24h Available</label><p>${h24(f.h24)}</p></div>
+    <div class="modal-field"><label>Category</label><p>${f.cat}</p></div>
+    <div class="modal-field"><label>Classification</label><p>${f.cls||"—"}</p></div>
+    <div class="modal-field"><label>Chamber Type</label><p>${f.type||"—"}</p></div>
+    <div class="modal-field" style="grid-column:1/-1"><label>Address</label><p>${f.address}</p></div>
+    <div class="modal-field" style="grid-column:1/-1"><label>Supporting Hospital</label><p>${f.hospital||"—"}</p></div>
+    ${f.email?`<div class="modal-field"><label>Email</label><p class="mono" style="font-size:11px">${f.email}</p></div>`:""}
+  </div>
+  <div class="modal-notes">${f.notes}</div>`;
+  if(f.web||f.src) {
+    b+=`<div class="modal-sources"><div style="font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);margin-bottom:6px;text-transform:uppercase">Source References</div>`;
+    if(f.web) b+=`<a href="${f.web}" target="_blank">${f.web}</a>`;
+    if(f.src&&f.src!==f.web) b+=`<a href="${f.src}" target="_blank">${f.src}</a>`;
+    b+="</div>";
+  }
+  b+=`<div class="modal-warn">⚠ Confirm facility acceptance directly before ERP issue &nbsp;·&nbsp; Dataset Apr 2026 &nbsp;·&nbsp; BMS-OP-0600-GD-ALL v1.0</div>`;
+  document.getElementById("modalBody").innerHTML=b;
+  document.getElementById("modalOverlay").classList.add("open");
+  map.flyTo([f.lat,f.lng],11,{duration:0.7});
+  if(markers[id]) markers[id].openPopup();
+}
+function closeModal(e) {
+  if(!e||e.target===document.getElementById("modalOverlay")) document.getElementById("modalOverlay").classList.remove("open");
+}
+function openEmerg() {
+  document.getElementById("emergPanel").classList.add("open");
+  document.getElementById("epOverlay").classList.add("open");
+}
+function closeEmerg() {
+  document.getElementById("emergPanel").classList.remove("open");
+  document.getElementById("epOverlay").classList.remove("open");
+}
+
+renderCards();
+</script>
+</body>
+</html>

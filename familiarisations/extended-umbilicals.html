@@ -1,180 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link rel="stylesheet" href="../assets/css/site.css">
-  <link rel="stylesheet" href="../assets/css/fam.css">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-<style>
-/* Extended umbilicals — retained content styles, tokens updated to fam.css vars */
-
-        :root{
-      --brand-blue:var(--fam-navy);
-      --brand-blue-2:#0b5c9e;
-      --brand-blue-3:#0c3d69;
-      --brand-yellow:var(--fam-yellow);
-      --white:#FFFFFF;
-      --bg:#eef4f8;
-      --bg2:#dfeaf3;
-      --panel:#ffffff;
-      --panel2:#f4f8fb;
-      --card:#ffffff;
-      --line:#b9cddd;
-      --text:#12324a;
-      --muted:#4f6f89;
-      --accent:var(--fam-navy);
-      --accent2:var(--fam-yellow);
-      --good:#1f8f53;
-      --warn:#b98407;
-      --bad:#b24545;
-      --shadow:0 12px 28px rgba(1,71,130,.12);
-      --radius:18px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:Segoe UI,Arial,sans-serif;
-      background:linear-gradient(180deg,var(--bg),var(--bg2) 100%);
-      color:var(--text);
-    }
-    .wrap{max-width:1400px;margin:auto;padding:18px}
-    .hero{
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(1,71,130,.12);
-      background:radial-gradient(circle at top right,rgba(255,238,2,.18),transparent 28%),linear-gradient(135deg,var(--fam-navy),#0b5c9e 55%,#0c3d69);
-      border-radius:28px;
-      padding:26px;
-      box-shadow:var(--shadow);
-    }
-    .hero-grid{display:grid;grid-template-columns:1.3fr .8fr;gap:20px;align-items:center}
-    .brand{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
-    .logoBox{
-      width:72px;height:96px;
-      display:grid;place-items:center;
-      flex:0 0 auto;
-    }
-    .logoBox img,.logoBox svg{
-      display:block;
-      width:100%;height:100%;
-      overflow:visible;
-      shape-rendering:geometricPrecision;
-      text-rendering:geometricPrecision;
-      image-rendering:-webkit-optimize-contrast;
-    }
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,238,2,.22);color:#183650;font-size:12px;border:1px solid rgba(255,238,2,.75);margin-right:8px;font-weight:700}
-    h1,h2,h3{margin:0 0 8px 0}
-    h1{font-size:2.2rem;line-height:1.1}
-    h2{font-size:1.5rem}
-    h3{font-size:1.05rem}
-    p{line-height:1.5;color:var(--text)}
-    .muted{color:var(--muted)}
-    .hero p{max-width:90%}
-    .hero-visual{
-      background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(244,248,251,.96));
-      border:1px solid rgba(1,71,130,.12);
-      border-radius:20px;padding:14px;
-    }
-    .nav{
-      margin-top:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px
-    }
-    .nav a{
-      text-decoration:none;color:#ffffff;background:rgba(255,255,255,.12);padding:12px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);text-align:center;font-size:.92rem;font-weight:700
-    }
-    .nav a:hover{background:rgba(255,238,2,.22);color:#14324a;transform:translateY(-1px)}
-    .section{margin-top:18px}
-    .grid{display:grid;gap:16px}
-    .grid-3{grid-template-columns:repeat(3,1fr)}
-    .grid-2{grid-template-columns:repeat(2,1fr)}
-    .card{
-      background:linear-gradient(180deg,var(--card),var(--panel));
-      border-radius:var(--radius);
-      border:1px solid rgba(1,71,130,.12);
-      padding:18px;box-shadow:var(--shadow)
-    }
-    .card.soft{background:linear-gradient(180deg,var(--panel2),var(--panel))}
-    .kpi{font-size:2rem;font-weight:800;color:var(--brand-blue)}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(1,71,130,.09);font-size:12px;color:var(--brand-blue);font-weight:700}
-    .step{display:flex;gap:12px;margin:10px 0;padding:12px;border-radius:14px;background:rgba(1,71,130,.05);border:1px solid rgba(1,71,130,.08)}
-    .stepNum{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,var(--accent2),#e1d200);color:#1b2e41;font-weight:800}
-    details{background:rgba(1,71,130,.04);padding:12px 14px;border-radius:14px;border:1px solid rgba(1,71,130,.08);margin:10px 0}
-    summary{cursor:pointer;font-weight:700}
-    .tableWrap{overflow:auto;border-radius:14px;border:1px solid rgba(255,255,255,.08)}
-    table{width:100%;border-collapse:collapse;background:#ffffff}
-    th,td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
-    th{background:var(--brand-blue);color:#ffffff}
-    tr:nth-child(even) td{background:rgba(1,71,130,.03)}
-    label{display:block;font-size:.92rem;color:var(--brand-blue);margin:8px 0 6px;font-weight:700}
-    input,select,button,textarea{
-      width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
-      background:#ffffff;color:var(--text);font-size:1rem
-    }
-    textarea{min-height:90px}
-    .inline{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .inline-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    button{cursor:pointer;background:linear-gradient(180deg,var(--accent),var(--brand-blue-2));color:#ffffff;font-weight:800;border:none}
-    button.secondary{background:#ffffff;color:var(--brand-blue);border:1px solid rgba(1,71,130,.18)}
-    button.good{background:linear-gradient(180deg,#39d77d,#25b564);color:#06200f}
-    .result{
-      margin-top:12px;padding:14px;border-radius:14px;background:rgba(1,71,130,.06);border:1px solid rgba(1,71,130,.16)
-    }
-    .goodBox{background:rgba(41,195,106,.12);border-color:rgba(41,195,106,.25)}
-    .warnBox{background:rgba(242,184,75,.12);border-color:rgba(242,184,75,.25)}
-    .badBox{background:rgba(242,106,106,.12);border-color:rgba(242,106,106,.25)}
-    .quizQ{padding:14px;border-radius:14px;background:rgba(1,71,130,.04);margin:12px 0;border:1px solid rgba(1,71,130,.08)}
-    .quizQ label.option{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;background:#ffffff;margin:8px 0;border:1px solid rgba(1,71,130,.08)}
-    .quizQ input[type="radio"],.quizQ input[type="checkbox"]{width:auto;margin-top:3px}
-    .statusBar{height:12px;border-radius:999px;background:rgba(1,71,130,.12);overflow:hidden}
-    .statusFill{height:100%;width:0;background:linear-gradient(90deg,var(--brand-yellow),var(--accent))}
-    .svgFrame{background:linear-gradient(180deg,#f7fbfe,#edf4f9);border-radius:18px;padding:10px;border:1px solid rgba(1,71,130,.12)}
-    .footer{opacity:.85;font-size:.92rem;padding:18px 0 35px}
-    .small{font-size:.9rem}
-    .checklistItem{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;background:#ffffff;margin:8px 0;border:1px solid rgba(1,71,130,.08)}
-    .checklistItem input{width:auto;margin-top:4px}
-    .score{font-size:2rem;font-weight:800;color:var(--brand-blue)}
-    .stickyTop{position:sticky;top:10px}
-    .hidden{display:none}
-    .hero,.hero p,.hero h1,.hero h2,.hero h3{color:#ffffff}
-    .hero .muted{color:rgba(255,255,255,.82)}
-    .hero .small{color:rgba(255,255,255,.82)}
-    .hero-visual text{font-family:Segoe UI,Arial,sans-serif}
-    input,select,textarea{border:1px solid rgba(1,71,130,.18);box-shadow:inset 0 1px 2px rgba(1,71,130,.04)}
-    input:focus,select:focus,textarea:focus{outline:2px solid rgba(255,238,2,.5);border-color:rgba(1,71,130,.35)}
-
-    
-    .diagramCard{position:relative;overflow:hidden}
-    .diagramShell{display:grid;grid-template-columns:1.25fr .85fr;gap:16px;align-items:start}
-    .diagramTools{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .chip{display:inline-block;padding:5px 10px;border-radius:999px;background:rgba(255,238,2,.22);color:var(--brand-blue);font-size:12px;font-weight:800;border:1px solid rgba(1,71,130,.12)}
-    .explainBox{margin-top:12px;padding:14px;border-radius:14px;background:rgba(1,71,130,.05);border:1px solid rgba(1,71,130,.10)}
-    .hotspot{cursor:pointer;transition:transform .18s ease, opacity .18s ease}
-    .hotspot:hover{transform:scale(1.04)}
-    .hotspot.active{filter:drop-shadow(0 0 8px rgba(255,238,2,.55))}
-    .legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
-    .legend div{padding:8px 10px;border-radius:10px;background:#fff;border:1px solid rgba(1,71,130,.08);font-size:.92rem}
-    .diagramModal{position:fixed;inset:0;background:rgba(5,18,31,.74);display:none;align-items:center;justify-content:center;padding:24px;z-index:20}
-    .diagramModal.show{display:flex}
-    .diagramModalCard{width:min(1200px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:18px;border:1px solid rgba(1,71,130,.18);box-shadow:0 20px 60px rgba(0,0,0,.28)}
-    .diagramModalHead{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px}
-    .diagramModalHead h3{margin:0;color:var(--brand-blue)}
-    .modalClose{width:auto;padding:10px 16px}
-
-    @media (max-width:1100px){
-      .diagramShell{grid-template-columns:1fr}
-      .hero-grid,.grid-3,.grid-2,.nav,.inline,.inline-3{grid-template-columns:1fr}
-      .hero p{max-width:100%}
-    }
-  
-</style>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Extended Air Diving Umbilical Training Package</title>
-  
-</head>
-<body>
-
-<div id="progress-strip"><div id="progress-fill"></div></div>
+---
+layout: fam-doc
+title: "Extended Air Diving Umbilical Operations"
+subtitle: "IMCA D040 — Extended Umbilical Training Package"
+---
+</div>
 <nav id="sidebar">
   <div id="sidebar-header">
     <div class="sidebar-brand">
@@ -211,7 +40,7 @@
   <div id="topbar">
     <div class="breadcrumb">N-Sea &rsaquo; <span>Extended Umbilical Operations</span></div>
     <div class="topbar-actions">
-<a href="../familiarisations/" style="display:inline-flex;align-items:center;padding:7px 12px;background:#fff;border:1px solid #c4d4e6;border-radius:10px;color:#014782;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;">← Home</a>
+<a href="/familiarisations/" style="display:inline-flex;align-items:center;padding:7px 12px;background:#fff;border:1px solid #c4d4e6;border-radius:10px;color:#014782;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;">← Home</a>
       <button class="btn btn-outline" onclick="window.print()">&#128438; Print</button>
     </div>
   </div>
@@ -1099,12 +928,10 @@
   </script>
   </div><!-- #content -->
 </div><!-- #main -->
-<div id="back-to-top" title="Back to top">&uarr;</div>
+
 <script>
 function setActive(el){document.querySelectorAll('#nav-list a').forEach(function(a){a.classList.remove('active');});if(el)el.classList.add('active');}
 function filterNav(v){var q=String(v||'').toLowerCase();document.querySelectorAll('#nav-list li').forEach(function(li){var a=li.querySelector('a');if(!a){li.style.display=q?'none':'';return;}li.style.display=!q||a.textContent.toLowerCase().includes(q)?'':'none';});}
 window.addEventListener('scroll',function(){var b=document.getElementById('back-to-top');if(b)b.classList.toggle('visible',window.scrollY>400);});
 document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('back-to-top');if(b)b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});
 </script>
-</body>
-</html>

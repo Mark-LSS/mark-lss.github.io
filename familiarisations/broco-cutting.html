@@ -1,101 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link rel="stylesheet" href="../assets/css/site.css">
-  <link rel="stylesheet" href="../assets/css/fam.css">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>N-Sea — Broco BR-22 Plus Ultrathermic Cutting: Familiarisation & Training</title>
-
-
-<style>
-/* broco-cutting scoped fixes — maps file's own classes to fam.css visuals */
-#sb-header{
-  padding:18px 16px 14px;
-  background:linear-gradient(160deg,var(--fam-navy-dd,#051e3a) 0%,var(--fam-navy,#014782) 100%);
-  border-bottom:3px solid var(--fam-yellow,#FFEE02);
-}
-.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.sb-logo img{width:22px!important;height:auto!important;flex-shrink:0;}
-.sb-brand{
-  font-family:'Oswald',Arial,sans-serif;
-  font-size:.92rem;font-weight:700;
-  color:var(--fam-yellow,#FFEE02);
-  letter-spacing:3px;text-transform:uppercase;
-}
-.sb-brand-sub{font-size:.68rem;color:rgba(255,255,255,.4);}
-#sb-progress-wrap{
-  padding:10px 16px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  background:rgba(255,255,255,.02);
-}
-.sb-progress-label{
-  font-family:'Oswald',Arial,sans-serif;
-  font-size:.6rem;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,.38);margin-bottom:5px;
-}
-.sb-progress-bar{
-  background:rgba(255,255,255,.07);border-radius:4px;height:5px;
-  overflow:hidden;margin-bottom:4px;
-}
-.sb-progress-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--fam-navy,#014782),var(--fam-yellow,#FFEE02));
-  width:0%;transition:width .5s ease;border-radius:4px;
-}
-#sb-user-pill{
-  padding:8px 16px;
-  font-family:'Source Code Pro',monospace;
-  font-size:.7rem;color:rgba(255,255,255,.45);
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-#sb-user-pill strong{color:rgba(255,255,255,.75);display:block;margin-bottom:2px;}
-#sb-footer{
-  padding:11px 16px;
-  border-top:1px solid rgba(255,255,255,.06);
-  font-size:.68rem;color:rgba(255,255,255,.3);
-  line-height:1.55;margin-top:auto;
-}
-.nav-section-lbl{
-  padding:10px 16px 3px;
-  font-family:'Oswald',Arial,sans-serif;
-  font-size:.58rem;letter-spacing:2.5px;
-  color:rgba(255,255,255,.28);text-transform:uppercase;
-}
-/* Content section classes */
-.sec-num{
-  font-family:'Source Code Pro',monospace;font-size:.7rem;
-  color:var(--fam-yellow,#FFEE02);background:var(--fam-navy,#014782);
-  border:1px solid rgba(255,238,2,.25);border-radius:3px;
-  padding:4px 8px;min-width:38px;text-align:center;
-  margin-top:5px;font-weight:600;flex-shrink:0;
-}
-.sec-title-wrap{flex:1;}
-.sec-title{
-  font-family:'Oswald',Arial,sans-serif;
-  font-size:clamp(1.35rem,2.2vw,1.85rem);color:#082d57;
-  font-weight:600;line-height:1.2;margin-bottom:3px;
-}
-.sec-desc{font-size:.82rem;color:#5e7a96;font-style:italic;}
-.section-body{padding-top:4px;}
-/* topbar badge */
-.topbar-badge{
-  font-family:'Source Code Pro',monospace;
-  font-size:.72rem;color:#5e7a96;
-  background:#f0f5fc;border:1px solid #c4d4e6;
-  border-radius:4px;padding:3px 9px;
-}
-#mobile-menu-btn{
-  background:transparent;border:1px solid #c4d4e6;
-  border-radius:4px;padding:5px 8px;cursor:pointer;color:#5e7a96;
-  font-size:.9rem;display:none;
-}
-@media(max-width:900px){#mobile-menu-btn{display:inline-flex;}}
-</style>
-</head>
-<body>
-
+---
+layout: fam-doc
+title: "Broco BR-22 Plus — Familiarisation & Training"
+subtitle: "N-Sea BMS Familiarisation Module"
+---
 <nav id="sidebar">
   <div id="sb-header">
     <div class="sb-logo">
@@ -159,7 +66,7 @@
     <div class="breadcrumb">N-SEA / <span>Broco BR-22 Plus Familiarisation</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="../familiarisations/" class="calc-back-link" style="font-size:13px;padding:7px 11px;text-decoration:none;font-weight:700;color:var(--fam-navy,#014782);border:1px solid #c4d4e6;border-radius:10px;background:#fff;">← Home</a>
+    <a href="/familiarisations/" class="calc-back-link" style="font-size:13px;padding:7px 11px;text-decoration:none;font-weight:700;color:var(--fam-navy,#014782);border:1px solid #c4d4e6;border-radius:10px;background:#fff;">← Home</a>
     <span id="exam-badge" class="topbar-badge" style="display:none"></span>
     <span class="topbar-badge" id="sections-badge">0 / 19 Sections</span>
   </div>
@@ -1154,5 +1061,3 @@ document.addEventListener('click', e=>{
   }
 });
 </script>
-</body>
-</html>

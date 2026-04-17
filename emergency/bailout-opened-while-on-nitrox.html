@@ -1,32 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nitrox Emergency — Bail-Out Breathing</title>
-  <link rel="stylesheet" href="../assets/css/site.css" />
-</head>
-<body>
-  <main class="calc-page">
-    <div class="calc-crumbs">
-      <div class="calc-trail">
-        <a href="../index.html">Home</a>
-        <span class="sep">/</span>
-        <span>Emergency</span>
-        <span class="sep">/</span>
-        <span>Nitrox Emergency — Bail-Out Breathing</span>
-      </div>
-      <a class="calc-back-link" href="../index.html#emergency">← Back</a>
-    </div>
-
-    <section class="calc-shell">
-      <header class="calc-shell-header">
-        <h1 class="calc-shell-title">Nitrox Emergency — Bail-Out Breathing</h1>
-        <p class="calc-shell-subtitle">Emergency scenario where diver opens air bailout while on Nitrox supply. Calculates blended actual oxygen percentage and resulting EAD for air table selection.</p>
-      </header>
-
-      <div class="calc-shell-body">
-        <section class="calc-section"><h2 class="calc-section-label">Dive Parameters</h2><div class="calc-grid cols-3">
+---
+layout: calculator
+title: "Nitrox Emergency - Bail-Out Breathing"
+subtitle: "Emergency scenario where diver opens air bailout while on Nitrox supply. Calculates blended actual oxygen percentage and resulting EAD for air table selection."
+section: "Emergency"
+---
+<section class="calc-section"><h2 class="calc-section-label">Dive Parameters</h2><div class="calc-grid cols-3">
 <div class="calc-field"><label for="depth">Dive Depth <span class="unit">(metres)</span></label><input id="depth" type="number" min="0" step="1" /></div>
 <div class="calc-field"><label for="divetime">Dive Time <span class="unit">(min)</span></label><input id="divetime" type="number" min="0" step="1" /></div>
 <div class="calc-field"><label for="nitrox">Nitrox O₂ <span class="unit">(%)</span></label><input id="nitrox" type="number" min="21" max="60" step="0.1" /></div>
@@ -60,11 +38,6 @@
           <p>Emergency scenario: diver is on Nitrox umbilical supply and opens air bailout cylinder at depth. Air oxygen is fixed at 20.9% and DadCoDat-style rounding is applied to Actual O₂ and EAD.</p>
         </div>
       </div>
-
-      <div class="calc-shell-footer">Shared calculator shell · Powered by master JSON reference</div>
-    </section>
-  </main>
-  <script src="../assets/js/calculator-common.js"></script>
 <script>
 const IDS=['depth','divetime','nitrox','bpstart','bpend','bpvol']; let CALC_DEF=null;
 async function init(){ const master=await loadMasterReference(); CALC_DEF=getCalculator(master,'bailout_opened_while_on_nitrox'); if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id,i.default); } } }
@@ -72,5 +45,3 @@ function run(){ const depth=parseFloat(depthEl.value), divetime=parseFloat(divet
 function clearAll(){ if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id,i.default); } } clearErrors(IDS); ['actoxOut','eadOut','po2Out'].forEach(id=>setText(id,'—')); setNotice('Enter the required values, then calculate.','warn'); }
 const depthEl=document.getElementById('depth'),divetimeEl=document.getElementById('divetime'),nitroxEl=document.getElementById('nitrox'),bpstartEl=document.getElementById('bpstart'),bpendEl=document.getElementById('bpend'),bpvolEl=document.getElementById('bpvol'); document.getElementById('calcBtn').addEventListener('click',run); document.getElementById('clearBtn').addEventListener('click',clearAll); init();
 </script>
-</body>
-</html>

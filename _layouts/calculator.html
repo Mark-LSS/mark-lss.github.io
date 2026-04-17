@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title }} — {{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}" />
+  <script src="{{ '/assets/js/calculator-common.js' | relative_url }}"></script>
+</head>
+<body>
+
+  <main class="calc-page">
+    <div class="calc-crumbs">
+      <div class="calc-trail">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <span class="sep">/</span>
+        <span>{% if page.section %}{{ page.section }}{% else %}Calculators{% endif %}</span>
+        <span class="sep">/</span>
+        <span>{{ page.title }}</span>
+      </div>
+      <a class="calc-back-link" href="{{ '/' | relative_url }}">← Back</a>
+    </div>
+
+    <section class="calc-shell">
+      <header class="calc-shell-header">
+        <h1 class="calc-shell-title">{{ page.title }}</h1>
+        {% if page.subtitle %}<p class="calc-shell-subtitle">{{ page.subtitle }}</p>{% endif %}
+      </header>
+
+      <div class="calc-shell-body">
+        {{ content }}
+      </div>
+
+      {% if page.footer_note %}
+      <div class="calc-shell-footer">{{ page.footer_note }}</div>
+      {% endif %}
+    </section>
+  </main>
+
+</body>
+</html>

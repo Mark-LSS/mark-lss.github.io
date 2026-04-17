@@ -1,0 +1,8 @@
+<nav class="top-nav" aria-label="Main navigation">
+  <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>Home</a>
+  <a href="{{ '/calculators/' | relative_url }}"{% if page.url contains '/calculators/' %} class="active"{% endif %}>Calculators</a>
+  <a href="{{ '/emergency/' | relative_url }}"{% if page.url contains '/emergency/' %} class="active"{% endif %}>Emergency</a>
+  <a href="{{ '/familiarisations/' | relative_url }}"{% if page.url contains '/familiarisations/' %} class="active"{% endif %}>Familiarisations</a>
+  <a href="{{ '/tools/' | relative_url }}"{% if page.url contains '/tools/' %} class="active"{% endif %}>Systems &amp; Tools</a>
+  <a href="{{ '/documents/' | relative_url }}"{% if page.url contains '/documents/' %} class="active"{% endif %}>Documents</a>
+</nav>

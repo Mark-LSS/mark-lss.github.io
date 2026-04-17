@@ -1,32 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accumulated ESOT / OTU Multi-Segment Tracker</title>
-  <link rel="stylesheet" href="../assets/css/site.css" />
-</head>
-<body>
-  <main class="calc-page">
-    <div class="calc-crumbs">
-      <div class="calc-trail">
-        <a href="../index.html">Home</a>
-        <span class="sep">/</span>
-        <span>Calculators</span>
-        <span class="sep">/</span>
-        <span>Accumulated ESOT / OTU Multi-Segment Tracker</span>
-      </div>
-      <a class="calc-back-link" href="../index.html#calculators">← Back</a>
-    </div>
-
-    <section class="calc-shell">
-      <header class="calc-shell-header">
-        <h1 class="calc-shell-title">Accumulated ESOT / OTU Multi-Segment Tracker</h1>
-        <p class="calc-shell-subtitle">Accumulates ESOT and OTU across multiple depth/time segments.</p>
-      </header>
-
-      <div class="calc-shell-body">
-        <section class="calc-section"><h2 class="calc-section-label">Exposure Segments</h2>
+---
+layout: calculator
+title: "Accumulated ESOT and OTU Multi-Segment Tracker"
+subtitle: "Accumulates ESOT and OTU across multiple depth/time segments."
+section: "Calculators"
+footer_note: "Source: diving_calculators_master_reference.json"
+---
+<section class="calc-section"><h2 class="calc-section-label">Exposure Segments</h2>
 <div id="segmentsWrap"></div>
 <div class="calc-btn-row"><button class="calc-btn calc-btn-secondary" type="button" id="addSegmentBtn">Add Segment</button></div>
 </section>
@@ -53,11 +32,6 @@
           <p>Enter each segment time and segment pO₂. Each row must have time greater than 0 and pO₂ greater than 0.5 ATA.</p>
         </div>
       </div>
-
-      <div class="calc-shell-footer">Shared calculator shell · Powered by master JSON reference</div>
-    </section>
-  </main>
-  <script src="../assets/js/calculator-common.js"></script>
 <script>
 let segmentCount=0;
 function segHtml(n,time='',po2=''){ return `<div class="calc-section" data-seg="${n}" style="margin-bottom:14px;padding-bottom:14px;"><div class="calc-grid cols-3"><div class="calc-field"><label>Segment ${n} Time <span class="unit">(min)</span></label><input id="seg_time_${n}" type="number" min="0" step="0.1" value="${time}"></div><div class="calc-field"><label>Segment ${n} pO₂ <span class="unit">(ATA)</span></label><input id="seg_po2_${n}" type="number" min="0" step="0.01" value="${po2}"></div><div class="calc-field"><label>&nbsp;</label><button class="calc-btn calc-btn-secondary" type="button" onclick="removeSegment(${n})">Remove</button></div></div></div>`; }
@@ -67,5 +41,3 @@ function run(){ const rows=[...document.querySelectorAll('#segmentsWrap [data-se
 function clearAll(){ document.getElementById('segmentsWrap').innerHTML=''; segmentCount=0; addSegment('20','1.3'); addSegment('15','1.6'); setText('otuTotalOut','—'); setText('esotTotalOut','—'); setNotice('Enter each segment, then calculate.','warn'); }
 document.getElementById('addSegmentBtn').addEventListener('click',()=>addSegment()); document.getElementById('calcBtn').addEventListener('click',run); document.getElementById('clearBtn').addEventListener('click',clearAll); clearAll();
 </script>
-</body>
-</html>

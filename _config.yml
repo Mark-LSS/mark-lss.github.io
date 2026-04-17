@@ -1,0 +1,12 @@
+title: Diving Toolkit
+description: Operational calculators, emergency tools, familiarisations and reference material
+baseurl: ""
+url: "https://mark-lss.github.io"
+
+markdown: kramdown
+permalink: pretty
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

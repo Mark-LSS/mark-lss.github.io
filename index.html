@@ -1,283 +1,260 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diving Toolkit</title>
-  <link rel="stylesheet" href="assets/css/site.css">
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand">
-        <div class="brand-mark">∩</div>
-        <div>
-          <h1>Diving Toolkit</h1>
-          <p class="tagline">Operational calculators, emergency tools, familiarisations and reference material</p>
-        </div>
+---
+layout: default
+title: Home
+footer_label: Compact grouped homepage
+---
+
+<main class="page-home-compact">
+  <div class="container">
+    <section class="compact-hero">
+      <h2>Practical diving tools in one place</h2>
+      <p>Compact grouped access to gas, oxygen exposure and nitrox emergency tools, with clear entry points for familiarisations, systems support tools and reference documents.</p>
+    </section>
+
+    <section>
+      <div class="section-heading">
+        <h2>Calculator Groups</h2>
+        <p>Open one group at a time to keep the page tidy and quick to scan.</p>
       </div>
 
-      <nav class="top-nav" aria-label="Main navigation">
-        <a href="index.html" class="active">Home</a>
-        <a href="tools/">Calculators</a>
-        <a href="emergency/bailout-opened-while-on-nitrox.html">Emergency</a>
-        <a href="familiarisations/">Familiarisations</a>
-        <a href="documents/">Documents</a>
-      </nav>
-    </div>
-  </header>
+      <div class="group-layout">
 
-  <main class="page-home-compact">
-    <div class="container">
-      <section class="compact-hero">
-        <h2>Practical diving tools in one place</h2>
-        <p>Compact grouped access to gas, oxygen exposure and nitrox emergency tools, with clear entry points for familiarisations, systems support tools and reference documents.</p>
-      </section>
-
-      <section>
-        <div class="section-heading">
-          <h2>Calculator Groups</h2>
-          <p>Open one group at a time to keep the page tidy and quick to scan.</p>
-        </div>
-
-        <div class="group-layout">
-          <article class="group-card open" data-group>
-            <button class="group-toggle" type="button" aria-expanded="true">
-              <div class="group-copy">
-                <h3>Gas / Nitrox</h3>
-                <p>Core breathing gas calculations and table support tools.</p>
-              </div>
-              <div class="group-actions">
-                <span class="group-count">3</span>
-                <span class="group-chevron">⌄</span>
-              </div>
-            </button>
-            <div class="group-panel">
-              <div class="tool-list">
-                <a class="tool-row" href="calculators/ead-and-table-depth-selection.html">
-                  <div class="tool-row-copy">
-                    <strong>EAD + Table Depth</strong>
-                    <span>Equivalent air depth with exact Safety EAD and DacDoDat table lookup.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="calculators/daltons-law-calculations.html">
-                  <div class="tool-row-copy">
-                    <strong>Dalton’s Law</strong>
-                    <span>Three-value solver for depth, partial pressure and O₂ percentage.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="calculators/bailout-endurance.html">
-                  <div class="tool-row-copy">
-                    <strong>Bailout Endurance</strong>
-                    <span>Available bailout time at depth and maximum umbilical deployment.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-              </div>
+        <article class="group-card open" data-group>
+          <button class="group-toggle" type="button" aria-expanded="true">
+            <div class="group-copy">
+              <h3>Gas / Nitrox</h3>
+              <p>Core breathing gas calculations and table support tools.</p>
             </div>
-          </article>
-
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-copy">
-                <h3>Oxygen Exposure</h3>
-                <p>Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
-              </div>
-              <div class="group-actions">
-                <span class="group-count">5</span>
-                <span class="group-chevron">⌄</span>
-              </div>
-            </button>
-            <div class="group-panel">
-              <div class="tool-list">
-                <a class="tool-row" href="calculators/calculate-otu-and-esot.html">
-                  <div class="tool-row-copy">
-                    <strong>OTU / ESOT</strong>
-                    <span>Single page for oxygen toxicity units and equivalent surface oxygen time.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="calculators/otu-esot-converter.html">
-                  <div class="tool-row-copy">
-                    <strong>OTU / ESOT Converter</strong>
-                    <span>Convert exposure values between OTU and ESOT at selected pO₂.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="calculators/esot-recovery-calculator.html">
-                  <div class="tool-row-copy">
-                    <strong>ESOT Recovery</strong>
-                    <span>Model residual ESOT after a recovery period.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="calculators/multi-segment-otu-esot.html">
-                  <div class="tool-row-copy">
-                    <strong>Multi-Segment OTU / ESOT</strong>
-                    <span>Accumulate multiple exposure segments in one calculation.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="calculators/vital-capacity-reduction-calculator.html">
-                  <div class="tool-row-copy">
-                    <strong>Vital Capacity Reduction</strong>
-                    <span>Estimate reduction trend from accumulated oxygen exposure.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-              </div>
+            <div class="group-actions">
+              <span class="group-count">3</span>
+              <span class="group-chevron">⌄</span>
             </div>
-          </article>
-
-          <article class="group-card emergency" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-copy">
-                <h3>Nitrox Emergencies</h3>
-                <p>Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
-              </div>
-              <div class="group-actions">
-                <span class="group-count">2</span>
-                <span class="group-chevron">⌄</span>
-              </div>
-            </button>
-            <div class="group-panel">
-              <div class="tool-list">
-                <a class="tool-row" href="emergency/nitrox-failure-switch-to-air.html">
-                  <div class="tool-row-copy">
-                    <strong>Nitrox Failure Switch to Air</strong>
-                    <span>Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-                <a class="tool-row" href="emergency/bailout-opened-while-on-nitrox.html">
-                  <div class="tool-row-copy">
-                    <strong>Bailout Opened While on Nitrox</strong>
-                    <span>Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-              </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="/calculators/ead-and-table-depth-selection.html">
+                <div class="tool-row-copy">
+                  <strong>EAD + Table Depth</strong>
+                  <span>Equivalent air depth with exact Safety EAD and DacDoDat table lookup.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/calculators/daltons-law-calculations.html">
+                <div class="tool-row-copy">
+                  <strong>Dalton's Law</strong>
+                  <span>Three-value solver for depth, partial pressure and O₂ percentage.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/calculators/bailout-endurance.html">
+                <div class="tool-row-copy">
+                  <strong>Bailout Endurance</strong>
+                  <span>Available bailout time at depth and maximum umbilical deployment.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
             </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-copy">
-                <h3>Familiarisations</h3>
-                <p>Training material, familiarisation sheets and read-through packs.</p>
-              </div>
-              <div class="group-actions">
-                <span class="group-count">→</span>
-                <span class="group-chevron">⌄</span>
-              </div>
-            </button>
-            <div class="group-panel">
-              <div class="tool-list">
-                <a class="tool-row" href="familiarisations/">
-                  <div class="tool-row-copy">
-                    <strong>Open Familiarisations</strong>
-                    <span>Access familiarisation sheets and grouped training material.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-              </div>
+        <article class="group-card" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-copy">
+              <h3>Oxygen Exposure</h3>
+              <p>Exposure, conversion, recovery and accumulated oxygen loading tools.</p>
             </div>
-          </article>
-
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-copy">
-                <h3>Systems &amp; Tools</h3>
-                <p>Larger programs, support tools and future processing applications.</p>
-              </div>
-              <div class="group-actions">
-                <span class="group-count">→</span>
-                <span class="group-chevron">⌄</span>
-              </div>
-            </button>
-            <div class="group-panel">
-              <div class="tool-list">
-                <a class="tool-row" href="tools/">
-                  <div class="tool-row-copy">
-                    <strong>Open Systems &amp; Tools</strong>
-                    <span>Browse calculators, support tools and future processing applications.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-              </div>
+            <div class="group-actions">
+              <span class="group-count">5</span>
+              <span class="group-chevron">⌄</span>
             </div>
-          </article>
-
-          <article class="group-card" data-group>
-            <button class="group-toggle" type="button" aria-expanded="false">
-              <div class="group-copy">
-                <h3>Documents</h3>
-                <p>Reference documents, manuals, packs and supporting information.</p>
-              </div>
-              <div class="group-actions">
-                <span class="group-count">→</span>
-                <span class="group-chevron">⌄</span>
-              </div>
-            </button>
-            <div class="group-panel">
-              <div class="tool-list">
-                <a class="tool-row" href="documents/">
-                  <div class="tool-row-copy">
-                    <strong>Open Documents</strong>
-                    <span>Open grouped manuals, packs and linked reference material.</span>
-                  </div>
-                  <span class="tool-open">→</span>
-                </a>
-              </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="/calculators/calculate-otu-and-esot.html">
+                <div class="tool-row-copy">
+                  <strong>OTU / ESOT</strong>
+                  <span>Single page for oxygen toxicity units and equivalent surface oxygen time.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/calculators/otu-esot-converter.html">
+                <div class="tool-row-copy">
+                  <strong>OTU / ESOT Converter</strong>
+                  <span>Convert exposure values between OTU and ESOT at selected pO₂.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/calculators/esot-recovery-calculator.html">
+                <div class="tool-row-copy">
+                  <strong>ESOT Recovery</strong>
+                  <span>Model residual ESOT after a recovery period.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/calculators/multi-segment-otu-esot.html">
+                <div class="tool-row-copy">
+                  <strong>Multi-Segment OTU / ESOT</strong>
+                  <span>Accumulate multiple exposure segments in one calculation.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/calculators/vital-capacity-reduction-calculator.html">
+                <div class="tool-row-copy">
+                  <strong>Vital Capacity Reduction</strong>
+                  <span>Estimate reduction trend from accumulated oxygen exposure.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
             </div>
-          </article>
-        </div>
-      </section>
+          </div>
+        </article>
 
-      <section class="quick-links">
-        <a class="quick-card" href="familiarisations/">
-          <h3>Familiarisations</h3>
-          <p>Training sheets, grouped learning pages and read-through material.</p>
-        </a>
-        <a class="quick-card" href="tools/">
-          <h3>Systems &amp; Tools</h3>
-          <p>Calculator launcher, support utilities and future larger applications.</p>
-        </a>
-        <a class="quick-card" href="documents/">
-          <h3>Documents</h3>
-          <p>Reference packs, manuals and future linked libraries.</p>
-        </a>
-      </section>
+        <article class="group-card emergency" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-copy">
+              <h3>Nitrox Emergencies</h3>
+              <p>Emergency decision tools for bailout opening and switch-to-air scenarios.</p>
+            </div>
+            <div class="group-actions">
+              <span class="group-count">2</span>
+              <span class="group-chevron">⌄</span>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="/emergency/nitrox-failure-switch-to-air.html">
+                <div class="tool-row-copy">
+                  <strong>Nitrox Failure Switch to Air</strong>
+                  <span>Compute adjusted actual O₂, EAD and pO₂ after nitrox supply failure.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+              <a class="tool-row" href="/emergency/bailout-opened-while-on-nitrox.html">
+                <div class="tool-row-copy">
+                  <strong>Bailout Opened While on Nitrox</strong>
+                  <span>Compute blended actual O₂, resulting EAD and pO₂ after bailout opening.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
 
-      <div class="homepage-footer">
-        <span>Diving Toolkit</span>
-        <span>Compact grouped homepage</span>
+        <article class="group-card" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-copy">
+              <h3>Familiarisations</h3>
+              <p>Interactive training modules and familiarisation packs.</p>
+            </div>
+            <div class="group-actions">
+              <span class="group-count">→</span>
+              <span class="group-chevron">⌄</span>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="/familiarisations/">
+                <div class="tool-row-copy">
+                  <strong>Open Familiarisations</strong>
+                  <span>Access familiarisation sheets and grouped training material.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group-card" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-copy">
+              <h3>Systems &amp; Tools</h3>
+              <p>Larger programs, support tools and future processing applications.</p>
+            </div>
+            <div class="group-actions">
+              <span class="group-count">→</span>
+              <span class="group-chevron">⌄</span>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="/tools/">
+                <div class="tool-row-copy">
+                  <strong>Open Systems &amp; Tools</strong>
+                  <span>Browse calculators, support tools and future processing applications.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group-card" data-group>
+          <button class="group-toggle" type="button" aria-expanded="false">
+            <div class="group-copy">
+              <h3>Documents</h3>
+              <p>Reference documents, manuals, packs and supporting information.</p>
+            </div>
+            <div class="group-actions">
+              <span class="group-count">→</span>
+              <span class="group-chevron">⌄</span>
+            </div>
+          </button>
+          <div class="group-panel">
+            <div class="tool-list">
+              <a class="tool-row" href="/documents/">
+                <div class="tool-row-copy">
+                  <strong>Open Documents</strong>
+                  <span>Open grouped manuals, packs and linked reference material.</span>
+                </div>
+                <span class="tool-open">→</span>
+              </a>
+            </div>
+          </div>
+        </article>
+
       </div>
-    </div>
-  </main>
+    </section>
 
-  <script>
-    (function(){
-      const groups = Array.from(document.querySelectorAll('[data-group]'));
-      groups.forEach(group => {
-        const button = group.querySelector('.group-toggle');
-        button.addEventListener('click', function(e){
-          if (e.target.closest('a')) return;
-          const isOpen = group.classList.contains('open');
-          groups.forEach(g => {
-            g.classList.remove('open');
-            const b = g.querySelector('.group-toggle');
-            if (b) b.setAttribute('aria-expanded','false');
-          });
-          if (!isOpen) {
-            group.classList.add('open');
-            button.setAttribute('aria-expanded','true');
-          }
-        });
+    <section class="quick-links">
+      <a class="quick-card" href="/familiarisations/">
+        <h3>Familiarisations</h3>
+        <p>Training sheets, grouped learning pages and read-through material.</p>
+      </a>
+      <a class="quick-card" href="/tools/">
+        <h3>Systems &amp; Tools</h3>
+        <p>Calculator launcher, support utilities and future larger applications.</p>
+      </a>
+      <a class="quick-card" href="/documents/">
+        <h3>Documents</h3>
+        <p>Reference packs, manuals and future linked libraries.</p>
+      </a>
+    </section>
+
+    <div class="homepage-footer">
+      <span>Diving Toolkit</span>
+      <span>Compact grouped homepage</span>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  const groups = Array.from(document.querySelectorAll('[data-group]'));
+  groups.forEach(group => {
+    const button = group.querySelector('.group-toggle');
+    button.addEventListener('click', function(e){
+      if (e.target.closest('a')) return;
+      const isOpen = group.classList.contains('open');
+      groups.forEach(g => {
+        g.classList.remove('open');
+        const b = g.querySelector('.group-toggle');
+        if (b) b.setAttribute('aria-expanded','false');
       });
-    })();
-  </script>
-</body>
-</html>
+      if (!isOpen) {
+        group.classList.add('open');
+        button.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+})();
+</script>

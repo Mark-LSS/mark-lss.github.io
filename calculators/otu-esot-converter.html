@@ -1,32 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OTU ↔ ESOT Converter</title>
-  <link rel="stylesheet" href="../assets/css/site.css" />
-</head>
-<body>
-  <main class="calc-page">
-    <div class="calc-crumbs">
-      <div class="calc-trail">
-        <a href="../index.html">Home</a>
-        <span class="sep">/</span>
-        <span>Calculators</span>
-        <span class="sep">/</span>
-        <span>OTU ↔ ESOT Converter</span>
-      </div>
-      <a class="calc-back-link" href="../index.html#calculators">← Back</a>
-    </div>
-
-    <section class="calc-shell">
-      <header class="calc-shell-header">
-        <h1 class="calc-shell-title">OTU ↔ ESOT Converter</h1>
-        <p class="calc-shell-subtitle">Converts OTU/UPTD to ESOT and ESOT to OTU/UPTD using the same pO2-based conversion factor.</p>
-      </header>
-
-      <div class="calc-shell-body">
-        <section class="calc-section"><h2 class="calc-section-label">Panel A · OTU / UPTD to ESOT</h2><div class="calc-grid cols-2">
+---
+layout: calculator
+title: "OTU to ESOT Converter"
+subtitle: "Converts OTU/UPTD to ESOT and ESOT to OTU/UPTD using the same pO2-based conversion factor."
+section: "Calculators"
+footer_note: "Source: diving_calculators_master_reference.json"
+---
+<section class="calc-section"><h2 class="calc-section-label">Panel A · OTU / UPTD to ESOT</h2><div class="calc-grid cols-2">
 <div class="calc-field"><label for="a_uptd">OTU / UPTD <span class="unit">(OTU)</span></label><input id="a_uptd" type="number" min="0" step="0.01" /></div>
 <div class="calc-field"><label for="a_po2">pO₂ <span class="unit">(ATA)</span></label><input id="a_po2" type="number" min="0" step="0.01" /></div>
 </div></section>
@@ -57,11 +36,6 @@
           <p>pO₂ must be greater than 0.5 ATA for both conversion directions.</p>
         </div>
       </div>
-
-      <div class="calc-shell-footer">Shared calculator shell · Powered by master JSON reference</div>
-    </section>
-  </main>
-  <script src="../assets/js/calculator-common.js"></script>
 <script>
 const IDS=['a_uptd','a_po2','b_esot','b_po2']; let CALC_DEF=null;
 async function init(){ const master=await loadMasterReference(); CALC_DEF=getCalculator(master,'otu_esot_converter'); if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id,i.default); } } }
@@ -70,5 +44,3 @@ function run(){ const a_uptd=parseFloat(document.getElementById('a_uptd').value)
 function clearAll(){ if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id,i.default); } } clearErrors(IDS); setText('aOut','—'); setText('bOut','—'); setNotice('Enter the required values, then calculate.','warn'); }
 document.getElementById('calcBtn').addEventListener('click',run); document.getElementById('clearBtn').addEventListener('click',clearAll); init();
 </script>
-</body>
-</html>

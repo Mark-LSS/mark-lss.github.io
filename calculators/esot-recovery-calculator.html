@@ -1,32 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recovery ESOT</title>
-  <link rel="stylesheet" href="../assets/css/site.css" />
-</head>
-<body>
-  <main class="calc-page">
-    <div class="calc-crumbs">
-      <div class="calc-trail">
-        <a href="../index.html">Home</a>
-        <span class="sep">/</span>
-        <span>Calculators</span>
-        <span class="sep">/</span>
-        <span>Recovery ESOT</span>
-      </div>
-      <a class="calc-back-link" href="../index.html#calculators">← Back</a>
-    </div>
-
-    <section class="calc-shell">
-      <header class="calc-shell-header">
-        <h1 class="calc-shell-title">Recovery ESOT</h1>
-        <p class="calc-shell-subtitle">Calculates residual ESOT carried into the next exposure after a recovery interval.</p>
-      </header>
-
-      <div class="calc-shell-body">
-        <section class="calc-section"><h2 class="calc-section-label">Recovery Parameters</h2><div class="calc-grid cols-3">
+---
+layout: calculator
+title: "Recovery ESOT"
+subtitle: "Calculates residual ESOT carried into the next exposure after a recovery interval."
+section: "Calculators"
+footer_note: "Source: diving_calculators_master_reference.json"
+---
+<section class="calc-section"><h2 class="calc-section-label">Recovery Parameters</h2><div class="calc-grid cols-3">
 <div class="calc-field"><label for="esot_i">Initial ESOT <span class="unit">(ESOT)</span></label><input id="esot_i" type="number" min="0" step="0.01" /></div>
 <div class="calc-field"><label for="t_exp">Exposure Duration <span class="unit">(hrs)</span></label><input id="t_exp" type="number" min="0" step="0.01" /></div>
 <div class="calc-field"><label for="t_rec">Recovery Interval <span class="unit">(hrs)</span></label><input id="t_rec" type="number" min="0" step="0.01" /></div>
@@ -54,11 +33,6 @@
           <p>This calculator uses the fixed recovery constants from the original tool: <strong>R = 0.439</strong> and <strong>S = 0.906</strong>.</p><p>A minimum of 12 hours recovery is required before residual ESOT from previous exposures can be disregarded.</p>
         </div>
       </div>
-
-      <div class="calc-shell-footer">Shared calculator shell · Powered by master JSON reference</div>
-    </section>
-  </main>
-  <script src="../assets/js/calculator-common.js"></script>
 <script>
 const IDS=['esot_i','t_exp','t_rec']; const R=0.439, S=0.906; let CALC_DEF=null;
 async function init(){ const master=await loadMasterReference(); CALC_DEF=getCalculator(master,'esot_recovery'); if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id, i.default); } } }
@@ -66,5 +40,3 @@ function run(){ const esot_i=parseFloat(document.getElementById('esot_i').value)
 function clearAll(){ if(CALC_DEF){ for(const i of CALC_DEF.inputs){ setFieldValue(i.id, i.default); } } clearErrors(IDS); setText('esotRecOut','—'); setText('pctOut','—'); setNotice('Enter the required values, then calculate.','warn'); }
 document.getElementById('calcBtn').addEventListener('click',run); document.getElementById('clearBtn').addEventListener('click',clearAll); init();
 </script>
-</body>
-</html>

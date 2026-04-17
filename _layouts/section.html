@@ -1,0 +1,27 @@
+---
+layout: default
+---
+
+<main class="tool-page">
+  <div class="container tool-shell">
+
+    <div class="tool-topbar">
+      <div class="tool-breadcrumbs">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <span>/</span>
+        <span>{{ page.title }}</span>
+      </div>
+      <a class="back-home" href="{{ '/' | relative_url }}">← Back to Home</a>
+    </div>
+
+    <div class="section-heading">
+      <h2>{{ page.title }}</h2>
+      {% if page.description %}<p>{{ page.description }}</p>{% endif %}
+    </div>
+
+    <div class="tool-list">
+      {{ content }}
+    </div>
+
+  </div>
+</main>

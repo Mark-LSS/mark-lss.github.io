@@ -1,35 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nitrox EAD + Table Depth Selection</title>
-  <link rel="stylesheet" href="../assets/css/site.css" />
-  <script src="../assets/js/calculator-common.js"></script>
-</head>
-<body>
-  <main class="calc-page">
-    <div class="calc-crumbs">
-      <div class="calc-trail">
-        <a href="../index.html">Home</a>
-        <span class="sep">/</span>
-        <span>Calculators</span>
-        <span class="sep">/</span>
-        <span>Nitrox EAD + Table Depth Selection</span>
-      </div>
-      <a class="calc-back-link" href="../index.html#calculators">← Back</a>
-    </div>
-
-    <section class="calc-shell">
-      <header class="calc-shell-header">
-        <h1 class="calc-shell-title">Nitrox EAD + Table Depth Selection</h1>
-        <p class="calc-shell-subtitle">
-          EAD is always calculated from the formula. Safety EAD and DacDoDat table depth are only shown when the exact depth and O₂ pair exists in the master reference table.
-        </p>
-      </header>
-
-      <div class="calc-shell-body">
-        <section class="calc-section">
+---
+layout: calculator
+title: "Nitrox EAD and Table Depth Selection"
+subtitle: "EAD is always calculated from the formula. Safety EAD and DacDoDat table depth are only shown when the exact depth and O2 pair exists in the master reference table."
+section: "Calculators"
+footer_note: "Source: diving_calculators_master_reference.json"
+---
+<section class="calc-section">
           <h2 class="calc-section-label">Input Parameters</h2>
           <div class="calc-grid cols-2">
             <div class="calc-field">
@@ -83,14 +59,7 @@
           <p>EAD is always calculated. Safety EAD and DacDoDat Table Depth are never calculated here; they are returned only by exact match from the master lookup table.</p>
         </div>
       </div>
-
-      <div class="calc-shell-footer">
-        Master JSON driven calculator · Shell styles from shared site.css
-      </div>
-    </section>
-  </main>
-
-  <script>
+<script>
     const EAD_APP = {
       state: {
         referenceLoaded: false,
@@ -233,5 +202,3 @@
 
     window.addEventListener('DOMContentLoaded', () => EAD_APP.init());
   </script>
-</body>
-</html>

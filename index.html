@@ -423,4 +423,13 @@ function srchRun(q){
   if(!q){res.innerHTML='';return}
   const hits=IDX.filter(it=>it.name.toLowerCase().includes(q)||(it.section&&it.section.toLowerCase().includes(q))||(it.group&&it.group.toLowerCase().includes(q)));
   if(!hits.length){res.innerHTML='<div class="srch-none">No results</div>';return}
-  res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${i
+  res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${it.group?' › '+it.group:''}</div></div></div>`).join('');
+}
+function srchPick(id){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML='';const item=IDX.find(x=>x.id===id);if(item){openSec(item.secId);pickItem(id)}}
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape')document.getElementById('srch-ol').classList.remove('on')});
+
+buildTree();
+render();
+</script>
+</body>
+</html>

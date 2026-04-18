@@ -1,0 +1,135 @@
+---
+layout: default
+title: Global Guidance Document
+footer_label: Global HBOT / DDC Facility Reference
+---
+<main class="tool-page">
+  <div class="container tool-shell">
+
+    <div class="tool-topbar">
+      <div class="tool-breadcrumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/documents/">Documents</a>
+        <span>/</span>
+        <span>Global Guidance Document</span>
+      </div>
+      <a class="back-home" href="/">&larr; Back to Home</a>
+    </div>
+
+    <div class="section-heading">
+      <h2>BMS-OP-0600-GD-ALL — Global HBOT / DDC Facility Reference</h2>
+      <p>Consolidated global reference for hyperbaric oxygen therapy (HBOT) and decompression chamber (DDC) facilities relevant to N-Sea diving operations. Revision 1.0 — 14/04/2026.</p>
+    </div>
+
+    <style>
+      .gd-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 14px;align-items:center}
+      .gd-dl{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;
+        background:var(--navy);color:#fff;border-radius:10px;font-weight:600;font-size:13px;white-space:nowrap}
+      .gd-dl:hover{background:var(--navy-dark)}
+      .gd-tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--navy);margin:10px 0 0}
+      .gd-tab{padding:10px 16px;border:none;background:transparent;color:var(--navy);
+        font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+        border-radius:8px 8px 0 0;letter-spacing:.02em;text-transform:uppercase}
+      .gd-tab:hover{background:#e8f0f8}
+      .gd-tab.active{background:var(--navy);color:#fff}
+      .gd-panel{display:none;background:#fff;padding:22px 24px;border:1px solid var(--line);
+        border-top:none;border-radius:0 0 12px 12px;box-shadow:var(--shadow)}
+      .gd-panel.active{display:block}
+      .gd-panel h3{margin:20px 0 10px;color:var(--navy);font-size:16px;
+        padding-bottom:6px;border-bottom:1px solid var(--line)}
+      .gd-panel h3:first-child{margin-top:0}
+      .gd-panel p{margin:0 0 10px;line-height:1.55;font-size:14.5px}
+      .gd-panel ul{margin:0 0 14px;padding-left:22px;line-height:1.6;font-size:14px}
+      .gd-panel ul.gd-contacts li{margin-bottom:6px}
+      .gd-panel ul.gd-flags li{margin-bottom:8px}
+      .gd-note{background:#fff7dd;border-left:4px solid #f3cf00;padding:10px 14px;
+        margin:10px 0 16px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.55}
+      .gd-tbl-wrap{overflow-x:auto;margin:8px 0 16px;border:1px solid var(--line);border-radius:10px}
+      table.gd-tbl{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
+      table.gd-tbl th{background:var(--navy);color:#fff;text-align:left;padding:9px 11px;
+        font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+      table.gd-tbl td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+      table.gd-tbl tbody tr:nth-child(even){background:#f7f9fc}
+      td.gd-flag{font-weight:600;font-size:12px}
+      td.gd-flag-ok{background:#d9f2dc \!important;color:#1f6a34}
+      td.gd-flag-confirm{background:#fff3cd \!important;color:#856404}
+      td.gd-flag-prior{background:#e7d9f5 \!important;color:#4b2b78}
+      td.gd-flag-verify{background:#ffe2c7 \!important;color:#8a4b00}
+      td.gd-flag-closed{background:#ffd4d4 \!important;color:#8d1f1f}
+      @media (max-width:720px){
+        .gd-panel{padding:16px 14px}
+        .gd-tab{padding:8px 12px;font-size:12.5px}
+        table.gd-tbl{font-size:12px}
+        table.gd-tbl th,table.gd-tbl td{padding:7px 8px}
+      }
+    </style>
+
+    <div class="gd-toolbar">
+      <a class="gd-dl" href="/documents/all/BMS-OP-0600-GD-ALL_v1_0.docx" download>&darr; Download original .docx</a>
+      <a class="gd-dl" href="/documents/hbot-ddc-facilities.html">&raquo; Full Facility Table</a>
+    </div>
+
+    <div class="gd-tabs" role="tablist">
+      <button class="gd-tab active" data-tab="purpose">Purpose</button><button class="gd-tab" data-tab="uk">UK</button><button class="gd-tab" data-tab="nl">NL</button><button class="gd-tab" data-tab="de">DE</button><button class="gd-tab" data-tab="no">Norway</button><button class="gd-tab" data-tab="be">Belgium</button><button class="gd-tab" data-tab="fr">France</button><button class="gd-tab" data-tab="uae">UAE</button><button class="gd-tab" data-tab="gulf">Gulf</button><button class="gd-tab" data-tab="intl">Global</button><button class="gd-tab" data-tab="sources">Sources</button>
+    </div>
+    <div class="gd-panels">
+      <div class="gd-panel active" id="gd-p-purpose">
+  <h3>Purpose</h3>
+  <p>This document provides a consolidated global reference of hyperbaric oxygen therapy (HBOT) and decompression chamber (DDC) facilities relevant to N-Sea diving operations. It draws from the N-Sea HBOT DDC Source Dataset (April 2026) and the individual regional guidance documents (GD-023 through GD-026).</p><p>This document is a planning reference tool. Region-specific documents (GD-023 to GD-026) must be used for project ERP preparation. All facility details must be independently confirmed before use.</p>
+  <h3>1.1 Scope</h3>
+  <ul><li>United Kingdom (see also BMS-OP-0600-GD-023)</li><li>Netherlands (see also BMS-OP-0600-GD-024)</li><li>Germany (see also BMS-OP-0600-GD-025)</li><li>Norway</li><li>Belgium</li><li>France</li><li>United Arab Emirates (see also BMS-OP-0600-GD-026)</li><li>Qatar, Oman, Bahrain</li></ul>
+  <h3>1.2 Selection Principle</h3>
+  <p>The preferred facility for any project is the closest suitable centre for the planned project and work location, taking account of chamber capability, hospital support, transport route, and live acceptance by the receiving facility. Capability ratings must always be confirmed before ERP issue.</p>
+  <h3>1.3 Facility Suitability Flags</h3>
+  <ul class="gd-flags"><li>SUITABLE FOR ERP USE: Confirmed 24/7 diving emergency capability from authoritative source. Direct acceptance still required.</li><li>PRIOR ARRANGEMENT REQUIRED: Chamber available but advance coordination with facility is mandatory before use.</li><li>VERIFY BEFORE ERP USE: Website evidence only; 24/7 diver acceptance not confirmed from authoritative source.</li><li>NOT OPERATIONAL: Confirmed closed. Do not use.</li></ul>
+</div><div class="gd-panel" id="gd-p-uk"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>BHA National Diving Accident Helpline (England, Wales, Northern Ireland): 07831 151523</li><li>Scotland Diving Helpline: 0345 408 6008</li><li>HM Coastguard: 999 / VHF Ch 16</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<h3>Reference Document</h3><p>BMS-OP-0600-GD-023 UK Hyperbaric Chamber Locations (current version).</p>
+<h3>UK Facility Summary</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Emergency Tel</th><th>24h</th><th>Category</th><th>Status</th></tr></thead><tbody><tr><td>Aberdeen NHC</td><td>Aberdeen Royal Infirmary</td><td>0345 408 6008</td><td>Yes</td><td>1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Wirral Hyperbaric Treatment &amp; Training</td><td>Birkenhead</td><td>0151 648 8000 / 07802 824245</td><td>Yes</td><td>1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Hull North of England</td><td>Spire Hull &amp; East Riding Hospital</td><td>01482 659471 / 07850 936598</td><td>Yes</td><td>1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Whipps Cross</td><td>London E11</td><td>07999 292999 / 07805 624856</td><td>Yes</td><td>1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Great Yarmouth / James Paget</td><td>Gorleston NR31 6LA</td><td>01493 603151 / 07736 803966</td><td>Yes</td><td>1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Plymouth DDRC</td><td>Plymouth PL6 8BU</td><td>07831 151523</td><td>Yes</td><td>1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Chichester</td><td>St Richard&#x27;s Hospital</td><td>01243 330096</td><td>Yes</td><td>2</td><td class="gd-flag gd-flag-confirm">Suitable — confirm no Cat 1 need</td></tr><tr><td>Rugby Midlands Diving Chamber</td><td>Hospital of St Cross</td><td>07931 472602</td><td>Yes</td><td>2</td><td class="gd-flag gd-flag-confirm">Suitable — confirm no Cat 1 need</td></tr><tr><td>Orkney Hyperbaric Unit</td><td>Stromness KW16</td><td>0345 408 6008</td><td>Yes</td><td>2</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Strathcarron Seafield</td><td>Kishorn IV54</td><td>01520 722221</td><td>Yes</td><td>3</td><td class="gd-flag gd-flag-prior">Prior arrangement required</td></tr><tr><td>Gravesend Marine Services</td><td>Gravesend DA12</td><td>01474 560311</td><td>Yes</td><td>3</td><td class="gd-flag gd-flag-verify">Verify — not BHA listed</td></tr><tr><td>Fort William Underwater Centre</td><td>Fort William PH33</td><td>0345 408 6008</td><td>Verify</td><td>2</td><td class="gd-flag gd-flag-verify">Verify — not BHA listed</td></tr><tr><td>Oban / Tritonia</td><td>Oban PA37 1QA</td><td>0345 408 6008 triage only</td><td>No</td><td>CLOSED</td><td class="gd-flag gd-flag-closed">NOT OPERATIONAL — do not use</td></tr><tr><td>Poole The Diver Clinic</td><td>Poole BH15</td><td>CLOSED</td><td>No</td><td>CLOSED</td><td class="gd-flag gd-flag-closed">NOT OPERATIONAL — do not use</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-nl"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>General Emergency (ambulance, fire, water): 112</li><li>Netherlands Coastguard / JRCC Den Helder: VHF Ch 16 / +31 223 542300</li><li>Police non-emergency: 0900-8844</li><li>DMC Den Helder duty physician: 0889-501417; out-of-hours: 0223 65 82 20</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<h3>Reference Document</h3><p>BMS-OP-0600-GD-024 NL Hyperbaric Chamber Locations (current version).</p>
+<h3>NL Facility Summary</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Emergency Tel</th><th>24h</th><th>Category</th><th>Status</th></tr></thead><tbody><tr><td>Amsterdam UMC AMC — Hyperbare Geneeskunde</td><td>Meibergdreef 9, 1105 AZ Amsterdam</td><td>020 566 9111 (out of hours)</td><td>Yes</td><td>1 (internal equiv.)</td><td class="gd-flag gd-flag-confirm">SUITABLE — only Dutch facility for ventilated/critical patients</td></tr><tr><td>MCHZ / ADRZ Goes</td><td>&#x27;s-Gravenpolderseweg 114, 4462 RA Goes</td><td>088-1250000 (24/7 ADRZ)</td><td>Yes</td><td>1 (internal equiv.)</td><td class="gd-flag gd-flag-ok">Suitable for ERP use (confirm direct)</td></tr><tr><td>Den Helder — DMC (Royal Netherlands Navy)</td><td>Gebouw IJsduiker, 1781 ZZ Den Helder</td><td>0889-501417 / 0223 65 82 20</td><td>Yes</td><td>1 (internal equiv.)</td><td class="gd-flag gd-flag-prior">Prior arrangement required — military</td></tr><tr><td>Sneek — Antonius Hypercare</td><td>Bolswarderbaan 1, 8601 ZK Sneek</td><td>0515-488077</td><td>Yes</td><td>2 (internal equiv.)</td><td class="gd-flag gd-flag-confirm">Suitable — confirm direct</td></tr><tr><td>IVHG — Hoogeveen</td><td>Dr. G.H. Amshoffweg 7, 7909 AA Hoogeveen</td><td>Request (2-6h)</td><td>No</td><td>2 (limited)</td><td class="gd-flag gd-flag-prior">NON-ACUTE ONLY — prior arrangement; no ventilated patients</td></tr><tr><td>IVHG — Rotterdam</td><td>Brielselaan 69e, 3081 AA Rotterdam</td><td>Request (2-6h)</td><td>No</td><td>2 (limited)</td><td class="gd-flag gd-flag-prior">NON-ACUTE ONLY — prior arrangement; no ventilated patients</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-de"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>DAN Hotline Germany/Austria (24h): 00800 326 668 783 — code word &quot;Tauchunfall&quot;</li><li>MRCC Bremen: VHF Ch 16 / +49 421 536870</li><li>General Emergency: 112</li><li>GTÜM: www.gtuem.org</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<h3>Reference Document</h3><p>BMS-OP-0600-GD-025 DE Hyperbaric Chamber Locations (current version).</p>
+<h3>DE Facility Summary</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Emergency Tel</th><th>24h</th><th>GTÜM Category</th><th>Status</th></tr></thead><tbody><tr><td>Halle — Universitätsklinikum Halle</td><td>D-06120 Halle</td><td>+49 345 557 7501</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Berlin — Vivantes Klinikum Friedrichshain</td><td>D-10249 Berlin</td><td>+49 30 130 23 15 02</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Düsseldorf — UK Düsseldorf HBO</td><td>D-40225 Düsseldorf</td><td>+49 172 109 9112</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Gelsenkirchen — Bergmannsheil Buer</td><td>D-45894 Gelsenkirchen</td><td>+49 209 5902 7233</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Aachen — HBO-Zentrum Euregio</td><td>D-52072 Aachen</td><td>+49 241 840 44</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Wiesbaden — HBO Rhein Main Taunus</td><td>D-65187 Wiesbaden</td><td>+49 611 19222</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Murnau — BG Klinikum Murnau</td><td>D-82418 Murnau</td><td>+49 8841 48 26 62</td><td>Yes</td><td>GTÜM List 1</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Munich — HBO-Center München</td><td>Bavariafilm-Platz 7, Munich</td><td>+49 89 64979600</td><td>Yes</td><td>GTÜM List 1 / VDD</td><td class="gd-flag gd-flag-ok">Suitable for ERP use — diving specialist</td></tr><tr><td>Kiel — Marine Medical Institute</td><td>D-24119 Kronshagen</td><td>Via GTÜM / MRCC</td><td>On request</td><td>GTÜM List 2 / Military</td><td class="gd-flag gd-flag-prior">Prior arrangement required — military</td></tr><tr><td>Ulm — Bundeswehrkrankenhaus Ulm</td><td>D-89081 Ulm</td><td>+49 731 17 10 20 55</td><td>Yes</td><td>GTÜM List 2</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr><tr><td>Regensburg — Caritas-Krankenhaus St. Josef</td><td>D-93053 Regensburg</td><td>+49 941 782 36 66</td><td>Yes</td><td>GTÜM List 2</td><td class="gd-flag gd-flag-ok">Suitable for ERP use</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-no"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>General Emergency (ambulance): 113 — state &quot;dykkerskade&quot;</li><li>Haukeland University Hospital switchboard: +47 55 97 50 00</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<div class="gd-note"><strong>Note:</strong> Note: Haukeland is the national resource centre for air-pressure injuries (diving) and operates the Radio Medico telemedicine service for seafarers. For North Sea offshore operations, coordinate through Norwegian emergency services (113).</div>
+<h3>Key Facility</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Tel</th><th>24h</th><th>Category</th><th>Status</th></tr></thead><tbody><tr><td>Haukeland University Hospital — Hyperbar Medisin (National Hyperbaric Centre)</td><td>Jonas Liesvei 65, 5021 Bergen, Norway</td><td>+47 55 97 50 00</td><td>Yes</td><td>National authority</td><td class="gd-flag gd-flag-confirm">SUITABLE — National hyperbaric medicine authority since 1994. Activate via 113. Handles North Sea offshore diving accidents.</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-be"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>General Emergency: 112</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<h3>Key Facility</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Tel</th><th>24h</th><th>Category</th><th>Status</th></tr></thead><tbody><tr><td>Militair Hospitaal Koningin Astrid — Centre for HBO Therapy</td><td>Bruynstraat 1, 1120 Brussels</td><td>+32 2 264 48 20</td><td>Yes</td><td>European centre of excellence</td><td class="gd-flag gd-flag-verify">Verify before ERP use — military hospital; confirm civilian/project access directly</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-fr"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>SAMU (Medical Emergency): 15</li><li>CROSS Méditerranée (Maritime Rescue): 196</li><li>General Emergency: 112</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<h3>Key Facilities</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Tel</th><th>24h</th><th>Category</th><th>Status</th></tr></thead><tbody><tr><td>AP-HM — Médecine Hyperbare, Sub-aquatique et Maritime (Hôpital Sainte-Marguerite)</td><td>270 Bd Sainte-Marguerite, 13009 Marseille</td><td>+33 4 91 74 40 00</td><td>Yes</td><td>Hospital-based</td><td class="gd-flag gd-flag-verify">Verify before ERP use — confirm direct acceptance via SAMU 15</td></tr><tr><td>CHU Nice — Unité Thérapeutique d&#x27;Oxygénothérapie Hyperbare (UTOH)</td><td>Hôpital Pasteur, 30 Voie Romaine, 06001 Nice</td><td>+33 4 92 03 55 75</td><td>Yes</td><td>Hospital-based</td><td class="gd-flag gd-flag-verify">Verify before ERP use — confirm direct acceptance via SAMU 15</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-uae"><h3>Emergency Contacts</h3>
+<ul class="gd-contacts"><li>Ambulance: 998 | Police: 999 | Fire: 997</li><li>Maritime Emergency: VHF Ch 16</li><li>Abu Dhabi Coast Guard: +971 2 541 5555</li><li>Dubai Maritime City Authority: +971 4 220 4440</li><li>DAN Europe 24h: +39 06 4211 5685</li></ul>
+<h3>Reference Document</h3><p>BMS-OP-0600-GD-026 UAE Hyperbaric Chamber Locations (current version).</p>
+<h3>UAE Facility Summary</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Facility</th><th>Location</th><th>Tel</th><th>24h</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td>Burjeel Medical City — HBOT Centre</td><td>Mohamed Bin Zayed City, Abu Dhabi</td><td>+971 80023</td><td>Verify direct</td><td>Monoplace</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — states DCS/AGE protocol; monoplace only</td></tr><tr><td>Al Zahra Hospital Dubai — HBOT</td><td>Al Barsha 1, Dubai</td><td>+971 4 378 6666</td><td>Verify direct</td><td>Hospital-based</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — DHA listed; 24/7 ED confirmed</td></tr><tr><td>Fakeeh University Hospital — HBOT</td><td>Dubai Silicon Oasis, Dubai</td><td>+971 4 414 44 44</td><td>Verify direct</td><td>Hospital-based</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — 24/7 ED/ICU confirmed; diving standby not confirmed</td></tr><tr><td>HMS Mirdif Hospital — Hyperbaric &amp; Undersea Medicine</td><td>Mirdif, Dubai</td><td>800467</td><td>Verify direct</td><td>Hospital-based</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — JCI accredited; undersea medicine specialist on staff</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-gulf"><h3>Emergency Contacts</h3>
+
+<div class="gd-note"><strong>Note:</strong> The Middle East is a significantly underdocumented region for diving-specific emergency recompression. All facilities listed below require direct project-specific verification before ERP use. No facility in this region can be treated as unconditionally suitable without advance confirmation.</div>
+<h3>Regional Facilities</h3>
+<div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Country</th><th>Facility</th><th>Location</th><th>Tel</th><th>24h</th><th>Status</th></tr></thead><tbody><tr><td>Qatar</td><td>Hamad Medical Corporation — Hyperbaric Therapy Unit</td><td>Hamad General Hospital, Trauma &amp; Emergency Center, Doha</td><td>+974 4439 4444</td><td>Verify direct</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — HMC unit within Trauma &amp; Emergency Center; DCI acceptance to confirm</td></tr><tr><td>Oman</td><td>Royal Hospital Muscat — National Hyperbaric Medicine Center</td><td>Al Ghubrah, Muscat</td><td>+968 2459 9000</td><td>Verify direct</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — Official page notes 2 multiplace + 1 monoplace; DCI acceptance to confirm</td></tr><tr><td>Bahrain</td><td>King Hamad University Hospital — Hyperbaric Unit</td><td>Busaiteen, Manama</td><td>+973 1744 4444</td><td>Verify direct</td><td class="gd-flag gd-flag-verify">VERIFY BEFORE ERP — DCS listed as indication on official page; access and on-call to confirm</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-intl"><h3>Global 24/7 Coordination</h3><div class="gd-tbl-wrap"><table class="gd-tbl"><thead><tr><th>Organisation</th><th>Role</th><th>Contact</th><th>Notes</th></tr></thead><tbody><tr><td>DAN Europe (24h)</td><td>Diving accident medical consultation and chamber referral</td><td>+39 06 4211 5685</td><td>24/7. Primary international coordination contact for all regions.</td></tr><tr><td>DAN Germany/Austria</td><td>Germany/Austria diving accident hotline</td><td>00800 326 668 783</td><td>Code word: Tauchunfall. Freephone.</td></tr><tr><td>DAN International</td><td>International diving accident hotline</td><td>+1 919 684 9111</td><td>Use in parallel with local emergency chain.</td></tr><tr><td>BHA (UK)</td><td>UK diving emergency chamber referral</td><td>07831 151523 / 0345 408 6008</td><td>England/Wales: 07831 151523. Scotland: 0345 408 6008.</td></tr><tr><td>GTÜM (Germany)</td><td>Germany chamber authority and directory</td><td>www.gtuem.org</td><td>Definitive source for Germany. Include code word Tauchunfall.</td></tr><tr><td>EUBS/OXYNET</td><td>European hyperbaric centre database</td><td>www.eubs.org</td><td>Cross-border discovery tool. Voluntary listing only.</td></tr></tbody></table></div></div><div class="gd-panel" id="gd-p-sources"><p>This document is compiled from the N-Sea HBOT DDC Source Dataset (April 2026). Individual source references are documented in that dataset. Region-specific documents GD-023 through GD-026 contain detailed source URL logs for their respective countries.</p><p>The N-Sea HBOT DDC Source Dataset is the authoritative planning source register and must be maintained alongside this document.</p><p><a class="gd-dl" href="/documents/NSea-HBOT-DDC-Source-Dataset.xlsx" download>&darr; Download source dataset (.xlsx)</a></p></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.gd-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gd-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.gd-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const p = document.getElementById('gd-p-' + btn.dataset.tab);
+      if(p) p.classList.add('active');
+      window.scrollTo({top: document.querySelector('.gd-tabs').offsetTop - 20, behavior: 'smooth'});
+    });
+  });
+});
+</script>

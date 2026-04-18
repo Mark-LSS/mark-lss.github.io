@@ -1,0 +1,262 @@
+---
+layout: default
+title: HBOT / DDC Facilities
+footer_label: Hyperbaric chamber facility reference
+---
+<main class="tool-page">
+  <div class="container tool-shell">
+
+    <div class="tool-topbar">
+      <div class="tool-breadcrumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/documents/">Documents</a>
+        <span>/</span>
+        <span>HBOT / DDC Facilities</span>
+      </div>
+      <a class="back-home" href="/">&larr; Back to Home</a>
+    </div>
+
+    <div class="section-heading">
+      <h2>HBOT / DDC Facility Reference</h2>
+      <p>Live facility dataset. Filter by country, suitability flag or free-text search. All entries must be independently confirmed before ERP issue.</p>
+    </div>
+
+    <style>
+      .fac-controls{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 16px;align-items:center}
+      .fac-controls input[type=text], .fac-controls select{
+        padding:9px 12px;border:1px solid var(--line);border-radius:10px;
+        font-family:inherit;font-size:14px;background:#fff;color:var(--text);min-width:180px
+      }
+      .fac-controls input[type=text]{flex:1;min-width:240px}
+      .fac-counter{margin-left:auto;font-size:13px;color:var(--muted)}
+      .fac-dl{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;
+        background:var(--navy);color:#fff;border-radius:10px;font-weight:600;font-size:13px}
+      .fac-dl:hover{background:var(--navy-dark)}
+      .fac-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow)}
+      table.fac{width:100%;border-collapse:collapse;font-size:13.5px;min-width:900px}
+      table.fac thead th{position:sticky;top:0;background:var(--navy);color:#fff;
+        text-align:left;padding:10px 12px;font-weight:700;font-size:12.5px;
+        text-transform:uppercase;letter-spacing:.04em;cursor:pointer;user-select:none;white-space:nowrap}
+      table.fac thead th:hover{background:var(--navy-dark)}
+      table.fac thead th::after{content:"\2195";opacity:.5;margin-left:6px;font-size:11px}
+      table.fac thead th.sort-asc::after{content:"\2191";opacity:1}
+      table.fac thead th.sort-desc::after{content:"\2193";opacity:1}
+      table.fac tbody td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+      table.fac tbody tr:nth-child(even){background:#f7f9fc}
+      table.fac tbody tr:hover{background:#eef5fc}
+      .cc{display:inline-block;padding:2px 7px;border-radius:4px;background:#e8edf2;
+        color:var(--navy-dark);font-weight:700;font-size:11.5px;letter-spacing:.04em}
+      .flag{display:inline-block;padding:3px 9px;border-radius:999px;font-weight:700;
+        font-size:11.5px;line-height:1.5;white-space:nowrap}
+      .flag-ok{background:#d9f2dc;color:#1f6a34}
+      .flag-confirm{background:#fff3cd;color:#856404}
+      .flag-prior{background:#e7d9f5;color:#4b2b78}
+      .flag-closed{background:#ffd4d4;color:#8d1f1f}
+      .flag-verify{background:#ffe2c7;color:#8a4b00}
+      .t24-yes{color:#1f6a34;font-weight:700}
+      .t24-no{color:#8d1f1f;font-weight:700}
+      .t24-verify{color:#8a4b00;font-weight:700}
+      .link{color:var(--navy);text-decoration:underline}
+      .notes{color:var(--muted);font-size:12.5px;max-width:320px}
+      .detail-row{display:none;background:#f0f6fb}
+      .detail-row.open{display:table-row}
+      .detail-row td{padding:14px 18px \!important}
+      .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;font-size:13px}
+      .detail-grid dt{font-weight:700;color:var(--navy);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+      .detail-grid dd{margin:0 0 8px 0;color:var(--text)}
+      .row-toggle{background:none;border:none;color:var(--navy);cursor:pointer;font-weight:700;font-size:16px;padding:0 4px}
+      @media (max-width: 720px){
+        table.fac{font-size:12.5px}
+        table.fac thead th,table.fac tbody td{padding:8px}
+        .notes{max-width:none}
+      }
+    </style>
+
+    <div class="fac-controls">
+      <input id="fac-q" type="text" placeholder="Search facility, city, phone, notes..." />
+      <select id="fac-country">
+        <option value="">All countries</option>
+        <option value="BE">Belgium</option>
+        <option value="BH">Bahrain</option>
+        <option value="DE">Germany</option>
+        <option value="FR">France</option>
+        <option value="NL">Netherlands</option>
+        <option value="NO">Norway</option>
+        <option value="OM">Oman</option>
+        <option value="QA">Qatar</option>
+        <option value="UAE">United Arab Emirates</option>
+        <option value="UK">United Kingdom</option>
+      </select>
+      <select id="fac-flag">
+        <option value="">All suitability flags</option>
+        <option value="Suitable for ERP use">Suitable for ERP use</option>
+        <option value="Suitable only after direct confirmation">Suitable only after direct confirmation</option>
+        <option value="Prior arrangement required">Prior arrangement required</option>
+        <option value="Not Operational">Not Operational</option>
+      </select>
+      <a class="fac-dl" href="/documents/NSea-HBOT-DDC-Source-Dataset.xlsx" download>&darr; Download source .xlsx</a>
+      <span class="fac-counter" id="fac-count"></span>
+    </div>
+
+    <div class="fac-wrap">
+      <table class="fac" id="fac-tbl">
+        <thead>
+          <tr>
+            <th data-col="country_code">Country</th>
+            <th data-col="facility_name">Facility</th>
+            <th data-col="city">City</th>
+            <th data-col="emergency_phone">Emergency Tel</th>
+            <th data-col="twentyfour_status">24h</th>
+            <th data-col="suitability_status">Suitability</th>
+            <th data-col="verification_date">Verified</th>
+            <th data-col="_expand">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody id="fac-body"></tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:14px;font-size:12.5px;color:var(--muted);max-width:900px">
+      <strong>Source:</strong> N-Sea HBOT / DDC Source Dataset (April 2026). All facilities are planning references only. Prior confirmation of 24/7 diver acceptance with the receiving facility is mandatory before ERP issue.
+    </p>
+
+  </div>
+</main>
+
+<script>
+const FAC_ROWS = [{"facility_id": "bh-manama", "country_code": "BH", "country_name": "Bahrain", "facility_name": "King Hamad University Hospital – Hyperbaric Unit", "city": "Manama", "address_1": "Busaiteen", "postcode": "", "latitude": "26.2418", "longitude": "50.6216", "routine_phone": "+973 1744 4444", "emergency_phone": "+973 1744 4444 / 999", "email": "", "website": "https://www.khuh.org.bh/en/hyperbaric", "twentyfour_status": "Verify", "chamber_category": "Internal assessment", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "King Hamad University Hospital", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "KHUH Bahrain / BH GD-032", "source_url": "https://www.khuh.org.bh/en/hyperbaric", "notes": "Decompression sickness listed as an indication on official hyperbaric page. Confirm emergency diver access, on-call process and acceptance pathway. Note: Bahrain Defence Force Hospital hyperbaric capability not verified from live official source."}, {"facility_id": "be-brussels", "country_code": "BE", "country_name": "Belgium", "facility_name": "Militair Hospitaal Koningin Astrid – Centre for HBO Therapy", "city": "Brussels", "address_1": "Bruynstraat 1", "postcode": "1120 Brussels", "latitude": "50.8805", "longitude": "4.3886", "routine_phone": "+32 2 264 48 20", "emergency_phone": "+32 2 264 48 20", "email": "hyperbaric@mil-ita.be", "website": "https://www.hopitalmilitaire.be/", "twentyfour_status": "Yes", "chamber_category": "European centre of excellence", "classification_system": "Military hospital", "chamber_type": "Hospital-based multiplace", "supporting_hospital": "Military Hospital Queen Astrid", "operational_status": "Operational", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Queen Astrid / BE GD-028", "source_url": "https://www.hopitalmilitaire.be/onderzoek_ohb_nl.php", "notes": "Established European hyperbaric centre of excellence. Military hospital – civilian and project access must be confirmed before ERP issue. Verify acceptance pathway, on-call protocol and diver-casualty routing directly."}, {"facility_id": "fr-marseille", "country_code": "FR", "country_name": "France", "facility_name": "AP-HM – Médecine Hyperbare, Sub-aquatique et Maritime (Sainte-Marguerite)", "city": "Marseille", "address_1": "Hôpital Sainte-Marguerite, 270 Boulevard Sainte-Marguerite", "postcode": "13009", "latitude": "43.2547", "longitude": "5.3911", "routine_phone": "+33 4 91 74 40 00", "emergency_phone": "+33 15 (SAMU)", "email": "hyperbare@ap-hm.fr", "website": "https://fr.ap-hm.fr/service/medecine-hyperbare-sub-aquatique-et-maritime-hopitaux-sud", "twentyfour_status": "Yes", "chamber_category": "French national", "classification_system": "SFHM / AP-HM", "chamber_type": "Hospital-based multiplace", "supporting_hospital": "Hôpitaux Sud / AP-HM", "operational_status": "Operational", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "AP-HM / FR GD-029", "source_url": "https://fr.ap-hm.fr/service/medecine-hyperbare-sub-aquatique-et-maritime-hopitaux-sud", "notes": "Dedicated hyperbaric, underwater and maritime medicine service. Emergency contact via SAMU (15) or CROSS Méditerranée (196) for marine incidents. Direct confirmation required before ERP use."}, {"facility_id": "fr-nice", "country_code": "FR", "country_name": "France", "facility_name": "CHU Nice – Unité Thérapeutique d'Oxygénothérapie Hyperbare (UTOH)", "city": "Nice", "address_1": "Hôpital Pasteur, 30 Voie Romaine", "postcode": "06001", "latitude": "43.704", "longitude": "7.2695", "routine_phone": "+33 4 92 03 55 75", "emergency_phone": "+33 15 (SAMU)", "email": "", "website": "https://www.chu-nice.fr/offre-de-soins/anesthesie-reanimations-urgences-samu-smur/caisson-hyperbare/", "twentyfour_status": "Yes", "chamber_category": "French national", "classification_system": "SFHM / CHU", "chamber_type": "Hospital-based multiplace", "supporting_hospital": "CHU Nice – Hôpital Pasteur", "operational_status": "Operational", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "CHU Nice / FR GD-029", "source_url": "https://www.chu-nice.fr/offre-de-soins/anesthesie-reanimations-urgences-samu-smur/caisson-hyperbare/", "notes": "Full range of hyperbaric indications including diving accidents. Mediterranean coast coverage. Emergency routing via SAMU (15) or CROSS Méditerranée (196). Direct confirmation required before ERP use."}, {"facility_id": "de-berlin", "country_code": "DE", "country_name": "Germany", "facility_name": "Vivantes Klinikum Friedrichshain", "city": "Berlin", "address_1": "Landsberger Allee 49", "postcode": "10249", "latitude": "52.5206", "longitude": "13.4519", "routine_phone": "+49 30 13023 1700", "emergency_phone": "+49 30 13023 1502", "email": "", "website": "", "twentyfour_status": "Yes", "chamber_category": "GTÜM List 1", "classification_system": "GTÜM", "chamber_type": "Hospital-based", "supporting_hospital": "Vivantes Klinikum Friedrichshain", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2025-03", "source_name": "GTÜM / DE GD-025", "source_url": "", "notes": "24hr emergency centre with hospital support."}, {"facility_id": "de-aachen", "country_code": "DE", "country_name": "Germany", "facility_name": "HBO-Zentrum Euregio Aachen", "city": "Aachen", "address_1": "Kackertstraße 11", "postcode": "52072", "latitude": "50.7731", "longitude": "6.0617", "routine_phone": "+49 241 840 44", "emergency_phone": "+49 241 840 44", "email": "info@hbo-aachen.de", "website": "https://www.hbo-aachen.de", "twentyfour_status": "Yes", "chamber_category": "GTÜM List 1", "classification_system": "GTÜM", "chamber_type": "Hospital-linked", "supporting_hospital": "Universitätsklinikum Aachen", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2025-03", "source_name": "GTÜM / DE GD-025", "source_url": "https://www.hbo-aachen.de", "notes": "Adjacent to UKA with ICU pathway."}, {"facility_id": "de-munich", "country_code": "DE", "country_name": "Germany", "facility_name": "HBO-Center München (HBOZentrum)", "city": "Munich", "address_1": "Bavariafilm-Platz 7, Geiselgasteig", "postcode": "", "latitude": "48.0768", "longitude": "11.5417", "routine_phone": "+49 89 64979600", "emergency_phone": "+49 89 64979600", "email": "info@hbozentrum.de", "website": "https://hbozentrum.de/", "twentyfour_status": "Yes", "chamber_category": "GTÜM List 1", "classification_system": "GTÜM", "chamber_type": "Hospital-linked", "supporting_hospital": "Independent / VDD member", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "GTÜM / VDD / DE GD-025", "source_url": "https://hbozentrum.de/en/about-us/", "notes": "Founding VDD member. GTÜM-certified physicians. TÜV Süd and Germanischer Lloyd certified. Explicit diving accident treatment capability since 1996. 24h emergency access. Confirm project-specific acceptance."}, {"facility_id": "de-bundeswehr", "country_code": "DE", "country_name": "Germany", "facility_name": "Bundeswehr – Abt. II Tauch- und Überdruckmedizin (HYDRA 2000)", "city": "Kiel", "address_1": "Marineunterstützungskommando, Kiel", "postcode": "", "latitude": "54.3233", "longitude": "10.1333", "routine_phone": "", "emergency_phone": "", "email": "", "website": "https://www.bundeswehr.de/en/department-ii-diving-and-hyperbaric-medicine-5214246", "twentyfour_status": "Verify", "chamber_category": "GTÜM / Military", "classification_system": "Military", "chamber_type": "Military multiplace", "supporting_hospital": "German Navy Medical Institute", "operational_status": "Operational", "suitability_status": "Prior arrangement required", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Bundeswehr / DE GD-025", "source_url": "https://www.bundeswehr.de/en/department-ii-diving-and-hyperbaric-medicine-5214246", "notes": "Military facility. 24h emergency readiness stated. Civilian/project access must be confirmed case-by-case through military command chain. Not a routine ERP option."}, {"facility_id": "nl-goes", "country_code": "NL", "country_name": "Netherlands", "facility_name": "MCHZ / ADRZ", "city": "Goes", "address_1": "'s-Gravenpolderseweg 114", "postcode": "4462 RA", "latitude": "51.49", "longitude": "3.87", "routine_phone": "+31 88 1254290", "emergency_phone": "+31 88 1250000", "email": "info@hyperbaarcentrum.nl", "website": "https://www.hyperbaarcentrum.nl", "twentyfour_status": "Yes", "chamber_category": "Category 1 equivalent", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "ADRZ", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Hyperbaarcentrum / NL GD-024", "source_url": "https://www.hyperbaarcentrum.nl", "notes": "Direct confirmation required before ERP use."}, {"facility_id": "nl-sneek", "country_code": "NL", "country_name": "Netherlands", "facility_name": "Antonius Ziekenhuis Hypercare", "city": "Sneek", "address_1": "Bolswarderbaan 1", "postcode": "8601 ZK", "latitude": "53.0324", "longitude": "5.6613", "routine_phone": "+31 515 488077", "emergency_phone": "+31 515 488077", "email": "info@hypercare.nl", "website": "https://www.hypercare.nl", "twentyfour_status": "Yes", "chamber_category": "Category 2 equivalent", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "Antonius Ziekenhuis Sneek", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Hypercare / NL GD-024", "source_url": "https://www.hypercare.nl", "notes": "Diving-emergency suitability to be confirmed case-by-case."}, {"facility_id": "nl-amsterdam", "country_code": "NL", "country_name": "Netherlands", "facility_name": "Amsterdam UMC – Hyperbare Geneeskunde (AMC)", "city": "Amsterdam", "address_1": "Meibergdreef 9", "postcode": "1105 AZ", "latitude": "52.2924", "longitude": "4.9583", "routine_phone": "020 566 9111", "emergency_phone": "020 566 9111", "email": "", "website": "https://www.amsterdamumc.nl/nl/hyperbare-geneeskunde/home", "twentyfour_status": "Yes", "chamber_category": "Category 1 equivalent", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "Amsterdam UMC (Academic Medical Centre)", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Amsterdam UMC / NL GD-024", "source_url": "https://amsterdamumc.org/nl/vandaag/duiken-in-het-ziekenhuis.htm", "notes": "24/7 service. Only Dutch centre capable of treating ventilated/critical patients under HBO. Largest chamber in NL. Treats diving accidents and CO poisoning."}, {"facility_id": "nl-denhelder", "country_code": "NL", "country_name": "Netherlands", "facility_name": "Duikmedisch Centrum – Koninklijke Marine (DMC)", "city": "Den Helder", "address_1": "RNLN Naval Base, Den Helder", "postcode": "", "latitude": "52.9593", "longitude": "4.7624", "routine_phone": "0223 65 30 76", "emergency_phone": "0889-501417", "email": "", "website": "", "twentyfour_status": "Verify", "chamber_category": "Category 1 equivalent", "classification_system": "Military", "chamber_type": "Military chamber", "supporting_hospital": "Royal Netherlands Navy (Koninklijke Marine)", "operational_status": "Operational", "suitability_status": "Prior arrangement required", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "RNLN DMC / NL GD-024", "source_url": "https://www.defensie.nl/organisatie/marine/eenheden/duikmedisch-centrum", "notes": "Military facility. Diving accident treatment after consultation only. Ventilated/unstable patient treatment after separate consultation (anaesthesiologist availability). No inpatient capacity. Out-of-hours: 0223 65 82 20, ask for duty diving physician."}, {"facility_id": "nl-ivhg-hoogeveen", "country_code": "NL", "country_name": "Netherlands", "facility_name": "Instituut voor Hyperbare Geneeskunde (IVHG) – Hoogeveen", "city": "Hoogeveen", "address_1": "Dr. G.H. Amshoffweg 7", "postcode": "7909 AA", "latitude": "52.7228", "longitude": "6.4716", "routine_phone": "", "emergency_phone": "", "email": "info@ivhg.nl", "website": "https://www.ivhg.nl/", "twentyfour_status": "No", "chamber_category": "Category 2 equivalent", "classification_system": "Internal equivalence", "chamber_type": "Outpatient / freestanding", "supporting_hospital": "Not hospital-based", "operational_status": "Operational", "suitability_status": "Prior arrangement required", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "IVHG / NL GD-024", "source_url": "https://www.ivhg.nl/", "notes": "Non-acute only. Diving accident treatment possible after 2–6 hours on request. No ventilated patient capability. Not suitable for acute emergency ERP without advance confirmation of case-specific arrangement."}, {"facility_id": "nl-ivhg-rotterdam", "country_code": "NL", "country_name": "Netherlands", "facility_name": "Instituut voor Hyperbare Geneeskunde (IVHG) – Rotterdam", "city": "Rotterdam", "address_1": "Brielselaan 69e", "postcode": "3081 AA", "latitude": "51.9038", "longitude": "4.4728", "routine_phone": "", "emergency_phone": "", "email": "info@ivhg.nl", "website": "https://www.ivhg.nl/", "twentyfour_status": "No", "chamber_category": "Category 2 equivalent", "classification_system": "Internal equivalence", "chamber_type": "Outpatient / freestanding", "supporting_hospital": "Not hospital-based", "operational_status": "Operational", "suitability_status": "Prior arrangement required", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "IVHG / NL GD-024", "source_url": "https://www.ivhg.nl/", "notes": "Non-acute only. Diving accident treatment possible after 2–6 hours on request. No ventilated patient capability. Not suitable for acute emergency ERP without advance confirmation."}, {"facility_id": "no-bergen", "country_code": "NO", "country_name": "Norway", "facility_name": "Haukeland University Hospital – Hyperbar Medisin", "city": "Bergen", "address_1": "Jonas Liesvei 65", "postcode": "5021 Bergen", "latitude": "60.3806", "longitude": "5.3649", "routine_phone": "+47 55 97 50 00", "emergency_phone": "+47 55 97 50 00", "email": "", "website": "https://www.helse-bergen.no/en/departments/yrkesmedisinsk-avdeling/", "twentyfour_status": "Yes", "chamber_category": "National authority", "classification_system": "Norwegian national", "chamber_type": "Hospital-based multiplace", "supporting_hospital": "Haukeland University Hospital", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "Helse Bergen / NO GD-027", "source_url": "https://www.helse-bergen.no/en/departments/yrkesmedisinsk-avdeling/", "notes": "National hyperbaric medicine authority since 1994. National resource centre for air-pressure injuries (diving). Handles diving accidents from North Sea offshore operations. Also operates Radio Medico telemedicine service. Activate via emergency services (113) for routing."}, {"facility_id": "om-muscat", "country_code": "OM", "country_name": "Oman", "facility_name": "Royal Hospital – National Hyperbaric Medicine Center", "city": "Muscat", "address_1": "Al Ghubrah, PO Box 1331", "postcode": "", "latitude": "23.6286", "longitude": "58.5929", "routine_phone": "+968 2459 9000", "emergency_phone": "+968 2459 9000 / 9999", "email": "", "website": "https://royalhospital.med.om/eng/hyperbaric-medicine-center.php", "twentyfour_status": "Verify", "chamber_category": "Internal assessment", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based multiplace", "supporting_hospital": "Royal Hospital Muscat", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Royal Hospital Oman / OM GD-031", "source_url": "https://royalhospital.med.om/eng/hyperbaric-medicine-center.php", "notes": "Official page notes 2 multiplace and 1 monoplace chamber. Primary government hospital for Oman offshore diving operations. DCI acceptance and on-call availability must be confirmed directly."}, {"facility_id": "qa-doha", "country_code": "QA", "country_name": "Qatar", "facility_name": "Hamad Medical Corporation – Hyperbaric Therapy Unit", "city": "Doha", "address_1": "Hamad General Hospital, Trauma and Emergency Center", "postcode": "", "latitude": "25.2969", "longitude": "51.4439", "routine_phone": "+974 4439 4444", "emergency_phone": "+974 4439 4444 / 999", "email": "", "website": "https://hamad.qa/", "twentyfour_status": "Verify", "chamber_category": "Internal Cat 2 assessment", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "Hamad General Hospital – Trauma & Emergency Center", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "HMC Qatar / QA GD-030", "source_url": "https://hamad.qa/EN/news/2019/September/pages/new-hyperbaric-therapy-unit-showcases-hmcs-focus-on-providing-cutting-edge-treatments.aspx", "notes": "Unit opened within Trauma and Emergency Center. Primary referral for offshore Qatar operations. DCI diver acceptance must be confirmed with HMC directly before ERP use."}, {"facility_id": "uae-burjeel", "country_code": "UAE", "country_name": "United Arab Emirates", "facility_name": "Burjeel Medical City HBOT Centre", "city": "Abu Dhabi", "address_1": "Mohamed Bin Zayed City", "postcode": "", "latitude": "24.3667", "longitude": "54.5333", "routine_phone": "+971 80023", "emergency_phone": "+971 80023 / 999", "email": "info@burjeelmedicalcity.com", "website": "https://burjeelmedicalcity.com", "twentyfour_status": "Verify", "chamber_category": "Internal Cat 2 assessment", "classification_system": "Internal equivalence", "chamber_type": "Monoplace", "supporting_hospital": "Burjeel Medical City", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "Burjeel / UAE GD-026", "source_url": "https://burjeelmedicalcity.com", "notes": "Diving-emergency standby must be confirmed directly."}, {"facility_id": "uae-zahra", "country_code": "UAE", "country_name": "United Arab Emirates", "facility_name": "Al Zahra Hospital Dubai HBOT", "city": "Dubai", "address_1": "Sheikh Zayed Road, Al Barsha 1", "postcode": "", "latitude": "25.106", "longitude": "55.176", "routine_phone": "+971 4 378 6666", "emergency_phone": "+971 4 378 6666 / 998", "email": "", "website": "https://azhd.ae", "twentyfour_status": "Verify", "chamber_category": "Internal Cat 2 assessment", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "Al Zahra Hospital Dubai", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "AZHD / UAE GD-026", "source_url": "https://azhd.ae", "notes": "Dedicated DCI standby remains unverified."}, {"facility_id": "uae-mirdif", "country_code": "UAE", "country_name": "United Arab Emirates", "facility_name": "HMS Mirdif Hospital – Hyperbaric & Undersea Medicine", "city": "Dubai", "address_1": "Mirdif, Dubai", "postcode": "", "latitude": "25.2231", "longitude": "55.4096", "routine_phone": "800467", "emergency_phone": "800467 / 998", "email": "", "website": "https://www.hmsmirdifhospital.ae/en/package/hyperbaric-oxygen-therapy-hbot-packages", "twentyfour_status": "Verify", "chamber_category": "Internal Cat 2 assessment", "classification_system": "Internal equivalence", "chamber_type": "Hospital-based", "supporting_hospital": "HMS Mirdif Hospital (JCI-accredited)", "operational_status": "Verify Before Use", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Website Verified", "verification_date": "2026-04", "source_name": "HMS Mirdif / UAE GD-026", "source_url": "https://www.hmsmirdifhospital.ae/", "notes": "Specialist in undersea and hyperbaric oxygen medicine (Dr Khaled Eltobgy). JCI-accredited. 24/7 availability for DCI not confirmed. Verify before any ERP use."}, {"facility_id": "uk-aberdeen", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "Aberdeen NHC", "city": "Aberdeen", "address_1": "Aberdeen Royal Infirmary, Foresterhill", "postcode": "AB25 2ZN", "latitude": "57.1553", "longitude": "-2.1432", "routine_phone": "01224 553264", "emergency_phone": "0345 408 6008", "email": "gram.hyperbaric@nhs.scot", "website": "", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "Aberdeen Royal Infirmary", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA / UK GD-023", "source_url": "", "notes": "Primary Scottish emergency centre."}, {"facility_id": "uk-plymouth", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "Plymouth DDRC Healthcare", "city": "Plymouth", "address_1": "Plymouth Science Park, Research Way, Derriford", "postcode": "PL6 8BU", "latitude": "50.4168", "longitude": "-4.1087", "routine_phone": "01752 209999", "emergency_phone": "07831 151523", "email": "info@ddrc.org", "website": "https://www.ddrc.org", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "Derriford Hospital", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA / UK GD-023", "source_url": "", "notes": "Strong candidate for South West UK projects."}, {"facility_id": "uk-wirral", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "Hyperbaric Treatment & Training", "city": "Birkenhead", "address_1": "2 East Street", "postcode": "CH41 1BY", "latitude": "53.3929", "longitude": "-3.0167", "routine_phone": "0151 648 8000", "emergency_phone": "0151 648 8000", "email": "jenny@emergencyservices-training.com", "website": "https://www.hyperbaric-medicine.co.uk/", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "Birkenhead / Liverpool FT NHS", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Category 1; Cat 1 patients accepted; helipad access needs confirming."}, {"facility_id": "uk-yarmouth", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "LHM Healthcare – East of England Hyperbaric Unit", "city": "Great Yarmouth", "address_1": "James Paget University Hospital, Lowestoft Road, Gorleston", "postcode": "NR31 6LA", "latitude": "52.5837", "longitude": "1.7198", "routine_phone": "01493 452452", "emergency_phone": "01493 603151", "email": "pabothma@gmail.com", "website": "https://lhmhealthcare.com/", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "James Paget University Hospital", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Category 1; ICU co-located; dedicated emergency number."}, {"facility_id": "uk-london", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "LHM Healthcare – Whipps Cross Hyperbaric Unit", "city": "London", "address_1": "Whipps Cross University Hospital, Leytonstone", "postcode": "E11 1NR", "latitude": "51.5769", "longitude": "-0.0134", "routine_phone": "020 8539 1222", "emergency_phone": "07999 292999", "email": "mail@londonhyperbaric.com", "website": "https://lhmhealthcare.com/", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "Whipps Cross University Hospital", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Category 1 patients only; dedicated emergency mobile number."}, {"facility_id": "uk-rugby", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "Midlands Diving Chamber", "city": "Rugby", "address_1": "Redwood House, Hospital of St Cross, Barby Road", "postcode": "CV22 5PX", "latitude": "52.3647", "longitude": "-1.2592", "routine_phone": "01788 579555", "emergency_phone": "07931 472602", "email": "doctor@midlandsdivingchamber.co.uk", "website": "https://www.midlandsdivingchamber.co.uk/", "twentyfour_status": "Yes", "chamber_category": "Category 2", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "Hospital of St Cross (no ED/ICU)", "operational_status": "Operational", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Category 2; cannot accept critically ill patients; no on-site ED or ICU."}, {"facility_id": "uk-chichester", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "Hyperbaric Medicine Unit – St Richard's Hospital", "city": "Chichester", "address_1": "St Richard's Hospital, Spitalfield Lane", "postcode": "PO19 6SE", "latitude": "50.8349", "longitude": "-0.7662", "routine_phone": "01243 788122", "emergency_phone": "01243 330096", "email": "", "website": "", "twentyfour_status": "Yes", "chamber_category": "Category 2", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "St Richard's Hospital", "operational_status": "Operational", "suitability_status": "Suitable only after direct confirmation", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Category 2; temporarily unable to accept Category 1 critically ill patients. Confirm live status before ERP."}, {"facility_id": "uk-hull", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "North of England Medical Hyperbaric Unit", "city": "Hull", "address_1": "Spire Hull and East Riding Hospital, Lowfield Road, Anlaby", "postcode": "HU10 7AZ", "latitude": "53.7359", "longitude": "-0.4436", "routine_phone": "01482 672462", "emergency_phone": "01482 659471", "email": "info@nemhshull.com", "website": "https://www.hullhyperbaric.co.uk/", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "Spire Hull & East Riding Hospital (no ED)", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Category 1; acute/secondary care co-located but no ED."}, {"facility_id": "uk-orkney", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "Orkney Hyperbaric Unit", "city": "Stromness", "address_1": "Old Academy Back Road", "postcode": "KW16 3AW", "latitude": "58.9697", "longitude": "-3.2989", "routine_phone": "01856 850285", "emergency_phone": "0345 408 6008", "email": "andrew.trevett@nhs.scot", "website": "https://www.oht.scot/", "twentyfour_status": "Yes", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "NHS Orkney", "operational_status": "Operational", "suitability_status": "Suitable for ERP use", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Facilities / UK GD-023", "source_url": "https://ukhyperbaric.com/emergency/facilities/", "notes": "Scottish emergency network; part of NHS Grampian governance. Remote location – transport lead time critical."}, {"facility_id": "uk-oban", "country_code": "UK", "country_name": "United Kingdom", "facility_name": "West Scotland Centre – Tritonia / Oban", "city": "Oban", "address_1": "Dunstaffnage Marine Laboratories, Dunbeg", "postcode": "PA37 1QA", "latitude": "56.4588", "longitude": "-5.4375", "routine_phone": "01631 559211", "emergency_phone": "0345 408 6008", "email": "info@tritonia.scot", "website": "https://tritonia.scot/", "twentyfour_status": "No", "chamber_category": "Category 1", "classification_system": "BHA", "chamber_type": "Multiplace", "supporting_hospital": "NHS / Tritonia Scientific", "operational_status": "Not Operational", "suitability_status": "Not Operational", "verification_status": "Authority Verified", "verification_date": "2026-04", "source_name": "BHA Members / UK GD-023", "source_url": "https://ukhyperbaric.com/members/", "notes": "CONFIRMED NOT OPERATIONAL as of April 2026. Do not use for ERP. Review BHA page for restoration."}];
+const COUNTRY = {"UK": "United Kingdom", "NL": "Netherlands", "DE": "Germany", "NO": "Norway", "BE": "Belgium", "FR": "France", "UAE": "United Arab Emirates", "QA": "Qatar", "OM": "Oman", "BH": "Bahrain"};
+
+function flagClass(s){
+  if(\!s) return 'flag-verify';
+  const t = s.toLowerCase();
+  if(t.includes('not operational')) return 'flag-closed';
+  if(t.includes('suitable for erp')) return 'flag-ok';
+  if(t.includes('prior arrangement')) return 'flag-prior';
+  if(t.includes('direct confirmation')) return 'flag-confirm';
+  return 'flag-verify';
+}
+function t24Class(s){
+  if(\!s) return '';
+  const t = s.toLowerCase();
+  if(t === 'yes') return 't24-yes';
+  if(t === 'no') return 't24-no';
+  return 't24-verify';
+}
+
+let sortCol = 'country_code';
+let sortDir = 1; // 1 asc, -1 desc
+
+function renderRows(){
+  const q = document.getElementById('fac-q').value.trim().toLowerCase();
+  const cc = document.getElementById('fac-country').value;
+  const fg = document.getElementById('fac-flag').value;
+
+  let rows = FAC_ROWS.filter(r => {
+    if(cc && r.country_code \!== cc) return false;
+    if(fg && r.suitability_status \!== fg) return false;
+    if(q){
+      const hay = [r.facility_name, r.city, r.address_1, r.emergency_phone, r.routine_phone,
+                   r.notes, r.supporting_hospital, r.country_name, r.source_name].join(' ').toLowerCase();
+      if(\!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  rows.sort((a,b) => {
+    const av = (a[sortCol] || '').toString().toLowerCase();
+    const bv = (b[sortCol] || '').toString().toLowerCase();
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+
+  const tb = document.getElementById('fac-body');
+  tb.innerHTML = '';
+  rows.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'main-row';
+    tr.dataset.id = r.facility_id;
+
+    const cls = flagClass(r.suitability_status);
+    const t24 = t24Class(r.twentyfour_status);
+
+    tr.innerHTML = `
+      <td><span class="cc">${r.country_code || ''}</span></td>
+      <td><strong>${esc(r.facility_name)}</strong></td>
+      <td>${esc(r.city)}</td>
+      <td>${esc(r.emergency_phone || r.routine_phone || '')}</td>
+      <td class="${t24}">${esc(r.twentyfour_status || '')}</td>
+      <td><span class="flag ${cls}">${esc(r.suitability_status || '')}</span></td>
+      <td>${esc(r.verification_date || '')}</td>
+      <td><button class="row-toggle" onclick="togglePanel('${r.facility_id}')" aria-label="Details">+</button></td>
+    `;
+    tb.appendChild(tr);
+
+    const pr = document.createElement('tr');
+    pr.className = 'detail-row';
+    pr.dataset.id = r.facility_id;
+    pr.innerHTML = `<td colspan="8">${detailHtml(r)}</td>`;
+    tb.appendChild(pr);
+  });
+
+  document.getElementById('fac-count').textContent = rows.length + ' of ' + FAC_ROWS.length + ' facilities';
+
+  // Sort indicators
+  document.querySelectorAll('#fac-tbl thead th').forEach(th => {
+    th.classList.remove('sort-asc','sort-desc');
+    if(th.dataset.col === sortCol){
+      th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+    }
+  });
+}
+
+function detailHtml(r){
+  const web = r.website ? `<a class="link" href="${r.website}" target="_blank" rel="noopener">${esc(r.website)}</a>` : '&mdash;';
+  const src = r.source_url ? `<a class="link" href="${r.source_url}" target="_blank" rel="noopener">${esc(r.source_name || r.source_url)}</a>` : esc(r.source_name || '');
+  return `
+    <dl class="detail-grid">
+      <div><dt>Full Address</dt><dd>${esc([r.address_1, r.postcode, r.city, r.country_name].filter(Boolean).join(', '))}</dd></div>
+      <div><dt>Routine Phone</dt><dd>${esc(r.routine_phone || '&mdash;')}</dd></div>
+      <div><dt>Emergency Phone</dt><dd><strong>${esc(r.emergency_phone || '&mdash;')}</strong></dd></div>
+      <div><dt>Email</dt><dd>${r.email ? `<a class="link" href="mailto:${r.email}">${esc(r.email)}</a>` : '&mdash;'}</dd></div>
+      <div><dt>Website</dt><dd>${web}</dd></div>
+      <div><dt>Supporting Hospital</dt><dd>${esc(r.supporting_hospital || '&mdash;')}</dd></div>
+      <div><dt>Chamber Category</dt><dd>${esc(r.chamber_category || '&mdash;')} <span style="color:var(--muted)">(${esc(r.classification_system || '')})</span></dd></div>
+      <div><dt>Chamber Type</dt><dd>${esc(r.chamber_type || '&mdash;')}</dd></div>
+      <div><dt>Operational Status</dt><dd>${esc(r.operational_status || '&mdash;')}</dd></div>
+      <div><dt>Verification</dt><dd>${esc(r.verification_status || '')} &mdash; ${esc(r.verification_date || '')}</dd></div>
+      <div><dt>Source</dt><dd>${src}</dd></div>
+      <div style="grid-column:1/-1"><dt>Notes</dt><dd class="notes">${esc(r.notes || '')}</dd></div>
+    </dl>
+  `;
+}
+
+function togglePanel(id){
+  const pr = document.querySelector('tr.detail-row[data-id="' + id + '"]');
+  if(\!pr) return;
+  pr.classList.toggle('open');
+  const btn = document.querySelector('tr.main-row[data-id="' + id + '"] .row-toggle');
+  if(btn) btn.textContent = pr.classList.contains('open') ? '−' : '+';
+}
+
+function esc(s){
+  if(s === undefined || s === null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('fac-q').addEventListener('input', renderRows);
+  document.getElementById('fac-country').addEventListener('change', renderRows);
+  document.getElementById('fac-flag').addEventListener('change', renderRows);
+  document.querySelectorAll('#fac-tbl thead th').forEach(th => {
+    th.addEventListener('click', () => {
+      const c = th.dataset.col;
+      if(\!c || c === '_expand') return;
+      if(sortCol === c) sortDir = -sortDir;
+      else { sortCol = c; sortDir = 1; }
+      renderRows();
+    });
+  });
+  renderRows();
+});
+</script>

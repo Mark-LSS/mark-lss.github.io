@@ -2,8 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Diving Toolkit — N-Sea Operations Library</title>
+
+<!-- PWA: install to home screen → launches standalone (no browser chrome) -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#014782">
+<meta name="application-name" content="N-Sea Toolkit">
+<meta name="description" content="N-Sea Diving Toolkit — calculators, emergency tools, familiarisations and documents.">
+
+<!-- iOS Safari (Add to Home Screen) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="N-Sea Toolkit">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- Favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -93,7 +109,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 /* MAIN PANEL */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-/* SLIM TAB BAR — just shows open items, no content switching */
+/* SLIM TAB BAR */
 #tab-bar{display:flex;align-items:stretch;background:var(--bg3);border-bottom:1px solid var(--bdr);height:34px;overflow-x:auto;overflow-y:hidden;flex-shrink:0}
 #tab-bar::-webkit-scrollbar{height:0}
 .stab{display:flex;align-items:center;gap:6px;padding:0 10px;font-size:12px;color:var(--txt2);white-space:nowrap;border-right:1px solid var(--bdr);border-bottom:2px solid transparent;background:var(--bg3);user-select:none;min-width:100px;max-width:180px;flex-shrink:0}
@@ -102,15 +118,11 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .stab-x{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt3);flex-shrink:0;cursor:pointer;transition:background .1s}
 .stab-x:hover{background:var(--bdr2);color:var(--txt)}
 
-/* TILE GRID — the main content area */
+/* TILE GRID */
 #tile-grid{flex:1;display:grid;overflow:hidden;gap:1px;background:var(--bdr)}
-/* 0 open → single cell showing home */
 #tile-grid.c0{grid-template-columns:1fr}
-/* 1 open → full width */
 #tile-grid.c1{grid-template-columns:1fr}
-/* 2 open → 50/50 */
 #tile-grid.c2{grid-template-columns:1fr 1fr}
-/* 3+ open → thirds */
 #tile-grid.c3{grid-template-columns:1fr 1fr 1fr}
 #tile-grid.c4{grid-template-columns:1fr 1fr}
 
@@ -132,7 +144,7 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .tile-hdr-ext:hover{background:rgba(255,255,255,.15);color:#fff}
 .calc-tile iframe{flex:1;border:none;width:100%;height:100%}
 
-/* placeholder tile (coming soon) */
+/* placeholder tile */
 .ph-tile{background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .ph-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--txt3);font-size:13px}
 .ph-icon{font-size:28px;opacity:.4}
@@ -158,103 +170,63 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
 .srch-path{font-size:11px;color:var(--txt3);margin-top:1px}
 .srch-none{padding:16px;text-align:center;color:var(--txt3);font-size:13px}
 
-/* ── MOBILE HAMBURGER (hidden on desktop) ── */
+/* MOBILE HAMBURGER (hidden on desktop) */
 .hamb{display:none;width:34px;height:32px;border:1px solid var(--bdr);background:var(--bg);border-radius:var(--r);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;margin-right:4px;color:var(--txt);padding:0}
 .hamb svg{display:block}
 .hamb:hover{background:var(--bg3)}
 #nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
 
-/* ────────────────────────────────────────────
-   RESPONSIVE — PHONE / NARROW TABLET (≤780px)
-   ──────────────────────────────────────────── */
+/* MOBILE SHELL — 4-tile home + drill-down (visible only <=780px) */
+#mobile-shell{display:none;flex-direction:column;height:100%;min-height:0;background:var(--bg2)}
+#ms-header{background:var(--nb);display:flex;align-items:center;padding:env(safe-area-inset-top,0) 4px 0 4px;gap:2px;flex-shrink:0;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+#ms-header-row{display:flex;align-items:center;gap:2px;width:100%;height:54px}
+#ms-back{width:42px;height:42px;border:none;background:transparent;color:#fff;font-size:30px;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;line-height:1;visibility:hidden;font-weight:300;padding:0 0 4px 0}
+#ms-back.show{visibility:visible}
+#ms-back:active{background:rgba(255,255,255,.18)}
+#ms-title{flex:1;font-size:15.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;padding-left:8px;letter-spacing:.01em}
+#ms-tools{display:flex;gap:2px;flex-shrink:0}
+.ms-tool{width:42px;height:42px;border:none;background:transparent;color:#fff;font-size:20px;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;line-height:1}
+.ms-tool:active{background:rgba(255,255,255,.18)}
+#ms-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg2);min-height:0;padding-bottom:env(safe-area-inset-bottom,0)}
+.ms-home{padding:14px 14px 28px;display:flex;flex-direction:column;gap:11px}
+.ms-banner{background:var(--nb);border-radius:var(--r-lg);padding:16px 14px;color:#fff;display:flex;gap:12px;align-items:center}
+.ms-banner-logo{background:var(--ny);color:var(--nb);font-weight:700;font-size:15px;padding:6px 11px;border-radius:5px;flex-shrink:0;letter-spacing:.04em}
+.ms-banner-body{flex:1;min-width:0}
+.ms-banner-ttl{font-size:14.5px;font-weight:500;line-height:1.2}
+.ms-banner-sub{font-size:11.5px;color:rgba(255,255,255,.7);margin-top:3px;line-height:1.4}
+.ms-tile{background:var(--bg);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:18px 14px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;width:100%;color:var(--txt);font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background .12s,border-color .12s,transform .05s}
+.ms-tile:active{background:var(--nb-tint);border-color:var(--nb);transform:scale(.99)}
+.ms-tile-icon{width:46px;height:46px;background:var(--nb);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ms-tile-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ms-tile-name{font-size:16px;font-weight:600;color:var(--txt);line-height:1.2}
+.ms-tile-sub{font-size:12px;color:var(--txt2);line-height:1.35}
+.ms-tile-chev{color:var(--txt3);font-size:24px;flex-shrink:0;line-height:1;font-weight:300}
+.ms-section{padding:6px 0 32px;background:var(--bg2)}
+.ms-grp-name{padding:18px 18px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3)}
+.ms-grp-name:first-child{padding-top:12px}
+.ms-row{display:flex;align-items:center;padding:16px 18px;border:none;border-bottom:1px solid var(--bdr);cursor:pointer;background:var(--bg);text-align:left;width:100%;color:var(--txt);font-family:inherit;font-size:15px;-webkit-tap-highlight-color:transparent;line-height:1.3;gap:10px}
+.ms-row:active{background:var(--nb-tint)}
+.ms-row-name{flex:1}
+.ms-row-chev{color:var(--txt3);font-size:20px;flex-shrink:0;line-height:1;font-weight:300}
+.ms-item{height:100%;display:flex;flex-direction:column;background:var(--bg);min-height:0}
+.ms-item-iframe{flex:1;width:100%;border:none;background:var(--bg);min-height:0}
+.ms-item-foot{padding:8px 14px;background:var(--bg2);border-top:1px solid var(--bdr);font-size:12px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:10px}
+.ms-item-foot .ms-foot-path{color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms-item-foot a{color:var(--nb);text-decoration:none;font-weight:500;flex-shrink:0}
+
+/* MOBILE: hide all desktop chrome, show mobile shell */
 @media (max-width:780px){
-  html,body{overflow:auto;font-size:14px}
-  #app{height:auto;min-height:100vh}
-
-  /* compact title bar — hide macOS dots + url label */
-  #title-bar{height:38px;padding:0 10px;gap:8px}
-  .tb-wins{display:none}
-  .tb-title{font-size:12px;line-height:1.15;white-space:normal}
-  .tb-url{display:none}
-  .tb-logo{font-size:10px;padding:3px 7px}
-
-  /* hide decorative menu bar on phones */
-  #menu-bar{display:none}
-
-  /* toolbar: horizontal scroll, larger tap targets */
-  #toolbar{height:46px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:0 6px}
-  #toolbar::-webkit-scrollbar{height:0;display:none}
-  .tb{height:34px;font-size:13px;padding:0 11px;flex-shrink:0}
-  .tb-sep{display:none}
-  .hamb{display:inline-flex}
-  #srch-wrap{display:none}
-
-  /* BODY: full-height minus chrome */
-  #body{height:calc(100vh - 84px)}   /* title 38 + toolbar 46 */
-
-  /* Nav becomes a fixed drawer, 85% of viewport */
-  #nav{
-    position:fixed;top:0;left:0;bottom:0;
-    width:86vw;min-width:0;max-width:340px;
-    height:100vh;z-index:100;
-    transform:translateX(-105%);
-    transition:transform .25s ease;
-    box-shadow:2px 0 24px rgba(0,0,0,.35);
-    background:var(--bg);
-  }
-  #nav.open{transform:translateX(0)}
-  #nav.col{width:86vw;min-width:0;transform:translateX(-105%)}
-  #nav-icons{display:none !important}
-  .nav-top{height:44px}
-  .nav-top-lbl{font-size:12px}
-  .nav-col-btn{width:32px;height:32px;font-size:13px}
-  #nav-scroll{display:block !important}
-
-  /* bigger tap targets in nav */
-  .ts-hdr{height:44px;font-size:15px}
-  .ts-ico{font-size:16px}
-  .tg-hdr{height:34px;font-size:11.5px;padding-left:30px}
-  .ti,.tfi{height:40px;font-size:14.5px}
-
-  /* backdrop for drawer */
-  body.mob-nav-open #nav-backdrop{display:block}
-
-  /* Main area: full width, stack tiles vertically */
-  #main{width:100%;min-width:0}
-  #tile-grid.c0,#tile-grid.c1,#tile-grid.c2,#tile-grid.c3,#tile-grid.c4{
-    grid-template-columns:1fr !important;
-    grid-auto-rows:minmax(calc(100vh - 160px),auto);
-  }
-  .calc-tile{min-height:calc(100vh - 170px)}
-
-  /* Tab bar scrollable */
-  #tab-bar{overflow-x:auto;scrollbar-width:none}
-  #tab-bar::-webkit-scrollbar{display:none}
-  .stab{min-width:140px;font-size:13px}
-
-  /* Home tile: tighten */
-  .home-tile{padding:24px 16px;gap:10px}
-  .home-banner-sm{padding:14px 16px;gap:12px}
-  .home-logo-sm{font-size:15px;padding:6px 11px}
-  .home-ttl-sm{font-size:14px}
-  .home-sub-sm{font-size:11.5px;line-height:1.4}
-
-  /* Tile header: bigger close button */
-  .tile-hdr{height:38px;padding:0 8px}
-  .tile-hdr-lbl{font-size:13px}
-  .tile-close{width:28px;height:28px;font-size:16px}
-  .tile-hdr-ext{padding:4px 8px;font-size:11px}
-
-  /* Status bar: simplify */
-  #sb{height:28px;gap:10px;padding:0 10px;flex-wrap:nowrap;overflow:hidden}
-  .sb-i{font-size:10.5px}
-  .sb-r{display:none}
-  .sb-i:nth-child(2){display:none}  /* hide BMS rev badge */
-
-  /* Search overlay: full-width on mobile */
+  html,body{overflow:hidden;height:100vh;height:100dvh;font-size:14px}
+  #app{height:100vh;height:100dvh;overflow:hidden}
+  #title-bar,#menu-bar,#toolbar,#sb,#tab-bar,#tile-grid,#nav,#nav-backdrop{display:none !important}
+  body.mob-nav-open #nav-backdrop{display:none !important}
+  #body{height:100%;flex:1;min-height:0;display:flex}
+  #main{width:100%;height:100%;min-width:0;min-height:0;display:flex;flex-direction:column}
+  #mobile-shell{display:flex;height:100%;flex:1}
+  /* tweaks for search overlay on small screens */
   #srch-ol{padding-top:30px;padding-left:10px;padding-right:10px}
   .srch-box{width:100%;max-width:560px}
-  .srch-in-row input{font-size:16px}  /* avoid iOS zoom-on-focus */
+  .srch-in-row input{font-size:16px}
 }
 </style>
 </head>
@@ -324,6 +296,20 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-sy
     <div id="main">
       <div id="tab-bar"></div>
       <div id="tile-grid" class="c0"></div>
+      <!-- Mobile shell: visible only on phones (<=780px). Drives its own UI. -->
+      <div id="mobile-shell">
+        <div id="ms-header">
+          <div id="ms-header-row">
+            <button id="ms-back" onclick="msBack()" aria-label="Back">‹</button>
+            <span id="ms-title">N-Sea Diving Toolkit</span>
+            <div id="ms-tools">
+              <button class="ms-tool" onclick="srchOpen()" aria-label="Search" title="Search">⌕</button>
+              <button class="ms-tool" onclick="msHome()" aria-label="Home" title="Home">⌂</button>
+            </div>
+          </div>
+        </div>
+        <div id="ms-body"></div>
+      </div>
     </div>
   </div>
 
@@ -395,14 +381,112 @@ DATA.forEach(sec=>{
   (sec.flat||[]).forEach(it=>IDX.push({...it,section:sec.label,group:'',secId:sec.id}));
 });
 
-/* open items list: [{id, name, href, ph}] */
 let openItems=[];
 
-/* ── NAV ── */
+/* ── MOBILE SHELL state machine (phones only) ── */
+const isMobile = () => window.innerWidth <= 780;
+let msState='home', msSection=null, msItem=null;
+
+const MS_SUB={
+  calc:'Gas / nitrox / oxygen exposure tools',
+  emrg:'Nitrox failure · ERP HBOT / DDC',
+  fam:'Daughter craft · Broco · O₂ tox · SAT',
+  docs:'UK · NL · DE · UAE · global'
+};
+
+function msHome(){msState='home';msSection=null;msItem=null;renderMobile()}
+function msOpenSec(secId){msState='section';msSection=secId;msItem=null;renderMobile()}
+function msOpenItemById(id){const it=IDX.find(x=>x.id===id);if(it)msOpenItem(it)}
+function msOpenItem(item){
+  if(!item)return;
+  msState='item';msSection=item.secId;msItem=item;
+  openItems=[item];
+  document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
+  document.getElementById('ti_'+item.id)?.classList.add('on');
+  renderMobile();
+}
+function msBack(){
+  if(msState==='item'){msState='section';msItem=null;renderMobile();return}
+  if(msState==='section'){msHome();return}
+}
+
+function renderMobile(){
+  const shell=document.getElementById('mobile-shell');
+  if(!shell)return;
+  const back=document.getElementById('ms-back');
+  const ttl=document.getElementById('ms-title');
+  const body=document.getElementById('ms-body');
+
+  if(msState==='home'){
+    back.classList.remove('show');
+    ttl.textContent='N-Sea Diving Toolkit';
+    let html='<div class="ms-home">'
+      +'<div class="ms-banner"><div class="ms-banner-logo">N-SEA</div><div class="ms-banner-body">'
+      +'<div class="ms-banner-ttl">Diving Operations Library</div>'
+      +'<div class="ms-banner-sub">Calculators · emergencies · training · documents.</div>'
+      +'</div></div>';
+    DATA.forEach(sec=>{
+      html+='<button class="ms-tile" onclick="msOpenSec(\''+sec.id+'\')">'
+        +'<span class="ms-tile-icon">'+sec.icon+'</span>'
+        +'<span class="ms-tile-body">'
+        +'<span class="ms-tile-name">'+sec.label+'</span>'
+        +'<span class="ms-tile-sub">'+(MS_SUB[sec.id]||'')+'</span>'
+        +'</span>'
+        +'<span class="ms-tile-chev">›</span>'
+        +'</button>';
+    });
+    html+='</div>';
+    body.innerHTML=html;
+    body.scrollTop=0;
+    return;
+  }
+
+  if(msState==='section'){
+    const sec=DATA.find(s=>s.id===msSection);
+    if(!sec){msHome();return}
+    back.classList.add('show');
+    ttl.textContent=sec.label;
+    let html='<div class="ms-section">';
+    (sec.groups||[]).forEach(g=>{
+      html+='<div class="ms-grp-name">'+g.name+'</div>';
+      g.items.forEach(it=>{
+        html+='<button class="ms-row" onclick="msOpenItemById(\''+it.id+'\')">'
+          +'<span class="ms-row-name">'+it.name+'</span>'
+          +'<span class="ms-row-chev">›</span>'
+          +'</button>';
+      });
+    });
+    if(sec.flat&&sec.flat.length){
+      sec.flat.forEach(it=>{
+        html+='<button class="ms-row" onclick="msOpenItemById(\''+it.id+'\')">'
+          +'<span class="ms-row-name">'+it.name+'</span>'
+          +'<span class="ms-row-chev">›</span>'
+          +'</button>';
+      });
+    }
+    html+='</div>';
+    body.innerHTML=html;
+    body.scrollTop=0;
+    return;
+  }
+
+  if(msState==='item'&&msItem){
+    back.classList.add('show');
+    ttl.textContent=msItem.name;
+    body.innerHTML='<div class="ms-item">'
+      +'<iframe class="ms-item-iframe" src="'+msItem.href+'" title="'+msItem.name+'" loading="lazy"></iframe>'
+      +'<div class="ms-item-foot">'
+      +'<span class="ms-foot-path">'+msItem.section+(msItem.group?' › '+msItem.group:'')+'</span>'
+      +'<a href="'+msItem.href+'" target="_blank" rel="noopener">Open ↗</a>'
+      +'</div>'
+      +'</div>';
+    return;
+  }
+}
+
+/* ── NAV (desktop) ── */
 let navCol=false;
 function navToggle(){navCol=!navCol;document.getElementById('nav').classList.toggle('col',navCol);document.getElementById('nav-col-btn').textContent=navCol?'▶':'◀'}
-
-/* mobile drawer toggle — slides nav in/out on narrow screens */
 function mobileNavToggle(){
   const nav=document.getElementById('nav');
   const open=nav.classList.toggle('open');
@@ -428,30 +512,20 @@ function buildTree(){
 }
 function togSec(bid,secId,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
 function togGrp(bid,hdr){const b=document.getElementById(bid),o=b.classList.toggle('on');hdr.classList.toggle('on',o)}
-function openSec(secId){const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=document.getElementById(bid),hdr=document.getElementById('sh_'+secId);if(b&&!b.classList.contains('on')){b.classList.add('on');hdr&&hdr.classList.add('on')}if(window.innerWidth<=780){const nav=document.getElementById('nav');nav.classList.add('open');document.body.classList.add('mob-nav-open')}}
+function openSec(secId){
+  if(isMobile()){msOpenSec(secId);return}
+  const si=DATA.findIndex(s=>s.id===secId),bid='sb'+si,b=document.getElementById(bid),hdr=document.getElementById('sh_'+secId);
+  if(b&&!b.classList.contains('on')){b.classList.add('on');hdr&&hdr.classList.add('on')}
+}
 
-/* ── OPEN / CLOSE ITEMS ── */
+/* ── OPEN / CLOSE ITEMS (desktop) ── */
 function pickItem(itemId){
   const item=IDX.find(x=>x.id===itemId);
   if(!item)return;
-  const isMobile=window.innerWidth<=780;
-  /* on mobile: one tile at a time — clear any other open */
-  if(isMobile){
-    openItems=[];
-    document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
-    document.getElementById('ti_'+itemId)?.classList.add('on');
-    mobileNavClose();
-    openItems.push(item);
-    render();
-    return;
-  }
-  /* desktop: multi-tile behaviour */
-  /* highlight nav */
+  if(isMobile()){msOpenItem(item);return}
   document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
   document.getElementById('ti_'+itemId)?.classList.add('on');
-  /* already open? just focus (scroll tab into view) */
   if(openItems.find(x=>x.id===itemId)){render();return}
-  /* max 4 tiles */
   if(openItems.length>=4){openItems.shift()}
   openItems.push(item);
   render();
@@ -459,7 +533,6 @@ function pickItem(itemId){
 
 function closeTile(itemId){
   openItems=openItems.filter(x=>x.id!==itemId);
-  /* clear nav highlight if no longer open */
   document.getElementById('ti_'+itemId)?.classList.remove('on');
   render();
 }
@@ -467,6 +540,7 @@ function closeTile(itemId){
 function closeAll(){
   openItems=[];
   document.querySelectorAll('.ti,.tfi').forEach(e=>e.classList.remove('on'));
+  if(isMobile())msHome();
   render();
 }
 
@@ -475,6 +549,7 @@ function render(){
   renderTabBar();
   renderTileGrid();
   renderStatus();
+  renderMobile();
 }
 
 function renderTabBar(){
@@ -488,7 +563,6 @@ function renderTabBar(){
 function renderTileGrid(){
   const grid=document.getElementById('tile-grid');
   const n=openItems.length;
-  /* set grid class */
   grid.className='c'+Math.min(n,4);
   if(n===0){
     grid.innerHTML=`<div class="home-tile">
@@ -546,7 +620,22 @@ function srchRun(q){
   res.innerHTML=hits.map(it=>`<div class="srch-item" onclick="srchPick('${it.id}')"><div><div class="srch-name">${it.name}</div><div class="srch-path">${it.section}${it.group?' › '+it.group:''}</div></div></div>`).join('');
 }
 function srchPick(id){document.getElementById('srch-ol').classList.remove('on');document.getElementById('srch-inp').value='';document.getElementById('srch-res').innerHTML='';const item=IDX.find(x=>x.id===id);if(item){openSec(item.secId);pickItem(id)}}
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}if(e.key==='Escape'){document.getElementById('srch-ol').classList.remove('on');mobileNavClose()}});
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();srchOpen()}
+  if(e.key==='Escape'){
+    document.getElementById('srch-ol').classList.remove('on');
+    mobileNavClose();
+    if(isMobile()&&(msState==='item'||msState==='section'))msBack();
+  }
+});
+
+/* Re-render on breakpoint crossings */
+let _wasMobile=isMobile();
+window.addEventListener('resize',()=>{
+  const now=isMobile();
+  if(now!==_wasMobile){_wasMobile=now;render()}
+  else if(now){renderMobile()}
+});
 
 buildTree();
 render();
